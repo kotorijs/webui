@@ -3,9 +3,7 @@ import Manage from '../views/ManagePage.vue';
 import Index from '../views/manage/IndexPage.vue';
 /* import Log from '../views/manage/LogPage.vue'; */
 import Config from '../views/manage/ConfigPage.vue';
-import About from '../views/manage/AboutPage.vue';
 import Login from '../views/LoginPage.vue';
-import Verify from '../views/VerifyPage.vue';
 import Error404 from '../views/Error404Page.vue';
 import Bots from '@/views/manage/BotsPage.vue';
 import Modules from '@/views/manage/ModulesPage.vue';
@@ -35,23 +33,12 @@ const routes = [
       {
         path: '/config',
         component: Config
-      },
-      {
-        path: '/about',
-        component: About
       }
     ]
   },
   {
     path: '/login',
     component: Login
-  },
-  {
-    path: '/verify/:pathMatch(.*)',
-    component: Verify,
-    meta: {
-      keepAlive: false
-    }
   },
   {
     path: '/:pathMatch(.*)',

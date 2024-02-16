@@ -48,14 +48,16 @@ import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getBots, getConfig } from '@/http';
 
-const botsData = ref<any[]>([]),
+type Bot = Record<string, string>;
+
+const botsData = ref<Bot[]>([]),
   code = ref(''),
   dialogViewCode = ref(false),
   dialogViewCodeState = ref(true);
 const extensions = [javascript(), oneDark];
 
 getBots().then((res) => {
-  res!.data.forEach((bot: any) => {
+  res!.data.forEach((bot: Bot) => {
     bot.value = bot.value === 'online' ? '在线' : '离线';
   });
   botsData.value = res!.data;

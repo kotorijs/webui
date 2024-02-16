@@ -34,48 +34,9 @@ import { ref } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
 import { useRoute } from 'vue-router';
-import { DataLine, FolderRemove, Setting, Notification, Tickets, PriceTag } from '@element-plus/icons-vue';
+import { AsideData } from '@/func';
 
 const store = useMainStore();
-
-const AsideData = [
-  {
-    id: '1',
-    text: '数据中心',
-    icon: DataLine,
-    path: 'index'
-  },
-  {
-    id: '2',
-    text: '日志监控',
-    icon: Tickets,
-    path: 'log'
-  },
-  {
-    id: '3',
-    text: '实例管理',
-    icon: PriceTag,
-    path: 'bots'
-  },
-  {
-    id: '4',
-    text: '模块管理',
-    icon: FolderRemove,
-    path: 'modules'
-  },
-  {
-    id: '5',
-    text: '配置查看',
-    icon: Setting,
-    path: 'config'
-  },
-  {
-    id: '6',
-    text: '关于信息',
-    icon: Notification,
-    path: 'about'
-  }
-];
 
 const route = useRoute();
 const defaultActive = ref<string>(AsideData.find((item) => '/' + item.path == route.path)?.id ?? '1');

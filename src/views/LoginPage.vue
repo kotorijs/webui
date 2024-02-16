@@ -2,7 +2,7 @@
   <div>
     <div class="container-login" v-loading="isLoading">
       <div class="login-form login-item">
-        <h1>Kotori Admin</h1>
+        <h1>Kotori Webui</h1>
         <el-form :model="form" label-position="top">
           <el-form-item label="用户名">
             <el-input v-model="form.user" />

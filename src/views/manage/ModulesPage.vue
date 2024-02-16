@@ -45,15 +45,17 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import { ElMessage } from 'element-plus';
 import { getConfig, getModules } from '@/http';
 
-const modulesData = ref<any[]>([]),
+type Module = [Record<string, string>, Record<string, string>];
+
+const modulesData = ref<Module[]>([]),
   code = ref(''),
   dialogViewCode = ref(false),
   dialogViewCodeState = ref(true);
 const extensions = [javascript(), oneDark];
 
 getModules().then((res) => {
-  res!.data.forEach((module: any) => {
-    if (Array.isArray(module[0].author)) module.pkg.author = module[0].author.join(',');
+  res!.data.forEach((module: Module) => {
+    if (Array.isArray(module[0].author)) module[0].author = module[0].author.join(',');
   });
   modulesData.value = res!.data;
 });

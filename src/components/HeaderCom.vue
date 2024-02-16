@@ -38,12 +38,19 @@ import { getInfo } from '@/http';
 
 const store = useMainStore();
 const screenWidthType = document.body.clientWidth > 630;
-const topTips = ref<string>('');
+const infoData = ref<Record<string, number>>({});
 
 /* 第一次进入网站根据设备宽带设置Aside默认值 */
 if (store.state.aside === null) {
   store.state.aside = !screenWidthType;
 }
+
+const topTips = computed(() => {
+  if (Object.keys(infoData.value).length <= 0) return '';
+  return screenWidthType
+    ? `CPU: ${infoData.value.cpu.toFixed(2)}% 内存: ${infoData.value.ram.toFixed(2)}% 版本: v${infoData.value.version} `
+    : `CPU: ${infoData.value.cpu.toFixed(2)}% 内存: ${infoData.value.ram.toFixed(2)}% `;
+});
 
 const asideWidth = computed(() => {
   return store.state.aside ? '70px' : '200px';
@@ -55,7 +62,7 @@ const updateInfo = async () => {
     exitLogin();
     return;
   }
-  topTips.value = `CPU: ${res.data.cpu.toFixed(2)}% RAM: ${res.data.ram.toFixed(2)}% `;
+  infoData.value = res.data;
 };
 
 const exitLogin = () => {

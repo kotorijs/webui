@@ -45,7 +45,7 @@ const bots = ref();
 const botOnline = computed(() => {
   if (!bots.value) return 0;
   let count = 0;
-  bots.value.forEach((bot: any) => {
+  bots.value.forEach((bot: Record<string, string>) => {
     if (bot.value === 'online') count += 1;
   });
   return count;
@@ -53,7 +53,7 @@ const botOnline = computed(() => {
 const receivedMsg = computed(() => {
   if (!bots.value) return 0;
   let count = 0;
-  bots.value.forEach((bot: any) => {
+  bots.value.forEach((bot: Record<string, number>) => {
     count += bot.receivedMsg;
   });
   return count;
@@ -61,7 +61,7 @@ const receivedMsg = computed(() => {
 const sentMsg = computed(() => {
   if (!bots.value) return 0;
   let count = 0;
-  bots.value.forEach((bot: any) => {
+  bots.value.forEach((bot: Record<string, number>) => {
     count += bot.sentMsg;
   });
   return count;
