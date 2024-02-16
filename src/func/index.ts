@@ -1,4 +1,6 @@
-import { DataLine, FolderRemove, Setting, PriceTag } from '@element-plus/icons-vue';
+import { DataLine, FolderRemove, Setting, PriceTag, MessageBox } from '@element-plus/icons-vue';
+
+export * from './sandbox';
 
 export const AsideData = [
   {
@@ -30,5 +32,11 @@ export const AsideData = [
     text: '配置查看',
     icon: Setting,
     path: 'config'
+  },
+  {
+    id: '6',
+    text: '沙盒测试',
+    icon: MessageBox,
+    path: 'sandbox'
   }
 ];

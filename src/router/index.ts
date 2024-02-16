@@ -7,6 +7,7 @@ import Login from '../views/LoginPage.vue';
 import Error404 from '../views/Error404Page.vue';
 import Bots from '@/views/manage/BotsPage.vue';
 import Modules from '@/views/manage/ModulesPage.vue';
+import Sandbox from '@/views/manage/SandboxPage.vue';
 
 const routes = [
   {
@@ -33,6 +34,10 @@ const routes = [
       {
         path: '/config',
         component: Config
+      },
+      {
+        path: '/sandbox',
+        component: Sandbox
       }
     ]
   },
