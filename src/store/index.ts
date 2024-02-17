@@ -1,4 +1,5 @@
 import { type Sandbox, type User, type Message, spawnId, type Role } from '@/func';
+import Ws from '@/func/ws';
 import { defineStore } from 'pinia';
 
 interface storeStateType {
@@ -13,9 +14,9 @@ interface storeStateType {
 export const useMainStore = defineStore('main', {
   state: (): storeStateType => {
     const userId = spawnId();
-    const user2Id = spawnId() + 100;
-    const botId = spawnId() + 200;
-    const groupId = spawnId() + 300;
+    const user2Id = spawnId();
+    const botId = spawnId();
+    const groupId = spawnId();
     return {
       state: {
         aside: null
@@ -55,7 +56,9 @@ export const useMainStore = defineStore('main', {
           }
         ],
         message: [],
-        current: userId
+        current: userId,
+        bot: botId,
+        address: 'ws://127.0.0.1:233'
       }
     };
   },
@@ -96,24 +99,57 @@ export const useMainStore = defineStore('main', {
     getGroup(id: number) {
       return this.sand.groups.find((el) => el.id === id);
     },
-    getMsg(scopeId: Message['scopeId']) {
-      if (typeof scopeId === 'number') {
-        return this.sand.message.filter((el) => typeof el.scopeId === 'number' && el.scopeId === scopeId);
-      }
-      const total = scopeId[0] + scopeId[1];
-      return this.sand.message.filter(
-        (el) => typeof el.scopeId !== 'number' && el.scopeId[0] + el.scopeId[1] === total
-      );
+    getMsg(scopeId: Message['scopeId'], origin?: number) {
+      const from = origin ?? this.sand.current;
+      const id = this.getUser(scopeId) ? scopeId + from : scopeId;
+      return this.sand.message.filter((el) => el.scopeId === id);
     },
-    sendMsg(message: string, scopeId: number) {
+    sendMsg(message: string, scopeId: number, origin?: number) {
+      const from = origin ?? this.sand.current;
+      const realScopeId = this.getUser(scopeId) ? scopeId + from : scopeId;
+      const messageId = spawnId();
       this.sand.message.push({
-        id: spawnId(),
+        id: messageId,
         date: new Date().getTime(),
-        user: this.sand.current,
-        type: this.getUser(scopeId) ? 'private' : 'group',
-        scopeId,
+        user: from,
+        type: realScopeId === scopeId ? 'group' : 'private',
+        scopeId: realScopeId,
         message
       });
+      if (!Ws.ws) return;
+      const self = this.getUser(from);
+      if (realScopeId === scopeId) {
+        const group = self?.groups.find((el) => el[0] === scopeId) ?? [];
+        Ws.ws.send({
+          event: 'on_message',
+          type: 1,
+          userId: from,
+          messageId,
+          message,
+          sender: {
+            nickname: self?.name,
+            age: self?.age,
+            sex: self?.sex,
+            level: '0',
+            role: group[1],
+            title: ''
+          },
+          groupId: group[0]
+        });
+      } else {
+        Ws.ws.send({
+          event: 'on_message',
+          type: 0,
+          userId: from,
+          messageId,
+          message,
+          sender: {
+            nickname: self?.name,
+            age: self?.age,
+            sex: self?.sex
+          }
+        });
+      }
     },
     getUserRole(userId: number, groupId: number) {
       let role: Role = 'member';
@@ -123,6 +159,22 @@ export const useMainStore = defineStore('main', {
         if (group[0] === groupId) role = group[1];
       });
       return role;
+    },
+    createGroup() {
+      this.sand.groups.push({
+        id: spawnId(),
+        name: `Group${spawnId().toString().substring(0, 3)}`
+      });
+    },
+    createUser() {
+      this.sand.users.push({
+        id: spawnId(),
+        sex: Math.random() > 0.5 ? 'male' : 'female',
+        users: this.sand.users.map((user) => user.id),
+        groups: this.sand.groups.map((group) => [group.id, 'member']),
+        name: `User${spawnId().toString().substring(0, 3)}`,
+        age: Number(spawnId().toString().substring(4, 6))
+      });
     }
   }
 });

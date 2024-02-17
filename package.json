@@ -19,6 +19,7 @@
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@element-plus/icons-vue": "^2.3.1",
+    "@kotori-bot/tools": "^1.2.0",
     "@types/js-base64": "^3.3.1",
     "@types/screenfull": "^4.1.0",
     "axios": "^1.4.0",

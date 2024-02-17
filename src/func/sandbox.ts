@@ -29,9 +29,12 @@ export interface Sandbox {
   groups: Group[];
   message: Message[];
   current: number;
+  currentScopeId?: number;
+  address: string;
+  bot: number;
 }
 
 export function spawnId() {
-  const str = (new Date().getTime() / 10000).toFixed();
+  const str = (Math.random() * 10 ** 9).toFixed();
   return Number(str) + Number(str.at(1) ?? 0) + Number(str.at(2) ?? 0) + Number(str.at(3) ?? 0);
 }
