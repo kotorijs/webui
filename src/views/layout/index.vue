@@ -1,15 +1,9 @@
 <template>
   <el-container class="main-container">
     <k-aside></k-aside>
-    <!-- <modulesPage></modulesPage> -->
-    <el-container>
-      <el-header height="40px">
-        <pps-button @click.native="onFold()">
-          <i class="el-icon-d-arrow-left"></i>
-        </pps-button>
-        <span class="title">{{ pathTitle }}</span>
-        <pps-button @click="$store.commit('updateToken', '')">clear</pps-button>
-      </el-header>
+    <el-container direction="vertical">
+      <k-header></k-header>
+      <!-- <el-header></el-header> -->
       <el-main :class="{ isPadding }"><router-view></router-view></el-main>
       <k-footer v-if="!isPadding"></k-footer>
     </el-container>
@@ -20,10 +14,10 @@
 import Ws from '@/utils/webSocket';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
-// import modulesPage from '../modules/index.vue';
+import kHeader from './header.vue';
 export default {
   name: 'myLayout',
-  components: { kAside, kFooter },
+  components: { kAside, kFooter, kHeader },
   data() {
     return {
       statusData: {
@@ -34,13 +28,16 @@ export default {
   },
   methods: {
     onFold() {
-      this.$store.commit('updateIsFoldAside', !this.$store.state.isFoldAside);
+      this.$store.commit(
+        'layoutOption/updateIsFoldAside',
+        !this.$store.state.layoutOption.isFoldAside
+      );
     },
     handleAside() {
       if (this.$route.fullPath === '/console') {
-        this.$store.commit('updateIsFoldAside', true);
+        this.$store.commit('layoutOption/updateIsFoldAside', true);
       } else {
-        this.$store.commit('updateIsFoldAside', false);
+        this.$store.commit('layoutOption/updateIsFoldAside', false);
       }
     }
   },
@@ -50,9 +47,6 @@ export default {
     Ws.create();
   },
   computed: {
-    pathTitle() {
-      return this.$route.meta.title;
-    },
     isPadding() {
       if (this.$route.fullPath === '/console') {
         return true;
@@ -63,7 +57,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .isPadding {
   padding-left: 8px !important;
   padding-right: 8px !important;

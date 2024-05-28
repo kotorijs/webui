@@ -76,7 +76,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['updateToken']),
+    ...mapMutations('layoutOption', ['updateToken']),
     changeTab(flag) {
       this.tabsFlag = flag;
     },

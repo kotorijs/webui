@@ -65,10 +65,12 @@ export default class Ws {
 
   onMessage(msg) {
     const data = JSON.parse(msg.data);
+    const res = data.data;
     if (data.type === 'console_output') {
-      store.commit('updateConsole', data);
+      store.commit('webSocketOption/updateConsole', res);
     } else if (data.type === 'stats') {
-      store.commit('updateStats', data);
+      store.commit('webSocketOption/updateCpu', res.cpu);
+      store.commit('webSocketOption/updateRam', res.ram);
     }
   }
 
@@ -80,8 +82,9 @@ export default class Ws {
   onClose(code) {
     Vue.prototype.$message.warning(`WebSocket 服务器已断开，Code:${code.code}`);
     this.status = 'offline';
-    store.commit('updateStats');
-    store.commit('updateConsole');
+    store.commit('webSocketOption/updateCpu');
+    store.commit('webSocketOption/updateRam');
+    store.commit('webSocketOption/updateConsole');
   }
 
   static create() {

@@ -1,6 +1,6 @@
 <template>
   <transition>
-    <el-aside class="k-aside" v-show="!$store.state.isFoldAside">
+    <el-aside class="k-aside" v-show="!$store.state.layoutOption.isFoldAside">
       <div class="logo">
         <img src="@/assets/favicon.svg" alt="" />
       </div>
@@ -62,7 +62,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['updateToken']),
+    ...mapMutations('layoutOption', ['updateToken']),
     cancelFn() {
       this.isShowDialog = false;
     },

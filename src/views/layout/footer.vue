@@ -1,10 +1,9 @@
 <template>
   <el-footer height="30px">
-    <div>
-      内存使用率：
-      <span>{{ roundedRam.total }}</span>
-      cpu:
-      <span>{{roundedCpu.rate}}</span>
+    <div class="status">
+      <div>内存:{{ roundedRam.rate + '%' }}</div>
+      &nbsp;
+      <div>CPU:{{ roundedCpu.rate }}</div>
     </div>
   </el-footer>
 </template>
@@ -20,4 +19,23 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="less">
+.el-footer {
+  justify-content: right !important;
+  .status {
+    display: table;
+    height: 100%;
+    div {
+      vertical-align: middle;
+      display: table-cell;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 5px;
+      &:hover {
+        cursor: pointer;
+        background: #ffffff;
+      }
+    }
+  }
+}
+</style>
