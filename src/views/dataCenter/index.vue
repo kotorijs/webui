@@ -132,18 +132,6 @@ export default {
         };
       });
 
-      // const name = Object.keys(this.countData);
-      // const datas = Object.entries(this.countData).map((item, index) => {
-      //   return {
-      //     value: item[1],
-      //     name: item[0],
-      //     // name: name[index],
-      //     itemStyle: {
-      //       color: color[index]
-      //     }
-      //   };
-      // });
-
       const option = {
         title: {
           text: '数据统计'
@@ -159,48 +147,6 @@ export default {
         series: [
           {
             data,
-            // [
-            //   {
-            //     value: 200,
-            //     name: '适配器',
-            //     color: '#5470c6'
-            //   },
-            //   {
-            //     value: 200,
-            //     name: '实例',
-            //     itemStyle: {
-            //       color: '#91cc75'
-            //     }
-            //   },
-            //   {
-            //     value: 200,
-            //     name: '指令',
-            //     itemStyle: {
-            //       color: '#fac858'
-            //     }
-            //   },
-            //   {
-            //     value: 200,
-            //     name: '中间件',
-            //     itemStyle: {
-            //       color: '#ee6666'
-            //     }
-            //   },
-            //   {
-            //     value: 200,
-            //     name: '模块量',
-            //     itemStyle: {
-            //       color: '#3ba272'
-            //     }
-            //   },
-            //   {
-            //     value: 200,
-            //     name: '正则',
-            //     itemStyle: {
-            //       color: '#fc8452'
-            //     }
-            //   }
-            // ],
             type: 'bar'
           }
         ]
@@ -307,7 +253,6 @@ export default {
     this.setColumnChartFn();
     this.setCurvetChartFn();
     window.addEventListener('resize', this.resizeHandler);
-    // clubRF();
   },
   beforeDestroy() {
     // 在组件销毁前移除事件监听，防止内存泄漏

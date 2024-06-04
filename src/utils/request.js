@@ -12,8 +12,8 @@ const myAxios = axios.create({
 
 // 请求拦截器
 myAxios.interceptors.request.use((config) => {
-  if (store.state.token) {
-    config.headers.authorization = `Bearer ${store.state.token}`;
+  if (store.state.layoutOption.token) {
+    config.headers.authorization = `Bearer ${store.state.layoutOption.token}`;
   }
   return config;
 });

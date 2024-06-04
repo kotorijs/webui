@@ -19,23 +19,22 @@ export default {
       state.ram = val;
     },
     updateConsole(state, val = { ...console }) {
-      console.log(val);
       // state.console = val;
     }
   },
   actions: {},
   getters: {
     roundedRam(state) {
-      const ram = {};
+      const ramRes = {};
       for (const key in state.ram) {
         if (Object.hasOwnProperty.call(state.ram, key)) {
-          ram[key] = Number(state.ram[key]).toFixed(2);
+          ramRes[key] = Number(state.ram[key]).toFixed(2);
         }
       }
-      return ram;
+      return ramRes;
     },
     roundedCpu(state) {
-      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) };
+      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) + '%' };
     }
   }
 };

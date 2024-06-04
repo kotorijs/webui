@@ -5,7 +5,7 @@ import store from './store';
 import '@/elementUI/index.js';
 import ppsUI from './ppsUI/packages';
 import 'less';
-import '@/assets/index.css';
+import '@/assets/index.less';
 import '@/assets/global.less';
 import * as echarts from 'echarts';
 import I18n from '@kotori-bot/i18n';

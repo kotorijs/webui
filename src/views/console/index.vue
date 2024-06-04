@@ -67,12 +67,12 @@ export default {
     }
   },
   mounted() {
-    this.$store.commit('updateIsFoldAside', true);
+    this.$store.commit('layoutOption/updateIsFoldAside', true);
     Ws.create();
     this.pushMsg();
   },
   beforeDestroy() {
-    this.$store.commit('updateIsFoldAside', false);
+    this.$store.commit('layoutOption/updateIsFoldAside', false);
   }
 };
 </script>

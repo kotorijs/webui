@@ -67,16 +67,18 @@ const router = new VueRouter({
 const whiteList = ['/login'];
 
 router.beforeEach((to, from, next) => {
-  const token = store.state.token;
+  console.log(store);
+  const token = store.state.layoutOption.token;
   if (token) {
     if (token) {
-      // ss
+      //
     }
     next();
   } else {
     if (whiteList.includes(to.path)) {
       next();
     } else {
+      console.log(token);
       next('/login');
     }
   }
