@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import axios from 'axios'
 
 /**
  * 登录接口
@@ -76,6 +77,17 @@ export const updatePluginsAPI = (pluginName = '') => {
 };
 
 /**
+ * 获取插件头像接口
+ * @returns Promise对象
+ */
+export const getPulginsAvatarAPI = (pluginName = '') => {
+  return request({
+    url: `/data/avatar/${pluginName}`,
+    method: 'GET'
+  });
+};
+
+/**
  * 获取全局配置信息接口
  * @returns Promise对象
  */
@@ -133,12 +145,10 @@ export const getStatsAPI = () => {
 };
 
 /**
- * 获取实时状态接口
+ * 获取所有模块数据接口
  * @returns Promise对象
  */
-export const getStatusAPI = () => {
-  return request({
-    url: `/data/status/`,
-    method: 'GET'
-  });
+
+export const getAllModulesAPI = () => {
+  return axios.get("https://kotori.js.org/assets/data_details.json");
 };

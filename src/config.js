@@ -1,4 +1,4 @@
 export default {
-  host: '192.168.0.102', // 后端ip
-  port: '' // 端口
+  host: 'k.hotaru.icu', // 后端ip ser.painchornds.cn
+  port: '80' // 端口
 };

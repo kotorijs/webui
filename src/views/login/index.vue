@@ -70,8 +70,8 @@ export default {
       isShowDialog: false,
       dialogData: {},
       loginForm: {
-        username: 'kotori',
-        password: '123456'
+        username: 'test',
+        password: '233'
       }
     };
   },
@@ -233,28 +233,6 @@ export default {
   }
 }
 
-// dialog {
-//   width: 400px;
-//   min-height: 100px;
-//   border: none;
-//   border-radius: 4px;
-
-//   &::backdrop {
-//     background: rgba(0, 0, 0, 0.5);
-//   }
-
-//   header {
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-//     padding: 0;
-//     font-size: 18px;
-//   }
-
-//   .pps-button {
-//     border-radius: 4px;
-//   }
-// }
 /* 进入的起点、离开的终点 */
 .hello-enter,
 .hello-leave-to {

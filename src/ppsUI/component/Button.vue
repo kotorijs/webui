@@ -4,7 +4,6 @@
     v-on="$listeners"
     class="pps-button"
     :class="[theme ? `pps-button-${theme}` : `pps-button-default`]"
-    @click="handle"
   >
     <slot>pps-button</slot>
   </button>
