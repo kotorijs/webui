@@ -2,10 +2,10 @@ import rf from '../reflectorFactory';
 
 // 欢迎页迷你模块
 const club = {
-  chats: '累计消息收:发量',
+  message: '累计消息收:发量',
   bots: '实例在线数/总数',
   login: '登录成功:失败次数',
-  ram: '内存使用量'
+  memory: '内存使用量'
 };
 
 // 系统信息（表格）

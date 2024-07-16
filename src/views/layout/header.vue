@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     pathTitle() {
-      return this.$route.meta.title;
+      return this.$route.matched[1].meta.title;
     },
     isPadding() {
       if (this.$route.fullPath === '/console') {
@@ -35,4 +35,22 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="less">
+.el-header {
+    background-color: var(--bg-main);
+    border-bottom: 2px solid #e1e2e8;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+
+    .title {
+      color: var(--font-gray-color);
+      font-size: 1.17em;
+      font-weight: 600;
+      margin-left: 20px;
+      letter-spacing: 1px;
+    }
+  }
+</style>

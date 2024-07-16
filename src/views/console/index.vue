@@ -43,9 +43,8 @@ export default {
     },
     handleClick() {
       console.log('click');
-      // TerminalApi.focus('my-terminal', true);
     },
-    pushMsg() {
+    firstMsg() {
       const state = this.$store.state.console.data || null;
       if (!state) {
         return this.$message({
@@ -53,23 +52,45 @@ export default {
           message: '未获取到数据，检查后端是否开启！'
         });
       }
-
-      const log_level = state.label.join(' ');
-      const date = new Date(state.time);
-      const dateString = date.toLocaleString();
-      const message = `\x1B[34m${dateString} \x1B[0m(${state.pid}) \x1B[0m\x1B[1;33m[${log_level}] \x1B[0m: ${state.msg}`;
-
-      this.messages.push({ type: 'ansi', content: message });
-      TerminalApi.pushMessage('my-terminal', { type: 'ansi', content: message });
+      this.pushMsg({
+        date: new Date(state.time),
+        pid: state.pid,
+        label: state.label,
+        msg: state.msg
+      });
     },
     sendMsg() {
-      Ws.ws.send({ command: this.inputData, action: this.action });
+      try {
+        Ws.ws.send({ command: this.inputData, action: this.action });
+        this.pushMsg({
+          label: ['user'],
+          msg: this.inputData
+        });
+        this.inputData = '';
+      } catch (error) {
+        return this.$message({
+          type: 'error',
+          message: `未连接后端，请检查后端是否开启！${error}`
+        });
+      }
+    },
+    pushMsg(options) {
+      const defaultOptions = {
+        date: new Date(),
+        pid: null,
+        label: ['INFO'],
+        msg: 'nothing'
+      };
+      let { date, pid, label, msg } = { ...defaultOptions, ...options };
+      date = new Date(date).toLocaleString();
+      label = label.join(' ');
+      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m: ${msg}`;
+      TerminalApi.pushMessage('my-terminal', { type: 'ansi', content: message });
     }
   },
   mounted() {
-    this.$store.commit('layoutOption/updateIsFoldAside', true);
     Ws.create();
-    this.pushMsg();
+    this.firstMsg();
   },
   beforeDestroy() {
     this.$store.commit('layoutOption/updateIsFoldAside', false);

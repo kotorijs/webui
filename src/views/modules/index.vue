@@ -1,5 +1,6 @@
 <template>
     <div class="test">
+      模块
     </div>
 </template>
 

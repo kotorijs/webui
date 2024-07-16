@@ -70,8 +70,8 @@ export default {
       isShowDialog: false,
       dialogData: {},
       loginForm: {
-        username: 'kotori',
-        password: '123456'
+        username: 'test',
+        password: '233'
       }
     };
   },
