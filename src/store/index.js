@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import webSocketOption from './webSocketOption';
-import layoutOption from './layoutOption';
+import webSocketOption from './webSocket';
+import layoutOption from './layout';
+import modulesDetail from './modulesDetail';
 import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
@@ -36,7 +37,8 @@ export default new Vuex.Store({
   // actions: {},
   modules: {
     webSocketOption,
-    layoutOption
+    layoutOption,
+    modulesDetail
   },
   plugins: [createPersistedState()]
 });

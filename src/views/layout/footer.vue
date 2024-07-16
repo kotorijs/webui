@@ -38,4 +38,11 @@ export default {
     }
   }
 }
+.el-footer {
+  background-color: #eee;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

@@ -8,7 +8,11 @@
     @click="handleClickFn"
   >
     <transition appear name="appear">
-      <div v-show="active" class="line" :style="{background: this.root.activeColor}"></div>
+      <div
+        v-show="active"
+        class="line"
+        :style="{ background: this.root.activeColor }"
+      ></div>
     </transition>
     <slot></slot>
   </li>
@@ -46,7 +50,9 @@ export default {
   },
   computed: {
     active() {
-      return this.root.activeIndex === this.index;
+      const activeArr = this.root.activeIndex.split('/');
+      const indexArr = this.index.split('/');
+      return activeArr.includes(indexArr[1]);
     },
     itemStyle() {
       const style = {
@@ -57,8 +63,7 @@ export default {
     }
   },
   beforeMount() {},
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 

@@ -71,7 +71,7 @@
 
 <script>
 import { getStatsAPI } from '@/api';
-import { systemRF, countRF } from '@/utils/zh-CN';
+import { systemRF, countRF, clubRF } from '@/utils/zh-CN';
 export default {
   name: 'dataCenter',
   data() {
@@ -228,7 +228,7 @@ export default {
 
       this.chatsNum.sent = res.chats.sent;
       this.chatsNum.received = res.chats.received;
-      this.infoData = res.info;
+      this.infoData = clubRF(res.info);
       this.countData = countRF(res.count);
       this.systemData = systemRF(this.processUptime(res.system));
     },

@@ -38,6 +38,18 @@ const routes = [
         component: () => import('@/views/modules')
       },
       {
+        path: 'modulesCenter',
+        meta: { title: '模块中心' },
+        component: () => import('@/views/modules/modulesCenter'),
+        children: [
+          {
+            path: 'modulesItem',
+            name: 'modulesItem',
+            component: () => import('@/views/modules/description')
+          }
+        ]
+      },
+      {
         path: 'config',
         meta: { title: '配置查看' },
         component: () => import('@/views/config')
@@ -67,7 +79,6 @@ const router = new VueRouter({
 const whiteList = ['/login'];
 
 router.beforeEach((to, from, next) => {
-  console.log(store);
   const token = store.state.layoutOption.token;
   if (token) {
     if (token) {
@@ -78,7 +89,6 @@ router.beforeEach((to, from, next) => {
     if (whiteList.includes(to.path)) {
       next();
     } else {
-      console.log(token);
       next('/login');
     }
   }
