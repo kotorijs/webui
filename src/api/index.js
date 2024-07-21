@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import axios from 'axios'
+import axios from 'axios';
 
 /**
  * 登录接口
@@ -29,13 +29,27 @@ export const logoutAPI = () => {
 };
 
 /**
+ * 获取机器人实例信息接口
+ * @param {*} botName 机器人实例名称
+ * @returns Promise对象
+ */
+export const getBotsDataAPI = (botName = null) => {
+  const url = botName ? `/data/bots/${botName}` : '/data/bots';
+  return request({
+    url: url,
+    method: 'GET'
+  });
+};
+
+/**
  * 获取机器人实例配置信息
  * @param {*} botName 机器人实例名称
  * @returns Promise对象
  */
-export const getBotsAPI = (botName = '') => {
+export const getBotsConfigAPI = (botName = null) => {
+  const url = botName ? `/config/bots/${botName}` : '/config/bots';
   return request({
-    url: `/config/bots/${botName}`,
+    url: url,
     method: 'GET'
   });
 };
@@ -45,7 +59,7 @@ export const getBotsAPI = (botName = '') => {
  * @param {*} botName 机器人实例名称
  * @returns Promise对象
  */
-export const updateBotsAPI = (botName = '') => {
+export const updateBotsConfigAPI = (botName) => {
   return request({
     url: `/config/bots/${botName}`,
     method: 'PUT'
@@ -57,7 +71,7 @@ export const updateBotsAPI = (botName = '') => {
  * @param {*} pluginName 插件名称
  * @returns Promise对象
  */
-export const getPluginsAPI = (pluginName = '') => {
+export const getPluginsConfigAPI = (pluginName = '') => {
   return request({
     url: `/config/plugins/${pluginName}`,
     method: 'GET'
@@ -69,7 +83,7 @@ export const getPluginsAPI = (pluginName = '') => {
  * @param {*} pluginName 插件名称
  * @returns Promise对象
  */
-export const updatePluginsAPI = (pluginName = '') => {
+export const updatePluginsConfigAPI = (pluginName = '') => {
   return request({
     url: `/config/plugins/${pluginName}`,
     method: 'PUT'
@@ -91,7 +105,7 @@ export const getPulginsAvatarAPI = (pluginName = '') => {
  * 获取全局配置信息接口
  * @returns Promise对象
  */
-export const getGlobalAPI = () => {
+export const getGlobalConfigAPI = () => {
   return request({
     url: '/config/global',
     method: 'GET'
@@ -102,7 +116,7 @@ export const getGlobalAPI = () => {
  * 更新全局配置信息接口
  * @returns Promise对象
  */
-export const updateGlobalAPI = () => {
+export const updateGlobalConfigAPI = () => {
   return request({
     url: '/config/global',
     method: 'PUT'
@@ -114,7 +128,19 @@ export const updateGlobalAPI = () => {
  * @param {*} moduleName 模块名称
  * @returns Promise对象
  */
-export const getModuleslAPI = (moduleName = '') => {
+export const getModules1API = (moduleName = '') => {
+  return request({
+    url: `/data/modules/${moduleName}`,
+    method: 'GET'
+  });
+};
+
+/**
+ * 获取单个模块配置接口
+ * @param {*} moduleName 模块名称
+ * @returns Promise对象
+ */
+export const getModulesAPI = (moduleName) => {
   return request({
     url: `/config/modules/${moduleName}`,
     method: 'GET'
@@ -122,15 +148,11 @@ export const getModuleslAPI = (moduleName = '') => {
 };
 
 /**
- * 获取机器人实例信息接口
- * @param {*} botName 机器人实例名称
+ * 获取所有模块数据接口
  * @returns Promise对象
  */
-export const getBotsDataAPI = (botName = '') => {
-  return request({
-    url: `/data/bots/${botName}`,
-    method: 'GET'
-  });
+export const getAllModulesAPI = () => {
+  return axios.get('https://kotori.js.org/assets/data_details.json');
 };
 
 /**
@@ -142,13 +164,4 @@ export const getStatsAPI = () => {
     url: `/data/stats/`,
     method: 'GET'
   });
-};
-
-/**
- * 获取所有模块数据接口
- * @returns Promise对象
- */
-
-export const getAllModulesAPI = () => {
-  return axios.get("https://kotori.js.org/assets/data_details.json");
 };

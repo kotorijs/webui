@@ -65,10 +65,6 @@ export default {
   .el-main {
     padding-top: 0;
     padding-bottom: 0;
-<<<<<<< HEAD
-=======
-    // overflow-y: scroll;
->>>>>>> 4ca2573b1304d1fda9a27e3af084779b05c9f7c8
     overflow-x: hidden;
     height: 0;
     background-color: var(--normal-color);
