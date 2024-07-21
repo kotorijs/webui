@@ -10,7 +10,11 @@
       </div>
 
       <div class="tab">
-        <div @click="changeTab('login')" :class="{ current: whichTab }" class="btn tab-login">
+        <div
+          @click="changeTab('login')"
+          :class="{ current: whichTab }"
+          class="btn tab-login"
+        >
           登录
         </div>
         <div
@@ -83,7 +87,6 @@ export default {
     async loginFn() {
       try {
         const { data: res } = await loginAPI(this.loginForm);
-        console.log(res);
         if (res.token) {
           this.updateToken(res.token);
           this.$router.push('/');

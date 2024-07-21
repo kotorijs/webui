@@ -32,7 +32,11 @@
     <el-col :xs="12" :sm="8" :md="8" :xl="9" class="itemDetails">
       <router-view></router-view>
     </el-col>
-    <el-dialog title="提示" :visible.sync="$store.state.modulesDetail.dialog" width="30%">
+    <el-dialog
+      title="提示"
+      :visible.sync="$store.state.modulesDetail.dialog"
+      width="30%"
+    >
       <el-link
         class="downloadLink"
         type="primary"
@@ -66,7 +70,28 @@ export default {
   components: { kDetailItem },
   data() {
     return {
-      currentDetails: [],
+      currentDetails: [
+        {
+          name: null,
+          description: null,
+          category: [null],
+          version: null,
+          author: {
+            name: null,
+            email: null
+          },
+          time: {
+            created: null,
+            modified: null
+          },
+          dist: {
+            dependencies: null,
+            fileCount: null,
+            unpackedSize: null,
+            tarball: null
+          }
+        }
+      ],
       detailsLen: 0,
       pageSize: [],
       details: []
@@ -117,7 +142,7 @@ export default {
   },
   created() {
     this.getModules();
-    this.handleDialog()
+    this.handleDialog();
   },
   mounted() {
     this.$router.push('/modulesCenter/modulesItem');
@@ -141,7 +166,7 @@ export default {
   min-height: calc(100vh - 70px);
 }
 
-.top{
+.top {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;

@@ -4,7 +4,7 @@
       <i class="el-icon-d-arrow-left"></i>
     </pps-button>
     <span class="title">{{ pathTitle }}</span>
-    <pps-button @click="$store.commit('layoutOption/updateToken', '')">
+    <pps-button @click="$store.commit('layoutOption/updateToken', '123')">
       clear
     </pps-button>
   </el-header>
@@ -49,7 +49,6 @@ export default {
       color: var(--font-gray-color);
       font-size: 1.17em;
       font-weight: 600;
-      margin-left: 20px;
       letter-spacing: 1px;
     }
   }
