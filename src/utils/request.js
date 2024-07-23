@@ -5,8 +5,8 @@ import router from '@/router';
 import { Message } from 'element-ui';
 
 const HOST = config.host || 'localhost';
-const PORT = config.port || 720;
-const url = `https://${HOST}:${PORT}/api`;
+// const PORT = config.port || 720;
+const url = `https://${HOST}/api`;
 
 const myAxios = axios.create({
   baseURL: url
