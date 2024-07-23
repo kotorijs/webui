@@ -4,8 +4,7 @@ import config from '@/config';
 import store from '@/store';
 
 const HOST = config.host || 'localhost';
-const PORT = config.port || 720;
-const url = `ws://${HOST}:${PORT}/webui`;
+const url = `wss://${HOST}/webui`;
 
 Vue.prototype.$message = Message;
 
