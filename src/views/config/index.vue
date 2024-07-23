@@ -1,5 +1,5 @@
 <template>
-  <table class="layui-table">
+  <!-- <table class="layui-table">
     <colgroup>
       <col width="150" />
       <col width="200" />
@@ -17,7 +17,8 @@
         <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
       </tr>
     </tbody>
-  </table>
+  </table> -->
+  <pps-button theme="text">按钮</pps-button>
 </template>
 
 <script>

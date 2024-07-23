@@ -45,7 +45,8 @@ export default {
       console.log('click');
     },
     firstMsg() {
-      const state = this.$store.state.console.data || null;
+      console.log(this.$store);
+      const state = this.$store.state.webSocketOption.console.data || null;
       if (!state) {
         return this.$message({
           type: 'error',
@@ -89,7 +90,7 @@ export default {
     }
   },
   mounted() {
-    Ws.create();
+    // Ws.create();
     this.firstMsg();
   },
   beforeDestroy() {

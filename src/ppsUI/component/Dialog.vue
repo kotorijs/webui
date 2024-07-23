@@ -3,15 +3,19 @@
     <dialog ref="dialog" v-if="dialogFlag">
       <div class="window">
         <header>
-          {{ content.title }}
-          <pps-icon @click.native="closeMessageFn()"></pps-icon>
+          <slot name="title">{{ title }}</slot>
+          <pps-icon icon="pps-icon-close" @click="closeMessageFn()"></pps-icon>
         </header>
         <div class="content">
-          <p>{{ content.message }}</p>
+          <slot name="content">
+            <p>{{ content }}</p>
+          </slot>
         </div>
         <footer>
-          <pps-button @click="cancelFn()">取消</pps-button>
-          <pps-button theme="confirm" @click="confirmFn()">确认</pps-button>
+          <slot name="footer">
+            <pps-button @click="cancelFn()">取消</pps-button>
+            <pps-button theme="confirm" @click="confirmFn()">确认</pps-button>
+          </slot>
         </footer>
       </div>
     </dialog>
@@ -32,9 +36,15 @@ export default {
       type: Function
     },
     content: {
-      type: Object,
+      type: String,
       default() {
-        return { title: '提示', message: '警告' };
+        return '警告';
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '提示';
       }
     }
   },
@@ -79,13 +89,6 @@ export default {
         } catch (error) {}
       }, 300);
     },
-    // beforeCloseFn() {
-    //   if (typeof this.handleClick === 'function') {
-    //     this.handleClick(this.closeMessageFn);
-    //   } else {
-    //     this.closeMessageFn();
-    //   }
-    // },
     handleMessageFn(isShow) {
       isShow ? this.showMessageFn() : this.closeMessageFn();
     }
@@ -113,6 +116,7 @@ dialog {
   border: none;
   border-radius: 4px;
   transition: 0.15s linear;
+  overflow: auto;
 
   @media screen and (max-width: 510px) {
     min-width: 300px;
@@ -134,11 +138,13 @@ dialog {
     }
 
     .content {
+      margin-top: 20px;
       min-height: 60px;
       line-height: 60px;
     }
 
     footer {
+      margin-top: 20px;
       align-self: flex-end;
       .pps-button {
         border-radius: 4px;

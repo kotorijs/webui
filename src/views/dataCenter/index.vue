@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root" v-resize-ob="resizeHandler">
     <el-card>
       <el-row type="flex" justify="left">
         <el-col style="margin-left: 10px">
@@ -252,11 +252,6 @@ export default {
     this.processUptime();
     this.setColumnChartFn();
     this.setCurvetChartFn();
-    window.addEventListener('resize', this.resizeHandler);
-  },
-  beforeDestroy() {
-    // 在组件销毁前移除事件监听，防止内存泄漏
-    window.removeEventListener('resize', this.resizeHandler);
   }
 };
 </script>

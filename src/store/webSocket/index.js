@@ -19,7 +19,7 @@ export default {
       state.ram = val;
     },
     updateConsole(state, val = { ...console }) {
-      // state.console = val;
+      state.console = val;
     }
   },
   actions: {},

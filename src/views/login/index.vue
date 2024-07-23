@@ -56,7 +56,11 @@
       </div>
     </div>
 
-    <pps-dialog :content="dialogData" :show.sync="isShowDialog"></pps-dialog>
+    <pps-dialog
+      :content="dialogData.message"
+      :title="dialogData.title"
+      :show.sync="isShowDialog"
+    ></pps-dialog>
   </div>
 </template>
 
