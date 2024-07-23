@@ -109,14 +109,14 @@ export default {
 };
 </script>
 
-<style lang="less" scope>
+<style lang="less">
 dialog {
   min-width: 360px;
   min-height: 100px;
+  max-height: calc(100vh - 100px);
   border: none;
   border-radius: 4px;
   transition: 0.15s linear;
-  overflow: auto;
 
   @media screen and (max-width: 510px) {
     min-width: 300px;
@@ -140,7 +140,27 @@ dialog {
     .content {
       margin-top: 20px;
       min-height: 60px;
+      max-height: 70vh;
       line-height: 60px;
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        width: 5px; // 设置滚动条的宽度
+      }
+      &::-webkit-scrollbar-track {
+        background: transparent;
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        position: absolute;
+        right: -5px;
+        width: 5px;
+        background: #88888870;
+        border-radius: 6px;
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background: #888888; // 鼠标悬停时滚动条的颜色
+      }
     }
 
     footer {

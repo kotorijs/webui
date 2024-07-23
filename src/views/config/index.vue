@@ -18,15 +18,36 @@
       </tr>
     </tbody>
   </table> -->
-  <pps-button theme="text">按钮</pps-button>
+  <!-- <pps-button theme="text">按钮</pps-button> -->
+  <div>
+    <el-tag
+      size="small"
+      v-for="(item, index) in ['kotori', 'kams', 'ppshme', 'gpt']"
+      :key="index"
+      :type="tagsType[index]"
+    >
+      {{ item }}
+    </el-tag>
+    <el-tag>标签一</el-tag>
+    <el-tag type="success">标签二</el-tag>
+    <el-tag type="info">标签三</el-tag>
+    <el-tag type="warning">标签四</el-tag>
+    <el-tag type="danger">标签五</el-tag>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      tagsType: ['', 'success', 'info', 'danger', 'warning']
+    };
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+div {
+  width: 100%;
+}
+</style>

@@ -46,10 +46,9 @@ export const getBotsDataAPI = (botName = null) => {
  * @param {*} botName 机器人实例名称
  * @returns Promise对象
  */
-export const getBotsConfigAPI = (botName = null) => {
-  const url = botName ? `/config/bots/${botName}` : '/config/bots';
+export const getBotsConfigAPI = (botName = '') => {
   return request({
-    url: url,
+    url: `/config/bots/${botName}`,
     method: 'GET'
   });
 };
@@ -91,17 +90,6 @@ export const updatePluginsConfigAPI = (pluginName = '') => {
 };
 
 /**
- * 获取插件头像接口
- * @returns Promise对象
- */
-export const getPulginsAvatarAPI = (pluginName = '') => {
-  return request({
-    url: `/data/avatar/${pluginName}`,
-    method: 'GET'
-  });
-};
-
-/**
  * 获取全局配置信息接口
  * @returns Promise对象
  */
@@ -128,7 +116,7 @@ export const updateGlobalConfigAPI = () => {
  * @param {*} moduleName 模块名称
  * @returns Promise对象
  */
-export const getModules1API = (moduleName = '') => {
+export const getUserModulesAPI = (moduleName = '') => {
   return request({
     url: `/data/modules/${moduleName}`,
     method: 'GET'
@@ -140,12 +128,12 @@ export const getModules1API = (moduleName = '') => {
  * @param {*} moduleName 模块名称
  * @returns Promise对象
  */
-export const getModulesAPI = (moduleName) => {
-  return request({
-    url: `/config/modules/${moduleName}`,
-    method: 'GET'
-  });
-};
+// export const getModulesConfigAPI = (moduleName) => {
+//   return request({
+//     url: `/config/modules/${moduleName}`,
+//     method: 'GET'
+//   });
+// };
 
 /**
  * 获取所有模块数据接口

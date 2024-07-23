@@ -1,5 +1,5 @@
 <template>
-  <el-card v-loading="isEmpty">
+  <el-card v-loading="isEmpty" v-resize-ob="cardResize">
     <el-table
       stripe
       fit
@@ -8,6 +8,7 @@
       v-resize-ob="handleSizeChange"
       style="width: 100%; font-size: 13px"
       border
+      :height="tableHeight"
     >
       <el-table-column prop="identity" label="ID" sortable align="center"></el-table-column>
       <el-table-column prop="platform" label="聊天平台" align="center"></el-table-column>
@@ -49,19 +50,15 @@
       </template>
       <el-table-column fixed="right" label="操作" align="center">
         <template slot-scope="scope">
-          <pps-button @click="handleViewDetails(scope.row.identity)" theme="text">查看</pps-button>
-          <pps-button theme="text" @click="handleEdit(scope.row.identity)">编辑</pps-button>
+          <pps-button @click="handleViewDetails(scope.row)" theme="text">查看</pps-button>
+          <pps-button theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
         </template>
       </el-table-column>
       <el-table-column prop="lang" label="使用语言" align="center"></el-table-column>
     </el-table>
     <pps-dialog :show.sync="isShowDetailsDialog" :title="viewDetailsData.title">
       <template slot="content">
-        <el-descriptions
-          direction="vertical"
-          :column="4"
-          border
-        >
+        <el-descriptions direction="vertical" :column="4" border>
           <el-descriptions-item label="上次发送消息时间">
             <span v-trans-time="viewDetailsData.content.status.lastMsgTime"></span>
           </el-descriptions-item>
@@ -117,6 +114,7 @@ export default {
       isShowDetailsDialog: false,
       isShowEditDialog: false,
       isLoading: false,
+      tableHeight: 0,
       viewDetailsData: {
         title: '提示',
         content: {
@@ -191,7 +189,6 @@ export default {
           ]
         }
       },
-      formData: {},
       schema: {
         type: 'object',
         required: ['userName', 'age'],
@@ -225,22 +222,25 @@ export default {
     };
   },
   methods: {
-    async handleViewDetails(row) {
-      this.isLoading = true;
-      const { data: res } = await getBotsDataAPI(row);
-      this.viewDetailsData.content = res;
-      this.viewDetailsData.title = res.identity;
-      this.isLoading = false;
-      this.isShowDetailsDialog = true;
+    handleViewDetails(row) {
+      this.handleDialogMask(() => {
+        // const { data: res } = await getBotsDataAPI(row.identity);
+        this.viewDetailsData.content = row;
+        this.viewDetailsData.title = row.identity;
+      });
     },
-    async handleEdit(row) {
+    handleEdit(row) {
+      this.handleDialogMask(async () => {
+        const { data: res } = await getBotsConfigAPI(row.identity);
+        this.editDialogData.id = res.id;
+        this.editDialogData.origin = res.origin;
+      }, true);
+    },
+    async handleDialogMask(task, isEdit = false) {
       this.isLoading = true;
-      const { data: res } = await getBotsConfigAPI(row);
-      console.log(res);
+      await task();
       this.isLoading = false;
-      this.editDialogData.id = res.id;
-      this.editDialogData.origin = res.origin;
-      this.isShowEditDialog = true;
+      isEdit ? (this.isShowEditDialog = true) : (this.isShowDetailsDialog = true);
     },
     handleSizeChange(width, _) {
       if (width < 450) {
@@ -248,6 +248,9 @@ export default {
         return;
       }
       this.isChangeTable = false;
+    },
+    cardResize(_, h) {
+      this.tableHeight = Math.floor(h) - 40;
     }
   },
   computed: {},
@@ -264,6 +267,5 @@ export default {
 .el-card {
   margin-top: 10px;
   height: calc(100% - 25px);
-  overflow: auto;
 }
 </style>
