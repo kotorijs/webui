@@ -45,6 +45,7 @@ const routes = [
           {
             path: 'modulesItem',
             name: 'modulesItem',
+            meta: { title: '模块详情' },
             component: () => import('@/views/modules/description')
           }
         ]
@@ -68,6 +69,7 @@ const routes = [
   },
   {
     path: '/login',
+    meta: { title: '登录' },
     component: () => import('@/views/login')
   }
 ];
@@ -92,6 +94,10 @@ router.beforeEach((to, from, next) => {
       next('/login');
     }
   }
+});
+
+router.afterEach((to, from) => {
+  document.title = `kams-${to.meta.title}` || 'kams';
 });
 
 export default router;

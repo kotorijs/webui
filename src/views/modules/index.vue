@@ -17,7 +17,7 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <pps-button theme="text" @click="handleViewDetails(scope.row)">详情</pps-button>
-          <pps-button theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
+          <pps-button v-if="viewDetailsData.hasConfig" theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,6 +106,7 @@ export default {
         name: '',
         version: '',
         description: '',
+        hasConfig: true,
         main: 'lib/index.js',
         keywords: [],
         license: '',
@@ -236,7 +237,7 @@ export default {
 <style scoped lang="less">
 .el-card {
   margin-top: 10px;
-  height: calc(100% - 25px);
+  height: var(--el-card-height);
 }
 .el-table {
   font-size: 14px;
