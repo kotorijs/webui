@@ -61,7 +61,9 @@ export const getBotsConfigAPI = (botName = '') => {
 export const updateBotsConfigAPI = (botName) => {
   return request({
     url: `/config/bots/${botName}`,
-    method: 'PUT'
+    method: 'PUT',
+    data: {
+    }
   });
 };
 
@@ -85,7 +87,9 @@ export const getPluginsConfigAPI = (pluginName = '') => {
 export const updatePluginsConfigAPI = (pluginName = '') => {
   return request({
     url: `/config/plugins/${pluginName}`,
-    method: 'PUT'
+    method: 'PUT',
+    data: {
+    }
   });
 };
 
@@ -104,10 +108,11 @@ export const getGlobalConfigAPI = () => {
  * 更新全局配置信息接口
  * @returns Promise对象
  */
-export const updateGlobalConfigAPI = () => {
+export const updateGlobalConfigAPI = (config) => {
   return request({
     url: '/config/global',
-    method: 'PUT'
+    method: 'PUT',
+    data: config
   });
 };
 
@@ -124,18 +129,6 @@ export const getUserModulesAPI = (moduleName = '') => {
 };
 
 /**
- * 获取单个模块配置接口
- * @param {*} moduleName 模块名称
- * @returns Promise对象
- */
-// export const getModulesConfigAPI = (moduleName) => {
-//   return request({
-//     url: `/config/modules/${moduleName}`,
-//     method: 'GET'
-//   });
-// };
-
-/**
  * 获取所有模块数据接口
  * @returns Promise对象
  */
@@ -150,6 +143,17 @@ export const getAllModulesAPI = () => {
 export const getStatsAPI = () => {
   return request({
     url: `/data/stats/`,
+    method: 'GET'
+  });
+};
+
+/**
+ * 获取实时状态接口
+ * @returns Promise对象
+ */
+export const getStatusAPI = () => {
+  return request({
+    url: `/data/status/`,
     method: 'GET'
   });
 };

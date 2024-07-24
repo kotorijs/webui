@@ -9,7 +9,8 @@ const PORT = config.port || 720;
 const url = `${HOST}:${PORT}/api`;
 
 const myAxios = axios.create({
-  baseURL: url
+  baseURL: url,
+  timeout: 8000
 });
 
 // 请求拦截器

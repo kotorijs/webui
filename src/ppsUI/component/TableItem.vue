@@ -1,7 +1,9 @@
 <template>
   <div class="table-item">
-    <span class="item-title">{{ title.title }}</span>
-    <span class="item-content" v-html="content"></span>
+    <slot v-if="title" name="title">
+      <span class="item-title">{{ title.title }}</span>
+    </slot>
+    <slot name="content"><span class="item-content" v-html="content"></span></slot>
     <!-- 展开气泡 -->
     <template v-if="0">
       <span
@@ -29,13 +31,10 @@ export default {
   name: 'ppsTableItem',
   props: {
     title: {
-      type: Object,
+      type: Boolean,
       required: false,
       default() {
-        return {
-          title: '无',
-          haveToast: true
-        };
+        return false;
       }
     },
     content: {

@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit()">
+  <form class="pps-form" @submit.prevent="handleSubmit()" @reset.prevent="handleReset()">
     <slot></slot>
   </form>
 </template>
@@ -10,6 +10,9 @@ export default {
   methods: {
     handleSubmit() {
       this.$emit('submit');
+    },
+    handleReset() {
+      this.$emit('reset');
     }
   },
   mounted() {}
