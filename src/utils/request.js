@@ -6,7 +6,7 @@ import { Message } from 'element-ui';
 
 const HOST = config.host || 'localhost';
 const PORT = config.port || 720;
-const url = `http://${HOST}:${PORT}/api`;
+const url = `${HOST}:${PORT}/api`;
 
 const myAxios = axios.create({
   baseURL: url

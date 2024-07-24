@@ -26,12 +26,6 @@ export default {
         return 'pps-button';
       }
     },
-    handleClick: {
-      type: Function,
-      default: () => {
-        console.warn('[pps-ui] 未定义点击');
-      }
-    },
     handleData: {
       type: Object
     }
@@ -39,11 +33,7 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    handle(e) {
-      this.$emit('click', e);
-    }
-  }
+  methods: {}
 };
 </script>
 
@@ -75,8 +65,8 @@ export default {
   border: 1px solid #c3c5c7;
 }
 .pps-button-default:hover {
-  color: rgb(50, 188, 242);
-  border: 1px solid rgb(50, 188, 242);
+  color: #32bcf2;
+  border: 1px solid #32bcf2;
 }
 .pps-button-default:active {
   box-shadow: inset 3px 3px 5px 0px #c3c5c7;
@@ -101,10 +91,10 @@ export default {
 .pps-button-confirm {
   color: #fff;
   background-color: #00aeed;
-  box-shadow: inset 0px 0px 1px 1px rgb(50, 152, 242);
+  box-shadow: inset 0px 0px 1px 1px #3298f2;
 }
 .pps-button-confirm:active {
-  box-shadow: inset 3px 3px 3px 2px rgb(50, 176, 225);
+  box-shadow: inset 3px 3px 3px 2px #32b0e1;
 }
 .pps-button-confirm:hover {
   background-color: #40c5f1;
@@ -124,4 +114,20 @@ export default {
   box-shadow: inset 3px 3px 3px 2px rgb(198, 6, 6);
 }
 /*=============== end =================*/
+
+/*============== text =================*/
+.pps-button-text {
+  padding-left: 0;
+  padding-right: 0;
+  color: #00aeed;
+  background-color: transparent;
+  box-shadow: initial;
+}
+.pps-button-text:hover {
+  color: #40c5f1;
+}
+.pps-button-text:active {
+  color: #3298f2;
+}
+/*================= end =================*/
 </style>

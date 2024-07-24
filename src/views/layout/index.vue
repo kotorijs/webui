@@ -16,16 +16,13 @@ import Ws from '@/utils/webSocket';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
-const uniqueRoutes = ['/console'];
+const uniqueRoutes = [];
 export default {
   name: 'myLayout',
   components: { kAside, kFooter, kHeader },
   data() {
     return {
-      statusData: {
-        cpu: '20',
-        ram: '20'
-      }
+      ws: null
     };
   },
   methods: {
@@ -39,7 +36,11 @@ export default {
   },
   mounted() {
     this.handleAside();
-    Ws.create();
+    this.ws = new Ws();
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy');
+    this.ws.server.close();
   },
   updated() {
     this.handleAside();

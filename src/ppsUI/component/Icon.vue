@@ -1,32 +1,52 @@
 <template>
-  <pps-button>
-    <i>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-        <path
-          fill="currentColor"
-          d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"
-        ></path>
-      </svg>
-    </i>
-  </pps-button>
+  <component :is="iconName" v-on="$listeners"></component>
 </template>
 
 <script>
+import ppsAdmin from './icon/admin';
+import ppsClose from './icon/close';
+import ppsLock from './icon/lock';
+import ppsOffline from './icon/offline';
+import ppsOnline from './icon/online';
+import ppsSearch from './icon/search';
 export default {
-  name: 'ppsIcon'
+  name: 'ppsIcon',
+  data() {
+    return {
+      map: {
+        'pps-icon-admin': ppsAdmin,
+        'pps-icon-close': ppsClose,
+        'pps-icon-lock': ppsLock,
+        'pps-icon-offline': ppsOffline,
+        'pps-icon-online': ppsOnline,
+        'pps-icon-search': ppsSearch
+      }
+    };
+  },
+  components: {
+    ppsAdmin,
+    ppsClose,
+    ppsLock,
+    ppsOffline,
+    ppsOnline,
+    ppsSearch
+  },
+  props: {
+    icon: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  },
+  computed: {
+    iconName() {
+      if (this.map[this.icon]) {
+        return this.map[this.icon];
+      } else {
+        return '';
+      }
+    }
+  }
 };
 </script>
-
-<style scoped>
-i {
-  display: block;
-  width: 1em;
-  height: 1em;
-}
-.pps-button {
-  font-size: 1em;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-</style>

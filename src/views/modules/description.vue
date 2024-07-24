@@ -28,11 +28,13 @@
       <h3 class="mb10">{{ getCurrent.description }}</h3>
       <ul>
         <li>
-          <strong>类别 :</strong>&nbsp;
+          <strong>类别 :</strong>
+          &nbsp;
           {{ category }}
         </li>
         <li>
-          <strong>作者 :</strong>&nbsp;
+          <strong>作者 :</strong>
+          &nbsp;
           <el-link type="primary" href="">{{ getCurrent.author.name }}</el-link>
         </li>
       </ul>
@@ -46,11 +48,11 @@
         </li>
         <li>
           <strong>创建日期 :&nbsp;</strong>
-          {{ createdTime }}
+          <span v-trans-time="getCurrent.time.created"></span>
         </li>
         <li>
           <strong>更新日期 :&nbsp;</strong>
-          {{ modifiedTime }}
+          <span v-trans-time="getCurrent.time.modified"></span>
         </li>
       </ul>
     </div>
@@ -118,10 +120,10 @@ export default {
       return chArr.join('、');
     },
     modifiedTime() {
-      return this.transTime(this.getCurrent.time.modified);
+      return this.transTime();
     },
     createdTime() {
-      return this.transTime(this.getCurrent.time.created);
+      return this.transTime();
     },
     unpackSize() {
       const size = this.getCurrent.dist.unpackedSize;

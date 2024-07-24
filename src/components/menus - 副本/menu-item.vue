@@ -1,30 +1,21 @@
 <template>
-  <el-tooltip
-    ref="tooltip"
-    class="item"
-    effect="dark"
-    :content="title"
-    placement="right"
-    manual
+  <li
+    class="k-menu-item"
+    :class="{ 'is-active': active }"
+    :style="[itemStyle]"
+    @mouseenter="onmouseenterFn"
+    @mouseleave="onMouseLeaveFn"
+    @click="handleClickFn"
   >
-    <li
-      class="k-menu-item"
-      :class="{ 'is-active': active }"
-      :style="[itemStyle]"
-      @mouseenter="onmouseenterFn"
-      @mouseleave="onMouseLeaveFn"
-      @click="handleClickFn"
-    >
-      <transition appear name="appear">
-        <div
-          v-show="active"
-          class="line"
-          :style="{ background: this.root.activeColor }"
-        ></div>
-      </transition>
-      <slot></slot>
-    </li>
-  </el-tooltip>
+    <transition appear name="appear">
+      <div
+        v-show="active"
+        class="line"
+        :style="{ background: this.root.activeColor }"
+      ></div>
+    </transition>
+    <slot></slot>
+  </li>
 </template>
 
 <script>
@@ -43,26 +34,18 @@ export default {
     },
     index: {
       type: String
-    },
-    title: {
-      type: String
     }
   },
   methods: {
     onmouseenterFn() {
       this.$el.style.backgroundColor = this.root.backgroundColor;
-      this.handleTooltipFn(true);
     },
     onMouseLeaveFn() {
       this.$el.style.backgroundColor = '';
-      this.handleTooltipFn(false);
     },
     handleClickFn() {
       this.root.$bus.$emit('changeRoute', this.index);
       this.$emit('click', this);
-    },
-    handleTooltipFn(isShow) {
-      this.$refs.tooltip.showPopper = isShow;
     }
   },
   computed: {

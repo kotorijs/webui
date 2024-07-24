@@ -3,15 +3,19 @@
     <dialog ref="dialog" v-if="dialogFlag">
       <div class="window">
         <header>
-          {{ content.title }}
-          <pps-icon @click.native="closeMessageFn()"></pps-icon>
+          <slot name="title">{{ title }}</slot>
+          <pps-icon icon="pps-icon-close" @click="closeMessageFn()"></pps-icon>
         </header>
         <div class="content">
-          <p>{{ content.message }}</p>
+          <slot name="content">
+            <p>{{ content }}</p>
+          </slot>
         </div>
         <footer>
-          <pps-button @click="cancelFn()">取消</pps-button>
-          <pps-button theme="confirm" @click="confirmFn()">确认</pps-button>
+          <slot name="footer">
+            <pps-button @click="cancelFn()">取消</pps-button>
+            <pps-button theme="confirm" @click="confirmFn()">确认</pps-button>
+          </slot>
         </footer>
       </div>
     </dialog>
@@ -32,9 +36,15 @@ export default {
       type: Function
     },
     content: {
-      type: Object,
+      type: String,
       default() {
-        return { title: '提示', message: '警告' };
+        return '警告';
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '提示';
       }
     }
   },
@@ -79,13 +89,6 @@ export default {
         } catch (error) {}
       }, 300);
     },
-    // beforeCloseFn() {
-    //   if (typeof this.handleClick === 'function') {
-    //     this.handleClick(this.closeMessageFn);
-    //   } else {
-    //     this.closeMessageFn();
-    //   }
-    // },
     handleMessageFn(isShow) {
       isShow ? this.showMessageFn() : this.closeMessageFn();
     }
@@ -106,10 +109,11 @@ export default {
 };
 </script>
 
-<style lang="less" scope>
+<style lang="less">
 dialog {
   min-width: 360px;
   min-height: 100px;
+  max-height: calc(100vh - 100px);
   border: none;
   border-radius: 4px;
   transition: 0.15s linear;
@@ -134,11 +138,33 @@ dialog {
     }
 
     .content {
+      margin-top: 20px;
       min-height: 60px;
+      max-height: 70vh;
       line-height: 60px;
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        width: 5px; // 设置滚动条的宽度
+      }
+      &::-webkit-scrollbar-track {
+        background: transparent;
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        position: absolute;
+        right: -5px;
+        width: 5px;
+        background: #88888870;
+        border-radius: 6px;
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background: #888888; // 鼠标悬停时滚动条的颜色
+      }
     }
 
     footer {
+      margin-top: 20px;
       align-self: flex-end;
       .pps-button {
         border-radius: 4px;

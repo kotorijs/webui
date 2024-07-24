@@ -3,43 +3,10 @@ import { Message } from 'element-ui';
 import config from '@/config';
 import store from '@/store';
 
-const HOST = config.host || 'localhost';
-const PORT = config.port || 720;
-const url = `ws://${HOST}:${PORT}/webui`;
+const wsHost = config.wsHost || 'localhost';
+const url = `${wsHost}/webui`;
 
 Vue.prototype.$message = Message;
-
-// function handleMessage(message) {
-//   let msg = message.replaceAll('\n', '<br />');
-//   const matches = msg.matchAll(/\[(.*?),(.*?)\]/g);
-
-//   for (const val of matches) {
-//     switch (val[1]) {
-//       case 'at':
-//         msg = msg.replace(val[0], `@${store.state.user[val[2]].name ?? val[2]} `);
-//         break;
-//       case 'image':
-//         msg = msg.replace(
-//           val[0],
-//           /* html */ `<img src="${val[2]}" style="max-height: 350px"/>`
-//         );
-//         break;
-//       case 'record':
-//         msg = msg.replace(
-//           val[0],
-//           /* html */ `<audio controls src="${val[2]}"></audio>`
-//         );
-//         break;
-//       case 'video':
-//         msg = msg.replace(
-//           val[0],
-//           /* html */ `<video controls style="max-height: 350px" src="${val[2]}"></video>`
-//         );
-//         break;
-//     }
-//   }
-//   return msg;
-// }
 
 export default class Ws {
   constructor() {

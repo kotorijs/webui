@@ -1,4 +1,5 @@
 export default {
-  host: 'k.hotaru.icu', // 后端ip ser.painchornds.cn
-  port: '80' // 端口
+  host: 'https://k.hotaru.icu', // 后端ip ser.painchornds.cn
+  port: '443', // 端口
+  wsHost: 'wss://k.hotaru.icu'
 };

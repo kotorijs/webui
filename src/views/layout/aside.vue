@@ -23,18 +23,17 @@
         </k-menu-item>
       </k-menu>
       <div class="empty"></div>
-      <div class="quit">
-        <el-popover trigger="hover" placement="right" v-model="visible">
-          <div class="quitBtn" @click="quitFn">退出登录</div>
-          <i class="el-icon-switch-button" slot="reference"></i>
-        </el-popover>
-      </div>
-      <pps-dialog
+      <el-tooltip effect="dark" content="退出登录" placement="right">
+        <div class="quit">
+          <i @click="quitFn" class="el-icon-switch-button" slot="reference"></i>
+        </div>
+      </el-tooltip>
+      <!-- <pps-dialog
         :show="isShowDialog"
         @confirmed="quitFn"
         @canceled="cancelFn"
         :content="dialogData"
-      />
+      /> -->
     </el-aside>
   </transition>
 </template>
@@ -56,10 +55,14 @@ export default {
         { icon: 'el-icon-data-line', content: '数据中心', indexPath: '/dataCenter' },
         { icon: 'el-icon-printer', content: '实例管理', indexPath: '/bots' },
         { icon: 'el-icon-folder', content: '模块管理', indexPath: '/modules' },
-        { icon: 'el-icon-shopping-bag-1', content: '模块中心', indexPath: '/modulesCenter' },
+        {
+          icon: 'el-icon-shopping-bag-1',
+          content: '模块中心',
+          indexPath: '/modulesCenter'
+        },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
         { icon: 'el-icon-receiving', content: '沙盒测试', indexPath: '/sendBox' },
-        { icon: 'el-icon-cpu', content: '性能监控', indexPath: '/console' }
+        { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
     };
   },
@@ -86,8 +89,7 @@ export default {
         });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
@@ -99,6 +101,7 @@ export default {
   background: var(--bg-normal);
   user-select: none;
   box-shadow: 0 0 8px 0 var(--normal-shadow);
+  overflow: hidden;
   z-index: 1;
   .logo {
     width: 60px;
