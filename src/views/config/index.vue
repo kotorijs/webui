@@ -1,10 +1,8 @@
 <template>
   <el-card v-resize-ob="cardResize">
-    <div slot="header" class="clearfix">
-      <h2>全局配置</h2>
-    </div>
     <pps-form @submit="submitFn" @reset="resetFn">
       <div class="k-list">
+        <h2>全局配置</h2>
         <div class="k-list-item">
           <div class="k-list-main">
             <span>port端口：</span>
@@ -34,10 +32,10 @@
             <span>level日志等级 :</span>
             <el-select v-model="form.level" placeholder="请选择">
               <el-option
-                v-for="item in staticForm.level"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="(item, index) in staticForm.level"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
               ></el-option>
             </el-select>
           </div>
@@ -73,13 +71,22 @@ export default {
         'command-prefix': '',
         port: null,
         lang: null,
-        noColor: null,
-        level: null,
+        noColor: true,
+        level: 10,
         dirs: []
       },
       staticForm: {
-        lang: ['zh-CN', 'en-US'],
-        level: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
+        lang: ['en_US', 'ja_JP', 'zh_TW', 'zh_CN'],
+        level: [
+          { label: 'TRACE', value: 10 },
+          { label: 'DEBUG', value: 20 },
+          { label: 'RECORD', value: 25 },
+          { label: 'INFO', value: 30 },
+          { label: 'WARN', value: 40 },
+          { label: 'ERROR', value: 50 },
+          { label: 'FATAL', value: 60 },
+          { label: 'SILENT', value: 70 }
+        ],
         dirs: []
       },
       isLoading: false,
@@ -135,7 +142,7 @@ export default {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--normal-shadow);
 
-    &:first-child {
+    &:first-of-type {
       border-top: 1px solid var(--normal-shadow);
     }
 
@@ -148,7 +155,12 @@ export default {
       align-items: center;
       flex-direction: row;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
+  }
+
+  h2{
+    margin: 1rem 0;
   }
 }
 .el-input {

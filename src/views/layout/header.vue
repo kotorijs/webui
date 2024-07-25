@@ -1,5 +1,5 @@
 <template>
-  <el-header height="40px">
+  <el-header >
     <pps-button @click.native="onFold()">
       <i class="el-icon-d-arrow-left"></i>
     </pps-button>
@@ -44,6 +44,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     font-size: 13px;
+    height: var(--k-header-height) !important;
 
     .title {
       color: var(--font-gray-color);

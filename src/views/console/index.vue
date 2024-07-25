@@ -1,11 +1,14 @@
 <template>
   <div class="root">
-    <Terminal
-      name="my-terminal"
-      :init-log="[{ content: 'Welcome to kotori console!✋' }]"
-      scroll-mode="smooth"
-      :show-header="false"
-    ></Terminal>
+    <div class="k-console">
+      <Terminal
+        name="my-terminal"
+        :init-log="[{ content: 'Welcome to kotori console!✋' }]"
+        scroll-mode="smooth"
+        :show-header="false"
+      ></Terminal>
+    </div>
+
     <pps-form @submit="sendMsg()">
       <pps-input :content.sync="inputData">
         <pps-button theme="confirm">发送</pps-button>
@@ -99,14 +102,28 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .root {
-  height: calc(100vh - 90px);
+  height: var(--k-main-height);
+  width: 100%;
+  position: relative;
+  .k-console {
+    height: 100%;
+  }
 }
 .t-window {
-  border-radius: 10px;
 }
 .t-last-line {
   display: none;
+}
+.pps-input {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  width: 98%;
+  margin: 0 auto;
+  z-index: 1;
+  justify-content: space-around;
 }
 </style>
