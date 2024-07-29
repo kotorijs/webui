@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import webSocketOption from './webSocket';
 import layoutOption from './layout';
 import modulesDetail from './modulesDetail';
-import sendBox from './sendBox';
+import sandBox from './sandBox';
 import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
@@ -13,7 +13,7 @@ export default new Vuex.Store({
     webSocketOption,
     layoutOption,
     modulesDetail,
-    sendBox
+    sandBox
   },
   plugins: [createPersistedState()]
 });

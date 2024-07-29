@@ -28,12 +28,12 @@
 </template>
 
 <script>
-// import User from '@/utils/sendBox/User';
-import Administrators from '@/utils/sendBox';
+// import User from '@/utils/sandBox/User';
+import Administrators from '@/utils/sandBox/administrators';
 import kContainer from '@/components/layout/container';
 import kSbAside from '@/components/layout/aside';
 export default {
-  name: 'sendBox',
+  name: 'sandBox',
   components: { kContainer, kSbAside },
   data() {
     return {
@@ -46,22 +46,14 @@ export default {
   methods: {},
   mounted() {
     const admin = new Administrators();
-    this.$store.commit('sendBox/CLEAR_USERS');
-    this.$store.commit('sendBox/CLEAR_GROUPS');
+    // this.$store.commit('sandBox/CLEAR_USERS'); // 清空用户
     const jack = admin.createUser({ id: 1, name: 'jack', age: 18, sex: '男' });
     const tom = admin.createUser({ id: 2, name: 'tom', age: 28, sex: '男' });
     const lucy = admin.createUser({ id: 3, name: 'lucy', age: 17, sex: '女' });
-    console.log('获取所有用户', admin.getAllUser());
     admin.createGroup({ id: 1, name: 'group1', members: [1, 2, 3], lord: 1 });
     admin.createGroup({ id: 2, name: 'group2', members: [jack, tom], lord: 2 });
     admin.createGroup({ id: 3, name: 'group3', members: [1, 2, lucy], lord: 3 });
-    console.log('获取所有群组', admin.getAllGroup());
-    admin.removeUserById(1);
-    console.log('获取所有用户', admin.getAllUser());
-    console.log('获取用户1', admin.getUserById(1));
-    admin.removeGroupById(1);
-    console.log('获取群组1', admin.getGroupById(1));
-    console.log('获取群组3', lucy.getGroupById(3));
+    admin.removeGroupById(3)
   }
 };
 </script>
