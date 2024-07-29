@@ -101,13 +101,17 @@ export default {
   background: var(--bg-normal);
   user-select: none;
   box-shadow: 0 0 8px 0 var(--normal-shadow);
-  overflow: hidden;
+  overflow-x: hidden;
   z-index: 1;
   .logo {
+    position: sticky;
+    background: #fff;
+    top: 0;
     width: 60px;
     height: 60px;
     line-height: 60px;
     text-align: center;
+    z-index: 1;
   }
   img {
     max-width: 30px;
@@ -131,6 +135,9 @@ export default {
     flex-grow: 1;
   }
   .quit {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
     width: 60px;
     height: 60px;
     line-height: 60px;
@@ -142,6 +149,23 @@ export default {
     &:hover {
       color: var(--theme-color);
     }
+  }
+  &::-webkit-scrollbar {
+    width: 5px; // 设置滚动条的宽度
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    position: absolute;
+    right: -5px;
+    width: 5px;
+    background: #88888870;
+    border-radius: 6px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #888888; // 鼠标悬停时滚动条的颜色
   }
 }
 .v-enter,

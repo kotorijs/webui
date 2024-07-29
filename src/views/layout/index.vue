@@ -35,7 +35,7 @@ export default {
     },
     resizeFn(w, h) {
       if (Math.floor(w) <= 400) {
-        console.log(Math.floor(w), Math.floor(h));
+        // console.log(Math.floor(w), Math.floor(h));
       }
     }
   },
