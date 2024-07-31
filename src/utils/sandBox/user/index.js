@@ -11,6 +11,7 @@ export default class User {
     this.avatar = `https://k.hotaru.icu/api/data/avatar/${name}`;
     this.groups = [];
     this.friends = [];
+    store.commit('sandBox/ADD_USER', this);
   }
 
   /**
@@ -59,8 +60,24 @@ export default class User {
    * @param {*} friendId 好友id
    * @param {*} friendName 好友名称
    */
-  addFriend(friendId, friendName) {
-    this.friends.push({ name: friendName, id: friendId, messages: [] });
+  addFriend(id) {
+    const uid = `user-${id}`;
+    const user = store.getters['sandBox/getUserById'](uid);
+    const self = store.getters['sandBox/getUserById'](this.id);
+    const hasFriend = self.friends.some((friend) => friend.id === uid);
+    if (!user || hasFriend) {
+      console.log('没有该用户或已经是好友了');
+      return false;
+    }
+    this.friends.push({ name: user.name, id: user.id, messages: [] });
+    console.log(user);
+    user.receiveFriend(this.id);
+    return true;
+  }
+
+  receiveFriend(id) {
+    const user = store.getters['sandBox/getUserById'](id);
+    this.friends.push({ name: user.name, id: user.id, messages: [] });
   }
 
   /**
@@ -98,21 +115,9 @@ export default class User {
   addGroup({ groupId, userId, role }) {
     const gid = `group-${groupId}`;
     const uid = `user-${userId}`;
-    store.getters['sendBox/getUserById'](uid) !== undefined &&
+    store.getters['sendBox/getUserById'](uid) &&
       this.groups.includes(gid) &&
       this.groups.find((group) => group.groupId === gid).addMember({ id: uid, role });
-    // const currentGroup = this.groups.find((group) => group.groupId === gid);
-    // const currentUser = this.friends.get(uid);
-    // const user = {
-    //   age: currentUser.age,
-    //   sex: currentUser.sex,
-    //   avatar: currentUser.avatar,
-    //   nickName: currentUser.nickName,
-    //   userId: currentUser.userId,
-    //   role
-    // };
-    // console.log(user);
-    // currentGroup.addMember(userId, user);
   }
 
   leaveGroup() {}

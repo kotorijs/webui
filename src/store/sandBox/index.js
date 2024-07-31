@@ -13,6 +13,7 @@ export default {
         return false;
       } else {
         state.users.push(user);
+        return true;
       }
     },
     REMOVE_USER(state, id) {
@@ -54,13 +55,22 @@ export default {
       state.groups = [];
     }
   },
-  actions: {},
+  actions: {
+    hasUser(context, id) {
+      return context.state.users.some((user) => user.id === id);
+    },
+    hasGroup(context, id) {
+      const gid = `group-${id}`;
+      return context.state.groups.some((group) => group.id === gid);
+    }
+  },
   getters: {
     getUserById: (state) => (id) => {
       if (!state.users.length) {
         console.log('用户不存在');
         return false;
       }
+      // console.log(state.users.find((user) => user.id === id));
       return state.users.find((user) => user.id === id) || false;
     },
     getAllUser: (state) => {

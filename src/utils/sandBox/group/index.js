@@ -1,11 +1,14 @@
+
+import store from "@/store";
 // 群组类
 export default class Group {
   constructor({ name, id, lord }) {
     this.id = `group-${id}`;
     this.name = name;
-    this.lord = lord;
+    this.lord = `user-${lord}`;
     this.messages = [];
     this.members = []
+    store.commit('sandBox/ADD_GROUP', this);
   }
 
   getAllMembers() {
@@ -13,6 +16,7 @@ export default class Group {
   }
 
   addMember(user) {
+    // console.log(user);
     this.members.push(user)
   }
 

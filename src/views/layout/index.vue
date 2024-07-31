@@ -16,7 +16,7 @@
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
-const uniqueRoutes = ['/console', '/sendBox'];
+const uniqueRoutes = ['/console', '/sandBox'];
 export default {
   name: 'myLayout',
   components: { kAside, kFooter, kHeader },

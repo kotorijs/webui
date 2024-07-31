@@ -14,27 +14,30 @@ export default class Administrators {
     return store.getters['sandBox/getAllUser'];
   }
 
-  getUserById(userId) {
-    const uid = `user-${userId}`;
+  getUserById(id) {
+    const uid = `user-${id}`;
     return store.getters['sandBox/getUserById'](uid);
   }
 
   removeUserById(id) {
-    id = `user-${id}`;
-    store.commit('sandBox/REMOVE_USER', id);
+    const uid = `user-${id}`;
+    store.commit('sandBox/REMOVE_USER', uid);
   }
 
   // 操作群组
   createGroup({ id, name, members, lord }) {
-    lord = `user-${lord}`;
+    const normalizeMembers = this._memberNormalize(members);
+    const hasGroup = store.getters['sandBox/getGroupById'](`group-${id}`)
+    if (hasGroup) return false;
     const group = new Group({ name, id, lord });
-    members = this._memberNormalize(members);
-    members.forEach((member) => {
-      const role = member.id === lord ? 'lord' : 'member';
+    normalizeMembers.forEach(async (member) => {
+      const mid = member.id;
+      const hasUser = store.getters['sandBox/getGroupById'](mid)
+      if (!hasUser) return console.log(`用户${mid}不存在`);
+      const role = mid === `user-${lord}` ? 'lord' : 'member';
       member.groups.push({ id, role });
       group.addMember({ id: member.id, role });
     });
-    store.commit('sandBox/ADD_GROUP', group);
     return group;
   }
 
@@ -48,8 +51,8 @@ export default class Administrators {
   }
 
   removeGroupById(id) {
-    id = `group-${id}`;
-    store.commit('sandBox/REMOVE_GROUP', id);
+    const uid = `group-${id}`;
+    store.commit('sandBox/REMOVE_GROUP', uid);
   }
 
   // 私有方法
@@ -59,22 +62,23 @@ export default class Administrators {
    * @return {Array}
    */
   _memberNormalize(members) {
+    let memberHandle;
     if (members instanceof Array) {
       return members
         .map((member) => {
           if (member instanceof Object) {
             return member;
           } else {
-            member = store.getters['sandBox/getUserById'](`user-${member}`);
-            return member || null;
+            memberHandle = store.getters['sandBox/getUserById'](`user-${member}`);
+            return memberHandle;
           }
         })
-        .filter((member) => member !== null); // 过滤掉不存在的用户
+        .filter((member) => member); // 过滤掉不存在的用户
     } else if (members instanceof Object) {
       return [members];
     } else {
-      members = store.getters['sandBox/getUserById'](`user-${members}`);
-      return members && typeof members === 'object' ? [members] : []; // 检测members是否为有效对象
+      memberHandle = store.getters['sandBox/getUserById'](`user-${members}`);
+      return memberHandle && typeof memberHandle === 'object' ? [memberHandle] : []; // 检测members是否为有效对象
     }
   }
 

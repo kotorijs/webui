@@ -56,9 +56,9 @@ const routes = [
         component: () => import('@/views/config')
       },
       {
-        path: 'sendBox',
+        path: 'sandBox',
         meta: { title: '沙盒测试' },
-        component: () => import('@/views/sendBox')
+        component: () => import('@/views/sandBox')
       },
       {
         path: 'console',
