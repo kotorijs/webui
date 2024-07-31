@@ -61,7 +61,7 @@ export default {
           indexPath: '/modulesCenter'
         },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
-        { icon: 'el-icon-chat-line-square', content: '沙盒测试', indexPath: '/sendBox' },
+        { icon: 'el-icon-chat-line-square', content: '沙盒测试', indexPath: '/sandBox' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
     };
