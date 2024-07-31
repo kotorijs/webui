@@ -46,7 +46,7 @@ export default {
   methods: {},
   mounted() {
     const admin = new Administrators();
-    this.$store.commit('sandBox/CLEAR_USERS'); // 清空用户
+    // this.$store.commit('sandBox/CLEAR_USERS'); // 清空用户
     // this.$store.commit('sandBox/CLEAR_GROUPS'); // 清空群组
     const jack = admin.createUser({ id: 1, name: 'jack', age: 18, sex: '男' });
     const tom = admin.createUser({ id: 2, name: 'tom', age: 28, sex: '男' });
@@ -60,8 +60,8 @@ export default {
     // console.log(mary);
     // console.log(admin.getAllGroup()[0]);
     console.log(admin.getAllUser());
-    mary.addFriend(2)
-    jack.addFriend(3)
+    if (mary.addFriend(2)) console.log('mary添加tom成功');
+    if (jack.addFriend(3)) console.log('jack添加tom成功');
   }
 };
 </script>
