@@ -55,13 +55,9 @@ export default {
     admin.createGroup({ id: 11, name: 'group1', members: [1, 2, 3, 4], lord: 1 });
     admin.createGroup({ id: 22, name: 'group2', members: [jack, tom], lord: 2 });
     admin.createGroup({ id: 33, name: 'group3', members: [1, 2, lucy], lord: 3 });
-    // const test = await this.$store.dispatch('sandBox/hasUser', 1);
-    // console.log(test);
-    // console.log(mary);
-    // console.log(admin.getAllGroup()[0]);
-    console.log(admin.getAllUser());
     if (mary.addFriend(2)) console.log('mary添加tom成功');
     if (jack.addFriend(3)) console.log('jack添加tom成功');
+    console.log(lucy.removeGroupById(33));
   }
 };
 </script>

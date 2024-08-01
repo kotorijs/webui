@@ -9,11 +9,19 @@ export default {
     // 用户
     ADD_USER(state, user) {
       if (state.users.find((dbUser) => dbUser.id === user.id)) {
-        console.log('用户已存在');
+        console.log(`用户${user.id}已存在`);
         return false;
       } else {
         state.users.push(user);
         return true;
+      }
+    },
+    UPDATE_USER(state, user) {
+      const index = state.users.findIndex((dbUser) => dbUser.id === user.id);
+      if (index !== -1) {
+        state.users.splice(index, 1, user);
+      } else {
+        console.log(`用户${user.id}不存在`);
       }
     },
     REMOVE_USER(state, id) {
@@ -21,7 +29,7 @@ export default {
       if (hasUser) {
         state.users = state.users.filter((user) => user.id !== id);
       } else {
-        console.log('用户不存在');
+        console.log(`用户${id}不存在`);
         return false;
       }
     },
@@ -32,7 +40,7 @@ export default {
     // 群组
     ADD_GROUP(state, group) {
       if (state.groups.find((dbGroup) => dbGroup.id === group.id)) {
-        console.log('群组已存在');
+        console.log(`群组${group.id}已存在`);
         return false;
       } else {
         state.groups.push(group);
@@ -67,7 +75,7 @@ export default {
   getters: {
     getUserById: (state) => (id) => {
       if (!state.users.length) {
-        console.log('用户不存在');
+        console.log(`用户${id}不存在`);
         return false;
       }
       // console.log(state.users.find((user) => user.id === id));
@@ -78,7 +86,7 @@ export default {
     },
     getGroupById: (state) => (id) => {
       if (!state.groups.length) {
-        console.log('群组不存在');
+        console.log(`群组列表为空`);
         return false;
       }
       return state.groups.find((group) => group.id === id) || false;

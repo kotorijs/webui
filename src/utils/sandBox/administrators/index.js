@@ -6,7 +6,7 @@ export default class Administrators {
   // 操作用户
   createUser({ id, name, age, sex }) {
     const user = new User({ id, name, age, sex });
-    store.commit('sandBox/ADD_USER', user);
+    // store.commit('sandBox/ADD_USER', user);
     return user;
   }
 
@@ -32,7 +32,7 @@ export default class Administrators {
     const group = new Group({ name, id, lord });
     normalizeMembers.forEach(async (member) => {
       const mid = member.id;
-      const hasUser = store.getters['sandBox/getGroupById'](mid)
+      const hasUser = store.getters['sandBox/getUserById'](mid)
       if (!hasUser) return console.log(`用户${mid}不存在`);
       const role = mid === `user-${lord}` ? 'lord' : 'member';
       member.groups.push({ id, role });
