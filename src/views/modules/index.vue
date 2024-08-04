@@ -185,14 +185,12 @@ export default {
         if (row.peerDependencies) {
           this.viewDetailsData.pluginDependencies = this.obj2Arr(row.peerDependencies);
         }
-        // console.log(this.viewDetailsData);
       });
     },
     handleEdit(row) {
       this.handleDialogMask(async () => {
         try {
           getPluginsConfigAPI(row.name).then(({ data: res }) => {
-            // console.log(res);
           });
         } catch (err) {
           console.log(err);
@@ -216,7 +214,6 @@ export default {
       this.tableHeight = Math.floor(h) - 40;
     },
     obj2Arr(obj) {
-      console.log(Object.keys(obj).map((key) => ({ key, value: obj[key] })));
       return Object.keys(obj).map((key) => ({ key, value: obj[key] }));
     },
     joinArr(arr) {
@@ -226,10 +223,8 @@ export default {
   computed: {},
   async mounted() {
     const { data: res } = await getUserModulesAPI();
-    console.log(res);
     this.bots = res;
-    const { data: res1 } = await getPluginsConfigAPI();
-    console.log(res1);
+    // const { data: res1 } = await getPluginsConfigAPI();
   }
 };
 </script>

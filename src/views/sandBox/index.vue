@@ -58,10 +58,13 @@ export default {
     if (mary.addFriend(2)) console.log('mary添加tom成功');
     if (jack.addFriend(3)) console.log('jack添加tom成功');
     // lucy.removeGroupById(33);
-    lucy.addGroup({ groupId: 222, userId: 4, role: 'member' });
-    lucy.leaveGroup(22);
+    // jack.addGroupById({ groupId: 33 });
+    // lucy.leaveGroupById(22);
     // lucy.removeFriendById(1);
     // console.log(admin.getAllUser());
+    lucy.kickMemberById({ groupId: 11, expellee: 1 });
+    lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
+    // mary.leaveGroupById(22);
   }
 };
 </script>

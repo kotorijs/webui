@@ -128,29 +128,58 @@ export default class User {
     if (!isLord) return false;
     members.forEach((member) => {
       const user = store.getters['sandBox/getUserById'](member.id);
-      const userHandle = user.groups.filter((group) => group.id !== gid);
-      user.groups = userHandle;
+      user.groups = user.groups.filter((group) => group.id !== gid);
     });
     store.commit('sandBox/REMOVE_GROUP', gid);
   }
 
-  addGroup({ groupId, Invitee = false }) {
+  addGroupById({ groupId }) {
     const gid = `group-${groupId}`;
-    const adder = { id: this.id, role: 'member' };
     const group = store.getters['sandBox/getGroupById'](gid);
     if (!group) return false;
     const hasMember = group.members.some((member) => member.id === this.id);
     if (hasMember) return false;
-    group.members.push(adder);
+    group.members.push({ id: this.id, role: 'member' });
+    this.self().groups.push({ id: groupId, role: 'member' });
     return true;
   }
 
-  leaveGroup(id) {
+  inviteUserToGroup({ groupId, invitee, role = 'member' }) {
+    const gid = `group-${groupId}`;
+    const group = store.getters['sandBox/getGroupById'](gid);
+    const normalizeInvitee = this._memberNormalize(invitee);
+    const hasSelf = group.members.some((m) => m.id === this.id);
+    if (!group || !hasSelf) return false;
+    const isLord = group.lord === this.id;
+    const roleHandle = isLord ? role : 'member';
+    normalizeInvitee.forEach((invitee) => {
+      const hasMember = group.members.some((m) => m.id === invitee.id);
+      if (hasMember) return false;
+      group.members.push({ id: invitee.id, role: roleHandle });
+      invitee.groups.push({ id: gid, role: roleHandle });
+    });
+    return true;
+  }
+
+  leaveGroupById(id) {
     const gid = `group-${id}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     if (!group) return false;
     this.self().groups = this.self().groups.filter((group) => group.id !== gid);
     group.members = group.members.filter((member) => member.id !== this.id);
+    return true;
+  }
+
+  kickMemberById({ groupId, expellee }) {
+    const expelleeId = `user-${expellee}`;
+    const gid = `group-${groupId}`;
+    const group = store.getters['sandBox/getGroupById'](gid);
+    const exp = store.getters['sandBox/getUserById'](expelleeId);
+    if (!group || !exp || expelleeId === this.id) return false;
+    const isLord = group.lord === this.id;
+    if (!isLord) return false;
+    exp.groups = exp.groups.filter((g) => g.id !== gid);
+    group.members = group.members.filter((member) => member.id !== exp.id);
     return true;
   }
 
@@ -168,4 +197,31 @@ export default class User {
   deleteGroupMessage() {}
 
   getGroupMessage() {}
+
+  // 私有方法
+  /**
+   * @description: 将传入的成员参数进行规范化
+   * @param {Array} members
+   * @return {Array}
+   */
+  _memberNormalize(members) {
+    let memberHandle;
+    if (members instanceof Array) {
+      return members
+        .map((member) => {
+          if (member instanceof Object) {
+            return member;
+          } else {
+            memberHandle = store.getters['sandBox/getUserById'](`user-${member}`);
+            return memberHandle;
+          }
+        })
+        .filter((member) => member); // 过滤掉不存在的用户
+    } else if (members instanceof Object) {
+      return [members];
+    } else {
+      memberHandle = store.getters['sandBox/getUserById'](`user-${members}`);
+      return memberHandle && typeof memberHandle === 'object' ? [memberHandle] : []; // 检测members是否为有效对象
+    }
+  }
 }
