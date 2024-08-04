@@ -27,15 +27,15 @@ export default class Administrators {
   // 操作群组
   createGroup({ id, name, members, lord }) {
     const normalizeMembers = this._memberNormalize(members);
-    const hasGroup = store.getters['sandBox/getGroupById'](`group-${id}`)
+    const hasGroup = store.getters['sandBox/getGroupById'](`group-${id}`);
     if (hasGroup) return false;
     const group = new Group({ name, id, lord });
     normalizeMembers.forEach(async (member) => {
       const mid = member.id;
-      const hasUser = store.getters['sandBox/getUserById'](mid)
+      const hasUser = store.getters['sandBox/getUserById'](mid);
       if (!hasUser) return console.log(`用户${mid}不存在`);
       const role = mid === `user-${lord}` ? 'lord' : 'member';
-      member.groups.push({ id, role });
+      member.groups.push({ id: `group-${id}`, role });
       group.addMember({ id: member.id, role });
     });
     return group;

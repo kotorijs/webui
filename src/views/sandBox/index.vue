@@ -53,11 +53,15 @@ export default {
     const lucy = admin.createUser({ id: 3, name: 'lucy', age: 17, sex: '女' });
     const mary = new User({ id: 4, name: 'mary', age: 19, sex: '女' });
     admin.createGroup({ id: 11, name: 'group1', members: [1, 2, 3, 4], lord: 1 });
-    admin.createGroup({ id: 22, name: 'group2', members: [jack, tom], lord: 2 });
+    admin.createGroup({ id: 22, name: 'group2', members: [3, jack, tom], lord: 2 });
     admin.createGroup({ id: 33, name: 'group3', members: [1, 2, lucy], lord: 3 });
     if (mary.addFriend(2)) console.log('mary添加tom成功');
     if (jack.addFriend(3)) console.log('jack添加tom成功');
-    console.log(lucy.removeGroupById(33));
+    // lucy.removeGroupById(33);
+    lucy.addGroup({ groupId: 222, userId: 4, role: 'member' });
+    lucy.leaveGroup(22);
+    // lucy.removeFriendById(1);
+    // console.log(admin.getAllUser());
   }
 };
 </script>

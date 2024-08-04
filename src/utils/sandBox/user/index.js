@@ -14,6 +14,10 @@ export default class User {
     store.commit('sandBox/ADD_USER', this);
   }
 
+  self() {
+    return store.getters['sandBox/getUserById'](this.id);
+  }
+
   /**
    * 获取好友列表
    * @returns 对象数组
@@ -62,18 +66,18 @@ export default class User {
    */
   addFriend(id) {
     const fid = `user-${id}`;
-    const user = store.getters['sandBox/getUserById'](fid);
+    const friend = store.getters['sandBox/getUserById'](fid);
     const self = store.getters['sandBox/getUserById'](this.id);
-    const hasFriend = self.friends.some((friend) => friend.id === fid);
-    if (!user || hasFriend) return false;
-    this.friends.push({ name: user.name, id: user.id, messages: [] });
-    user.receiveAddFriend(this.id);
+    const hasFriend = self.friends.some((friendItem) => friendItem.id === fid);
+    if (!friend || hasFriend) return false;
+    self.friends.push({ name: friend.name, id: friend.id, messages: [] });
+    this.receiveAddFriend(self, friend);
     return true;
   }
 
-  receiveAddFriend(id) {
-    const friend = store.getters['sandBox/getUserById'](id);
-    this.friends.push({ name: friend.name, id: friend.id, messages: [] });
+  receiveAddFriend(self, friend) {
+    friend.friends.push({ name: self.name, id: self.id, messages: [] });
+    console.log(`${self.name}已添加到${friend.name}的好友列表中`);
   }
 
   /**
@@ -82,15 +86,20 @@ export default class User {
    */
   removeFriendById(id) {
     const fid = `user-${id}`;
+    const friend = store.getters['sandBox/getUserById'](fid);
     const self = store.getters['sandBox/getUserById'](this.id);
-    const hasFriend = self.friends.some((friend) => friend.id === fid);
+    const hasFriend = self.friends.some((friendItem) => friendItem.id === fid);
     if (!hasFriend) return false;
-    self.friends.filter((friend) => friend.id !== fid);
+    self.friends = self.friends.filter((friendItem) => friendItem.id !== fid);
+    this.receiveRemoveFriend(self, friend);
+    return true;
   }
 
-  receiveRemoveFriend(id) {
-    const friend = store.getters['sandBox/getUserById'](id);
-    this.friends.filter((friendHandle) => friendHandle.id !== friend.id);
+  receiveRemoveFriend(self, friend) {
+    friend.friends = friend.friends.filter((friendHandle) => {
+      return friendHandle.id !== self.id;
+    });
+    console.log(`${self.name}已从${friend.name}的好友列表中移除`);
   }
 
   /**
@@ -115,22 +124,35 @@ export default class User {
     const gid = `group-${groupId}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     const members = group.members;
+    const isLord = group.lord === this.id;
+    if (!isLord) return false;
     members.forEach((member) => {
       const user = store.getters['sandBox/getUserById'](member.id);
-      user.groups.filter((group) => group.id !== groupId);
-      console.log(user);
+      const userHandle = user.groups.filter((group) => group.id !== gid);
+      user.groups = userHandle;
     });
+    store.commit('sandBox/REMOVE_GROUP', gid);
   }
 
-  addGroup({ groupId, userId, role }) {
+  addGroup({ groupId, Invitee = false }) {
     const gid = `group-${groupId}`;
-    const uid = `user-${userId}`;
-    store.getters['sendBox/getUserById'](uid) &&
-      this.groups.includes(gid) &&
-      this.groups.find((group) => group.groupId === gid).addMember({ id: uid, role });
+    const adder = { id: this.id, role: 'member' };
+    const group = store.getters['sandBox/getGroupById'](gid);
+    if (!group) return false;
+    const hasMember = group.members.some((member) => member.id === this.id);
+    if (hasMember) return false;
+    group.members.push(adder);
+    return true;
   }
 
-  leaveGroup() {}
+  leaveGroup(id) {
+    const gid = `group-${id}`;
+    const group = store.getters['sandBox/getGroupById'](gid);
+    if (!group) return false;
+    this.self().groups = this.self().groups.filter((group) => group.id !== gid);
+    group.members = group.members.filter((member) => member.id !== this.id);
+    return true;
+  }
 
   // 操作信息
   sendMessageToFriend() {}
