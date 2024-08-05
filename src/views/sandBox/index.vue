@@ -46,15 +46,17 @@ export default {
   methods: {},
   mounted() {
     const admin = new Administrators();
+    console.log('debugger');
     // this.$store.commit('sandBox/CLEAR_USERS'); // 清空用户
     // this.$store.commit('sandBox/CLEAR_GROUPS'); // 清空群组
     const jack = admin.createUser({ id: 1, name: 'jack', age: 18, sex: '男' });
     const tom = admin.createUser({ id: 2, name: 'tom', age: 28, sex: '男' });
     const lucy = admin.createUser({ id: 3, name: 'lucy', age: 17, sex: '女' });
     const mary = new User({ id: 4, name: 'mary', age: 19, sex: '女' });
+    const someone = new User({ id: '21022102cz', name: '只陌予', age: 22, sex: '女' });
     admin.createGroup({ id: 11, name: 'group1', members: [1, 2, 3, 4], lord: 1 });
     admin.createGroup({ id: 22, name: 'group2', members: [3, jack, tom], lord: 2 });
-    admin.createGroup({ id: 33, name: 'group3', members: [1, 2, lucy], lord: 3 });
+    admin.createGroup({ id: 33, name: 'group3', members: [1, 2, lucy, someone], lord: 3 });
     if (mary.addFriend(2)) console.log('mary添加tom成功');
     if (jack.addFriend(3)) console.log('jack添加tom成功');
     // lucy.removeGroupById(33);
