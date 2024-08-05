@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state: {
     users: [],
+    currentUser: null,
     groups: [],
     privateMsg: {
       'user-1': { 'user-2': [], 'user-3': [] },

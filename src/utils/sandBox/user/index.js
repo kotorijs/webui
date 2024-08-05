@@ -184,7 +184,11 @@ export default class User {
   }
 
   // 操作信息
-  sendMessageToFriend() {}
+  sendMessageToFriend({ id, message }) {
+    const fid = `user-${id}`;
+    const friend = store.getters['sandBox/getUserById'](fid);
+    console.log(friend);
+  }
 
   receiveFriendMessage() {}
 

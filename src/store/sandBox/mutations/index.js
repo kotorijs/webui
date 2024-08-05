@@ -56,5 +56,47 @@ export default {
   },
   CLEAR_GROUPS(state) {
     state.groups = [];
+  },
+
+  // 消息
+  SEND_PRIVATE_MESSAGE(state, { sender, receiver, message }) {
+    const senderMsg = state.privateMsg[sender];
+    const receiverMsg = state.privateMsg[receiver];
+    if (senderMsg) {
+      const friend = senderMsg[receiver];
+      friend ? friend.push(message) : (senderMsg[receiver] = [message]);
+      senderMsg.push(message);
+    } else {
+      state.privateMsg[sender] = [message];
+    }
+    if (receiverMsg) {
+      receiverMsg.push(message);
+    } else {
+      state.privateMsg[receiver] = [message];
+    }
+  },
+  SEND_GROUP_MESSAGE(state, { id, message }) {},
+  DEL_PRIVATE_MESSAGE(state, { mid, fid }) {},
+  DEL_GROUP_MESSAGE(state, id) {},
+  MUTE_GROUP(state, id) {
+    state.groupMsg[id].isMute = true;
+  },
+  UNMUTE_GROUP(state, id) {
+    state.groupMsg[id].isMute = false;
+  },
+  MUTE_MEMBER(state, { groupId, memberId }) {
+    const groupMsg = state.groupMsg[groupId];
+    if (groupMsg && !groupMsg.muteMembers.includes(memberId)) groupMsg.muteMembers.push(memberId);
+  },
+  UNMUTE_MEMBER(state, { groupId, memberId }) {
+    const groupMsg = state.groupMsg[groupId];
+    if (groupMsg && groupMsg.muteMembers.includes(memberId)) {
+      groupMsg.muteMembers = groupMsg.muteMembers.filter((id) => id !== memberId);
+    }
+  },
+
+  // 用户切换
+  SWITCH_USER(state, id) {
+    state.currentUser = id;
   }
 };
