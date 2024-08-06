@@ -100,11 +100,8 @@ export default {
     const message = state.groupMsg[gid].messages.filter((msg) => msg.id !== msgId);
     state.groupMsg[gid].messages = message;
   },
-  MUTE_GROUP(state, id) {
-    state.groupMsg[id].isMute = true;
-  },
-  UNMUTE_GROUP(state, id) {
-    state.groupMsg[id].isMute = false;
+  HANDLE_MUTE_GROUP(state, { id, isMute }) {
+    state.groupMsg[id].isMute = isMute;
   },
   MUTE_MEMBER(state, { groupId, memberId }) {
     const groupMsg = state.groupMsg[groupId];

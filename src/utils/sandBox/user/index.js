@@ -236,6 +236,18 @@ export default class User {
     store.commit('sandBox/DEL_GROUP_MESSAGE', { gid, msgId });
   }
 
+  handleMuteGroupById(id, isMute) {
+    store.commit('sandBox/HANDLE_MUTE_GROUP', { id, isMute });
+  }
+
+  muteMemberById({ groupId, memberId }) {
+    store.commit('sandBox/MUTE_MEMBER', { groupId, memberId });
+  }
+
+  unmuteMemberById({ groupId, memberId }) {
+    store.commit('sandBox/UNMUTE_MEMBER', { groupId, memberId });
+  }
+
   getFriendMessage() {}
 
   getGroupMessage() {}
