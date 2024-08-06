@@ -65,14 +65,15 @@ export default {
     // lucy.removeFriendById(1);
     // console.log(admin.getAllUser());
     // lucy.kickMemberById({ groupId: 11, expellee: 1 });
-    // lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
     // mary.leaveGroupById(22);
-    jack.sendMessageToFriend({ id: 3, content: '你好' });
-    lucy.sendMessageToFriend({ id: 1, content: 'hi' })
-    jack.sendMessageToFriend({ id: 3, content: '在吗' });
-    lucy.sendMessageToFriend({ id: 1, content: '在的' })
-    jack.addFriend(2)
-    jack.sendMessageToFriend({ id: 2, content: '在吗' })
+    // jack.sendMessageToFriend({ id: 3, content: '你好' });
+    // lucy.sendMessageToFriend({ id: 1, content: 'hi' })
+    // jack.sendMessageToFriend({ id: 3, content: '在吗' });
+    // lucy.sendMessageToFriend({ id: 1, content: '在的' })
+    // jack.sendMessageToFriend({ id: 2, content: '在吗' })
+    lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
+    // mary.sendMessageToGroup({ id: 33, content: '我没禁言' });
+    jack.deleteFriendMessage({ id: 4, msgId: 'OvWjbDZIP7gSU82K1zVXG' });
   }
 };
 </script>

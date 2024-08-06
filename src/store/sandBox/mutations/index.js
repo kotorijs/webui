@@ -62,19 +62,10 @@ export default {
   CREATE_PRIVATE_MESSAGE(state, id) {
     // console.log('创建私聊消息', state.privateMsg);
     if (Reflect.has(state.privateMsg, id)) {
-      console.log('私聊消息已存在', state.privateMsg[id]);
+      console.log('私聊消息已存在');
       return false;
     }
     state.privateMsg[id] = {};
-  },
-  CREATE_GROUP_MESSAGE(state, group) {
-    state.groupMsg[group.id] = {
-      name: group.name,
-      id: group.id,
-      isMute: false,
-      muteMembers: [],
-      messages: []
-    };
   },
 
   SEND_PRIVATE_MESSAGE(state, { sender, receiver, message }) {
@@ -83,9 +74,31 @@ export default {
     if (Reflect.has(senderMsg, receiver)) friendMsg.push(message);
     else senderMsg[receiver] = [message];
   },
-  SEND_GROUP_MESSAGE(state, { id, message }) {},
-  DEL_PRIVATE_MESSAGE(state, { mid, fid }) {},
-  DEL_GROUP_MESSAGE(state, id) {},
+  DEL_PRIVATE_MESSAGE(state, { sender, receiver, msgId }) {
+    const messages = state.privateMsg[sender][receiver].filter((msg) => msg.id !== msgId);
+    state.privateMsg[sender][receiver] = messages;
+  },
+  CREATE_GROUP_MESSAGE(state, group) {
+    if (Reflect.has(state.groupMsg, group.id)) {
+      console.log('群聊消息已存在');
+      return false;
+    }
+    state.groupMsg[group.id] = {
+      name: group.name,
+      id: group.id,
+      isMute: false,
+      muteMembers: [],
+      messages: []
+    };
+  },
+  SEND_GROUP_MESSAGE(state, { gid, message }) {
+    if (!state.groupMsg[gid].messages) state.groupMsg[gid].messages = [message];
+    state.groupMsg[gid].messages.push(message);
+  },
+  DEL_GROUP_MESSAGE(state, { gid, msgId }) {
+    const message = state.groupMsg[gid].messages.filter((msg) => msg.id !== msgId);
+    state.groupMsg[gid].messages = message;
+  },
   MUTE_GROUP(state, id) {
     state.groupMsg[id].isMute = true;
   },
@@ -102,6 +115,12 @@ export default {
       groupMsg.muteMembers = groupMsg.muteMembers.filter((id) => id !== memberId);
     }
   },
+  CLEAR_USER_MESSAGE(state) {
+    Object.keys(state.privateMsg).forEach((key) => {
+      state.privateMsg[key] = {};
+    });
+  },
+  CLEAR_GROUP_MESSAGE(state) {},
 
   // 用户切换
   SWITCH_USER(state, id) {

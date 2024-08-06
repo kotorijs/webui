@@ -34,13 +34,6 @@ export default class User {
   }
 
   /**
-   * 通过好友id获取好友消息
-   * @param {*} friendId 好友id
-   * @returns 好友消息
-   */
-  getFriendMessageById(friendId) {}
-
-  /**
    * 获取群组列表
    * @returns 群组列表
    */
@@ -79,8 +72,10 @@ export default class User {
   receiveAddFriend(self, friend) {
     friend.friends.push({ name: self.name, id: self.id });
     const frdMsg = store.getters['sandBox/getPrivateMessage'](friend.id);
-    if (!Reflect.has(frdMsg, self.id)) store.getters['sandBox/getPrivateMessage'](friend.id)[self.id] = [];
-    console.log(`${self.name}已添加到${friend.name}的好友列表中`);
+    if (!Reflect.has(frdMsg, self.id)) {
+      store.getters['sandBox/getPrivateMessage'](friend.id)[self.id] = [];
+      console.log(`${self.name}已添加到${friend.name}的好友列表中`);
+    }
   }
 
   /**
@@ -115,7 +110,6 @@ export default class User {
     const group = new Group({ name, id, lord: lordUserId });
     group.addMember({ id: this.id, role: 'lord' });
     this.groups.push(group);
-    // store.commit('sendBox/ADD_GROUP', group);
     return group;
   }
 
@@ -158,6 +152,7 @@ export default class User {
     normalizeInvitee.forEach((invitee) => {
       const hasMember = group.members.some((m) => m.id === invitee.id);
       if (hasMember) return false;
+      if (roleHandle === 'admin') group.admins.push(invitee.id);
       group.members.push({ id: invitee.id, role: roleHandle });
       invitee.groups.push({ id: gid, role: roleHandle });
     });
@@ -205,13 +200,30 @@ export default class User {
     store.commit('sandBox/SEND_PRIVATE_MESSAGE', msgOption);
   }
 
-  deleteFriendMessage() {}
+  deleteFriendMessage({ id, msgId }) {
+    const fid = `${USER_PREFIX}${id}`;
+    if (!this.self().friends.some((friend) => friend.id === fid)) return false;
+    store.commit('sandBox/DEL_PRIVATE_MESSAGE', { sender: this.id, receiver: fid, msgId });
+    store.commit('sandBox/DEL_PRIVATE_MESSAGE', { sender: fid, receiver: this.id, msgId });
+  }
+
+  sendMessageToGroup({ id, content }) {
+    const gid = `${GROUP_PREFIX}${id}`;
+    const group = store.getters['sandBox/getGroupById'](gid);
+    if (!group) return false;
+    const hasMember = group.members.some((member) => member.id === this.id);
+    if (!hasMember) return false;
+    const groupMsg = store.getters['sandBox/getGroupMessage'](gid);
+    const hasMute = groupMsg.isMute || groupMsg.muteMembers.includes(this.id);
+    const isAdmin = group.admins.includes(this.id) || group.lord === this.id;
+    if (!isAdmin && hasMute) return false;
+    const message = { id: nanoid(), role: this.id, content };
+    store.commit('sandBox/SEND_GROUP_MESSAGE', { gid, message });
+  }
+
+  deleteGroupMessage({ id, msgId }) {}
 
   getFriendMessage() {}
-
-  sendMessageToGroup() {}
-
-  deleteGroupMessage() {}
 
   getGroupMessage() {}
 
