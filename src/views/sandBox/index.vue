@@ -40,13 +40,13 @@ export default {
       show: {
         isShowUsers: true,
         isShowGroups: true
-      }
+      },
+      admin: null
     };
   },
   methods: {},
   mounted() {
     const admin = new Administrators();
-    console.log('debugger');
     // this.$store.commit('sandBox/CLEAR_USERS'); // 清空用户
     // this.$store.commit('sandBox/CLEAR_GROUPS'); // 清空群组
     const jack = admin.createUser({ id: 1, name: 'jack', age: 18, sex: '男' });
@@ -64,9 +64,15 @@ export default {
     // lucy.leaveGroupById(22);
     // lucy.removeFriendById(1);
     // console.log(admin.getAllUser());
-    lucy.kickMemberById({ groupId: 11, expellee: 1 });
-    lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
+    // lucy.kickMemberById({ groupId: 11, expellee: 1 });
+    // lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
     // mary.leaveGroupById(22);
+    jack.sendMessageToFriend({ id: 3, content: '你好' });
+    lucy.sendMessageToFriend({ id: 1, content: 'hi' })
+    jack.sendMessageToFriend({ id: 3, content: '在吗' });
+    lucy.sendMessageToFriend({ id: 1, content: '在的' })
+    jack.addFriend(2)
+    jack.sendMessageToFriend({ id: 2, content: '在吗' })
   }
 };
 </script>

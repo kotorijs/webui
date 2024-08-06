@@ -28,5 +28,7 @@ export default {
   isGroupMuted: (state) => (id) => {},
   isMemberMuted: (state) => (id) => {},
   getGroupMessage: (state) => (id) => {},
-  getPrivateMessage: (state) => (id) => {}
+  getPrivateMessage: (state) => (id) => {
+    return state.privateMsg[id];
+  }
 };

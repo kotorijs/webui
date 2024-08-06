@@ -6,9 +6,9 @@ export default class Group {
     this.id = `group-${id}`;
     this.name = name;
     this.lord = `user-${lord}`;
-    this.messages = [];
     this.members = []
     store.commit('sandBox/ADD_GROUP', this);
+    store.commit('sandBox/CREATE_GROUP_MESSAGE', this);
   }
 
   getAllMembers() {

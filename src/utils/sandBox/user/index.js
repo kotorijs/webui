@@ -1,17 +1,24 @@
 import Group from '../group';
 import store from '@/store';
+import { nanoid } from 'nanoid';
+
+const ROLE_SELF = 'self';
+const ROLE_FRIEND = 'friend';
+const USER_PREFIX = 'user-';
+const GROUP_PREFIX = 'group-';
 
 // 用户类
 export default class User {
-  constructor({ id, name, age, sex }) {
+  constructor({ id, name, age, sex, avatar }) {
     this.name = name;
-    this.id = `user-${id}`;
+    this.id = `${USER_PREFIX}${id}`;
     this.age = age;
     this.sex = sex;
-    this.avatar = `https://k.hotaru.icu/api/data/avatar/${name}`;
+    this.avatar = avatar || `https://k.hotaru.icu/api/data/avatar/${name}`;
     this.groups = [];
     this.friends = [];
     store.commit('sandBox/ADD_USER', this);
+    store.commit('sandBox/CREATE_PRIVATE_MESSAGE', this.id);
   }
 
   self() {
@@ -31,15 +38,7 @@ export default class User {
    * @param {*} friendId 好友id
    * @returns 好友消息
    */
-  getFriendMessageById(friendId) {
-    // 通过获取好友信息
-    const friendObj = this.friends.find((friend) => friend.id === friendId);
-    const hasMessage = this.friends.length && this.friends.find((friend) => friend.id === friendId);
-    if (hasMessage) {
-      return friendObj.messages;
-    }
-    return [];
-  }
+  getFriendMessageById(friendId) {}
 
   /**
    * 获取群组列表
@@ -65,18 +64,22 @@ export default class User {
    * @param {*} friendName 好友名称
    */
   addFriend(id) {
-    const fid = `user-${id}`;
+    const fid = `${USER_PREFIX}${id}`;
     const friend = store.getters['sandBox/getUserById'](fid);
     const self = store.getters['sandBox/getUserById'](this.id);
     const hasFriend = self.friends.some((friendItem) => friendItem.id === fid);
     if (!friend || hasFriend) return false;
-    self.friends.push({ name: friend.name, id: friend.id, messages: [] });
+    self.friends.push({ name: friend.name, id: friend.id });
+    const selfMsg = store.getters['sandBox/getPrivateMessage'](this.id);
+    if (!Reflect.has(selfMsg, fid)) store.getters['sandBox/getPrivateMessage'](this.id)[fid] = [];
     this.receiveAddFriend(self, friend);
     return true;
   }
 
   receiveAddFriend(self, friend) {
-    friend.friends.push({ name: self.name, id: self.id, messages: [] });
+    friend.friends.push({ name: self.name, id: self.id });
+    const frdMsg = store.getters['sandBox/getPrivateMessage'](friend.id);
+    if (!Reflect.has(frdMsg, self.id)) store.getters['sandBox/getPrivateMessage'](friend.id)[self.id] = [];
     console.log(`${self.name}已添加到${friend.name}的好友列表中`);
   }
 
@@ -85,7 +88,7 @@ export default class User {
    * @param {*} friendId 好友id
    */
   removeFriendById(id) {
-    const fid = `user-${id}`;
+    const fid = `${USER_PREFIX}${id}`;
     const friend = store.getters['sandBox/getUserById'](fid);
     const self = store.getters['sandBox/getUserById'](this.id);
     const hasFriend = self.friends.some((friendItem) => friendItem.id === fid);
@@ -108,7 +111,7 @@ export default class User {
    * @returns 群组对象
    */
   creatGroup({ id, name }) {
-    const lordUserId = `user-${this.id}`;
+    const lordUserId = `${USER_PREFIX}${this.id}`;
     const group = new Group({ name, id, lord: lordUserId });
     group.addMember({ id: this.id, role: 'lord' });
     this.groups.push(group);
@@ -121,7 +124,7 @@ export default class User {
    * @param {*} id 群组id
    */
   removeGroupById(groupId) {
-    const gid = `group-${groupId}`;
+    const gid = `${GROUP_PREFIX}${groupId}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     const members = group.members;
     const isLord = group.lord === this.id;
@@ -134,7 +137,7 @@ export default class User {
   }
 
   addGroupById({ groupId }) {
-    const gid = `group-${groupId}`;
+    const gid = `${GROUP_PREFIX}${groupId}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     if (!group) return false;
     const hasMember = group.members.some((member) => member.id === this.id);
@@ -145,7 +148,7 @@ export default class User {
   }
 
   inviteUserToGroup({ groupId, invitee, role = 'member' }) {
-    const gid = `group-${groupId}`;
+    const gid = `${GROUP_PREFIX}${groupId}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     const normalizeInvitee = this._memberNormalize(invitee);
     const hasSelf = group.members.some((m) => m.id === this.id);
@@ -162,7 +165,7 @@ export default class User {
   }
 
   leaveGroupById(id) {
-    const gid = `group-${id}`;
+    const gid = `${GROUP_PREFIX}${id}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     if (!group) return false;
     this.self().groups = this.self().groups.filter((group) => group.id !== gid);
@@ -171,7 +174,7 @@ export default class User {
   }
 
   kickMemberById({ groupId, expellee }) {
-    const expelleeId = `user-${expellee}`;
+    const expelleeId = `${USER_PREFIX}${expellee}`;
     const gid = `group-${groupId}`;
     const group = store.getters['sandBox/getGroupById'](gid);
     const exp = store.getters['sandBox/getUserById'](expelleeId);
@@ -184,13 +187,23 @@ export default class User {
   }
 
   // 操作信息
-  sendMessageToFriend({ id, message }) {
-    const fid = `user-${id}`;
-    const friend = store.getters['sandBox/getUserById'](fid);
-    console.log(friend);
+
+  sendMessageToFriend({ id, content }) {
+    const fid = `${USER_PREFIX}${id}`;
+    if (!this.self().friends.some((friend) => friend.id === fid)) return false;
+    const msgId = nanoid();
+    const message = { id: msgId, role: ROLE_SELF, content };
+    const msgOption = { sender: this.id, receiver: fid, message };
+    store.commit('sandBox/SEND_PRIVATE_MESSAGE', msgOption);
+    this.receiveFriendMessage({ id, content, msgId });
   }
 
-  receiveFriendMessage() {}
+  receiveFriendMessage({ id, content, msgId }) {
+    const fid = `${USER_PREFIX}${id}`;
+    const message = { id: msgId, role: ROLE_FRIEND, content };
+    const msgOption = { sender: fid, receiver: this.id, message };
+    store.commit('sandBox/SEND_PRIVATE_MESSAGE', msgOption);
+  }
 
   deleteFriendMessage() {}
 

@@ -2,7 +2,7 @@ export default {
   // 用户
   ADD_USER(state, user) {
     if (state.users.find((dbUser) => dbUser.id === user.id)) {
-      console.log(`用户${user.id}已存在`);
+      // console.log(`用户${user.id}已存在`);
       return false;
     } else {
       state.users.push(user);
@@ -59,21 +59,29 @@ export default {
   },
 
   // 消息
+  CREATE_PRIVATE_MESSAGE(state, id) {
+    // console.log('创建私聊消息', state.privateMsg);
+    if (Reflect.has(state.privateMsg, id)) {
+      console.log('私聊消息已存在', state.privateMsg[id]);
+      return false;
+    }
+    state.privateMsg[id] = {};
+  },
+  CREATE_GROUP_MESSAGE(state, group) {
+    state.groupMsg[group.id] = {
+      name: group.name,
+      id: group.id,
+      isMute: false,
+      muteMembers: [],
+      messages: []
+    };
+  },
+
   SEND_PRIVATE_MESSAGE(state, { sender, receiver, message }) {
     const senderMsg = state.privateMsg[sender];
-    const receiverMsg = state.privateMsg[receiver];
-    if (senderMsg) {
-      const friend = senderMsg[receiver];
-      friend ? friend.push(message) : (senderMsg[receiver] = [message]);
-      senderMsg.push(message);
-    } else {
-      state.privateMsg[sender] = [message];
-    }
-    if (receiverMsg) {
-      receiverMsg.push(message);
-    } else {
-      state.privateMsg[receiver] = [message];
-    }
+    const friendMsg = senderMsg[receiver];
+    if (Reflect.has(senderMsg, receiver)) friendMsg.push(message);
+    else senderMsg[receiver] = [message];
   },
   SEND_GROUP_MESSAGE(state, { id, message }) {},
   DEL_PRIVATE_MESSAGE(state, { mid, fid }) {},
