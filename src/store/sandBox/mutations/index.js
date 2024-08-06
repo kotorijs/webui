@@ -96,6 +96,7 @@ export default {
     state.groupMsg[gid].messages.push(message);
   },
   DEL_GROUP_MESSAGE(state, { gid, msgId }) {
+    if (!state.groupMsg[gid].messages) return false;
     const message = state.groupMsg[gid].messages.filter((msg) => msg.id !== msgId);
     state.groupMsg[gid].messages = message;
   },

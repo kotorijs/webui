@@ -72,7 +72,8 @@ export default {
     // lucy.sendMessageToFriend({ id: 1, content: '在的' })
     // jack.sendMessageToFriend({ id: 2, content: '在吗' })
     lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
-    // mary.sendMessageToGroup({ id: 33, content: '我没禁言' });
+    mary.sendMessageToGroup({ id: 33, content: '大家好！' });
+    lucy.deleteGroupMessage({ id: 33, msgId: 'DoRpJ4CDs2LiZlWZVylFG' });
     jack.deleteFriendMessage({ id: 4, msgId: 'OvWjbDZIP7gSU82K1zVXG' });
   }
 };

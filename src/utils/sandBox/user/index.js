@@ -221,7 +221,20 @@ export default class User {
     store.commit('sandBox/SEND_GROUP_MESSAGE', { gid, message });
   }
 
-  deleteGroupMessage({ id, msgId }) {}
+  deleteGroupMessage({ id, msgId }) {
+    const gid = `${GROUP_PREFIX}${id}`;
+    const group = store.getters['sandBox/getGroupById'](gid);
+    if (!group) return false;
+    const hasMember = group.members.some((member) => member.id === this.id);
+    if (!hasMember) return false;
+    const groupMsg = store.getters['sandBox/getGroupMessage'](gid);
+    const hasMessage = groupMsg.messages.some((message) => message.id === msgId);
+    if (!hasMessage) return false;
+    const isAdmin = group.admins.includes(this.id) || group.lord === this.id;
+    const isMyMessage = groupMsg.messages.find((message) => message.id === msgId).role === this.id;
+    if (!isAdmin && !isMyMessage) return false;
+    store.commit('sandBox/DEL_GROUP_MESSAGE', { gid, msgId });
+  }
 
   getFriendMessage() {}
 
