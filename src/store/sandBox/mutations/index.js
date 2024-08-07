@@ -74,7 +74,11 @@ export default {
     if (Reflect.has(senderMsg, receiver)) friendMsg.push(message);
     else senderMsg[receiver] = [message];
   },
-  DEL_PRIVATE_MESSAGE(state, { sender, receiver, msgId }) {
+  DEL_PRIVATE_MESSAGE(state, { sender, receiver, msgId = false }) {
+    if (!msgId) {
+      delete state.privateMsg[sender][receiver]
+      return;
+    }
     const messages = state.privateMsg[sender][receiver].filter((msg) => msg.id !== msgId);
     state.privateMsg[sender][receiver] = messages;
   },
@@ -95,22 +99,26 @@ export default {
     if (!state.groupMsg[gid].messages) state.groupMsg[gid].messages = [message];
     state.groupMsg[gid].messages.push(message);
   },
-  DEL_GROUP_MESSAGE(state, { gid, msgId }) {
+  DEL_GROUP_MESSAGE(state, { gid, msgId = false }) {
+    if (!msgId) {
+      delete state.groupMsg[gid]
+      return;
+    }
     if (!state.groupMsg[gid].messages) return false;
     const message = state.groupMsg[gid].messages.filter((msg) => msg.id !== msgId);
     state.groupMsg[gid].messages = message;
   },
-  HANDLE_MUTE_GROUP(state, { id, isMute }) {
-    state.groupMsg[id].isMute = isMute;
+  HANDLE_MUTE_GROUP(state, { gid, isMute }) {
+    state.groupMsg[gid].isMute = isMute;
   },
-  MUTE_MEMBER(state, { groupId, memberId }) {
-    const groupMsg = state.groupMsg[groupId];
-    if (groupMsg && !groupMsg.muteMembers.includes(memberId)) groupMsg.muteMembers.push(memberId);
+  MUTE_MEMBER(state, { gid, mid }) {
+    const groupMsg = state.groupMsg[gid];
+    if (groupMsg && !groupMsg.muteMembers.includes(mid)) groupMsg.muteMembers.push(mid);
   },
-  UNMUTE_MEMBER(state, { groupId, memberId }) {
-    const groupMsg = state.groupMsg[groupId];
-    if (groupMsg && groupMsg.muteMembers.includes(memberId)) {
-      groupMsg.muteMembers = groupMsg.muteMembers.filter((id) => id !== memberId);
+  UNMUTE_MEMBER(state, { gid, mid }) {
+    const groupMsg = state.groupMsg[gid];
+    if (groupMsg && groupMsg.muteMembers.includes(mid)) {
+      groupMsg.muteMembers = groupMsg.muteMembers.filter((id) => id !== mid);
     }
   },
   CLEAR_USER_MESSAGE(state) {

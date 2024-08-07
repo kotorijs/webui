@@ -21,10 +21,6 @@ export default class User {
     store.commit('sandBox/CREATE_PRIVATE_MESSAGE', this.id);
   }
 
-  self() {
-    return store.getters['sandBox/getUserById'](this.id);
-  }
-
   /**
    * 获取好友列表
    * @returns 对象数组
@@ -88,6 +84,7 @@ export default class User {
     const self = store.getters['sandBox/getUserById'](this.id);
     const hasFriend = self.friends.some((friendItem) => friendItem.id === fid);
     if (!hasFriend) return false;
+    this.deleteFriendMessage(id);
     self.friends = self.friends.filter((friendItem) => friendItem.id !== fid);
     this.receiveRemoveFriend(self, friend);
     return true;
@@ -127,6 +124,7 @@ export default class User {
       const user = store.getters['sandBox/getUserById'](member.id);
       user.groups = user.groups.filter((group) => group.id !== gid);
     });
+    store.commit('sandBox/DEL_GROUP_MESSAGE', { gid });
     store.commit('sandBox/REMOVE_GROUP', gid);
   }
 
@@ -200,7 +198,7 @@ export default class User {
     store.commit('sandBox/SEND_PRIVATE_MESSAGE', msgOption);
   }
 
-  deleteFriendMessage({ id, msgId }) {
+  deleteFriendMessage(id, msgId) {
     const fid = `${USER_PREFIX}${id}`;
     if (!this.self().friends.some((friend) => friend.id === fid)) return false;
     store.commit('sandBox/DEL_PRIVATE_MESSAGE', { sender: this.id, receiver: fid, msgId });
@@ -215,8 +213,7 @@ export default class User {
     if (!hasMember) return false;
     const groupMsg = store.getters['sandBox/getGroupMessage'](gid);
     const hasMute = groupMsg.isMute || groupMsg.muteMembers.includes(this.id);
-    const isAdmin = group.admins.includes(this.id) || group.lord === this.id;
-    if (!isAdmin && hasMute) return false;
+    if (!this._isAdmin(gid) && hasMute) return false;
     const message = { id: nanoid(), role: this.id, content };
     store.commit('sandBox/SEND_GROUP_MESSAGE', { gid, message });
   }
@@ -230,22 +227,29 @@ export default class User {
     const groupMsg = store.getters['sandBox/getGroupMessage'](gid);
     const hasMessage = groupMsg.messages.some((message) => message.id === msgId);
     if (!hasMessage) return false;
-    const isAdmin = group.admins.includes(this.id) || group.lord === this.id;
     const isMyMessage = groupMsg.messages.find((message) => message.id === msgId).role === this.id;
-    if (!isAdmin && !isMyMessage) return false;
+    if (!this._isAdmin(gid) && !isMyMessage) return false;
     store.commit('sandBox/DEL_GROUP_MESSAGE', { gid, msgId });
   }
 
   handleMuteGroupById(id, isMute) {
-    store.commit('sandBox/HANDLE_MUTE_GROUP', { id, isMute });
+    const gid = `${GROUP_PREFIX}${id}`;
+    if (!this._isAdmin(gid)) return false;
+    store.commit('sandBox/HANDLE_MUTE_GROUP', { gid, isMute });
   }
 
-  muteMemberById({ groupId, memberId }) {
-    store.commit('sandBox/MUTE_MEMBER', { groupId, memberId });
+  muteMemberById(groupId, memberId) {
+    const gid = `${GROUP_PREFIX}${groupId}`;
+    const mid = `${USER_PREFIX}${memberId}`;
+    if (!this._isAdmin(gid)) return false;
+    store.commit('sandBox/MUTE_MEMBER', { gid, mid });
   }
 
-  unmuteMemberById({ groupId, memberId }) {
-    store.commit('sandBox/UNMUTE_MEMBER', { groupId, memberId });
+  unmuteMemberById(groupId, memberId) {
+    const gid = `${GROUP_PREFIX}${groupId}`;
+    const mid = `${USER_PREFIX}${memberId}`;
+    if (!this._isAdmin(gid)) return false;
+    store.commit('sandBox/UNMUTE_MEMBER', { gid, mid });
   }
 
   getFriendMessage() {}
@@ -277,5 +281,15 @@ export default class User {
       memberHandle = store.getters['sandBox/getUserById'](`user-${members}`);
       return memberHandle && typeof memberHandle === 'object' ? [memberHandle] : []; // 检测members是否为有效对象
     }
+  }
+
+  self() {
+    return store.getters['sandBox/getUserById'](this.id);
+  }
+
+  _isAdmin(gid) {
+    const group = store.getters['sandBox/getGroupById'](gid);
+    const isAdmin = group.admins.includes(this.self().id) || group.lord === this.self().id;
+    return isAdmin;
   }
 }

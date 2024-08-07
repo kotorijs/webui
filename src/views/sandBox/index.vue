@@ -62,19 +62,18 @@ export default {
     // lucy.removeGroupById(33);
     // jack.addGroupById({ groupId: 33 });
     // lucy.leaveGroupById(22);
-    // lucy.removeFriendById(1);
     // console.log(admin.getAllUser());
     // lucy.kickMemberById({ groupId: 11, expellee: 1 });
     // mary.leaveGroupById(22);
     // jack.sendMessageToFriend({ id: 3, content: '你好' });
-    // lucy.sendMessageToFriend({ id: 1, content: 'hi' })
-    // jack.sendMessageToFriend({ id: 3, content: '在吗' });
-    // lucy.sendMessageToFriend({ id: 1, content: '在的' })
-    // jack.sendMessageToFriend({ id: 2, content: '在吗' })
+    // lucy.sendMessageToFriend({ id: 1, content: 'hi' });
+    // jack.removeFriendById(3);
     lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
-    // mary.sendMessageToGroup({ id: 33, content: '大家好！' });
+    mary.sendMessageToGroup({ id: 33, content: '大家好！我是mary' });
     // lucy.deleteGroupMessage({ id: 33, msgId: 'DoRpJ4CDs2LiZlWZVylFG' });
-    jack.deleteFriendMessage({ id: 4, msgId: 'OvWjbDZIP7gSU82K1zVXG' });
+    // mary.unmuteMemberById(33, 2);
+    // mary.handleMuteGroupById(33, false)
+    // tom.sendMessageToGroup({ id: 33, content: '大家好！我是tom' });
   }
 };
 </script>
