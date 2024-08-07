@@ -25,12 +25,15 @@ export default {
   },
 
   // 获取消息
-  isGroupMuted: (state) => (id) => {},
-  isMemberMuted: (state) => (id) => {},
   getGroupMessage: (state) => (id) => {
     return state.groupMsg[id];
   },
   getPrivateMessage: (state) => (id) => {
     return state.privateMsg[id];
+  },
+
+  // 获取当前用户
+  getCurrentUser: (state) => {
+    return state.currentUser;
   }
 };

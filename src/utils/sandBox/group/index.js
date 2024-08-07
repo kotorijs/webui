@@ -17,7 +17,6 @@ export default class Group {
   }
 
   addMember(user) {
-    // console.log(user);
     this.members.push(user)
   }
 

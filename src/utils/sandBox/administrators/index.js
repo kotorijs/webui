@@ -3,6 +3,10 @@ import Group from '../group';
 import store from '@/store';
 
 export default class Administrators {
+  constructor(currentUser = null) {
+    store.commit('sandBox/SWITCH_USER', currentUser);
+  }
+
   // 操作用户
   createUser({ id, name, age, sex }) {
     const user = new User({ id, name, age, sex });
@@ -13,12 +17,25 @@ export default class Administrators {
     return store.getters['sandBox/getAllUser'];
   }
 
-  getUserById(uid) {
-    return store.getters['sandBox/getUserById'](uid);
+  getUserById(id) {
+    return store.getters['sandBox/getUserById'](id);
   }
 
-  removeUserById(uid) {
-    store.commit('sandBox/REMOVE_USER', uid);
+  removeUserById(id) {
+    const user = this.getUserById(id)
+    user.friends.forEach((friend) => {
+      store.commit('sandBox/DEL_PRIVATE_MESSAGE', { sender: friend.id, receiver: id });
+      const friendObj = store.getters['sandBox/getUserById'](friend.id);
+      friendObj.friends = friendObj.friends.filter((friend) => friend.id !== id);
+    });
+    store.commit('sandBox/CLEAR_USER_MESSAGE', id);
+    store.commit('sandBox/REMOVE_USER', id);
+    const groups = user.groups
+    console.log('groups', groups);
+    groups.forEach((group) => {
+      const g = store.getters['sandBox/getGroupById'](group.id);
+      g.members = g.members.filter((member) => member.id !== id);
+    });
   }
 
   // 操作群组

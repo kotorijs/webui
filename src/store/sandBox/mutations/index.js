@@ -20,7 +20,7 @@ export default {
     });
   },
   REMOVE_USER(state, id) {
-    const hasUser = state.users.length && state.users.find((user) => user.id === id);
+    const hasUser = state.users.length && state.users.some((user) => user.id === id);
     if (hasUser) {
       state.users = state.users.filter((user) => user.id !== id);
     } else {
@@ -121,12 +121,14 @@ export default {
       groupMsg.muteMembers = groupMsg.muteMembers.filter((id) => id !== mid);
     }
   },
-  CLEAR_USER_MESSAGE(state) {
+  CLEAR_USER_MESSAGE(state, id) {
+    if (id) { delete state.privateMsg[id]; return; }
     Object.keys(state.privateMsg).forEach((key) => {
       state.privateMsg[key] = {};
     });
   },
-  CLEAR_GROUP_MESSAGE(state) {
+  CLEAR_GROUP_MESSAGE(state, id) {
+    if (id) { delete state.groupMsg[id]; return; }
     Object.keys(state.groupMsg).forEach((key) => {
       state.groupMsg[key].messages = [];
     });
@@ -134,6 +136,7 @@ export default {
 
   // 用户切换
   SWITCH_USER(state, id) {
-    state.currentUser = id;
+    if (!id && state.currentUser === null) state.currentUser = state.users[0];
+    if (id) state.currentUser = state.users.find((user) => user.id === id);
   }
 };
