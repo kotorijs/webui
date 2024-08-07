@@ -24,10 +24,4 @@ export default class Group {
   removeMember(id) {
     this.members = this.members.filter((member) => member.id !== id);
   }
-
-  sendMessage() {}
-
-  deleteMessage() {}
-
-  getMessages() {}
 }

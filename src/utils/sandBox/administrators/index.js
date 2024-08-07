@@ -6,7 +6,6 @@ export default class Administrators {
   // 操作用户
   createUser({ id, name, age, sex }) {
     const user = new User({ id, name, age, sex });
-    // store.commit('sandBox/ADD_USER', user);
     return user;
   }
 
@@ -14,28 +13,27 @@ export default class Administrators {
     return store.getters['sandBox/getAllUser'];
   }
 
-  getUserById(id) {
-    const uid = `user-${id}`;
+  getUserById(uid) {
     return store.getters['sandBox/getUserById'](uid);
   }
 
-  removeUserById(id) {
-    const uid = `user-${id}`;
+  removeUserById(uid) {
     store.commit('sandBox/REMOVE_USER', uid);
   }
 
   // 操作群组
   createGroup({ id, name, members, lord }) {
+    const gid = `group-${id}`;
     const normalizeMembers = this._memberNormalize(members);
-    const hasGroup = store.getters['sandBox/getGroupById'](`group-${id}`);
+    const hasGroup = store.getters['sandBox/getGroupById'](gid);
     if (hasGroup) return false;
     const group = new Group({ name, id, lord });
     normalizeMembers.forEach(async (member) => {
       const mid = member.id;
       const hasUser = store.getters['sandBox/getUserById'](mid);
       if (!hasUser) return console.log(`用户${mid}不存在`);
-      const role = mid === `user-${lord}` ? 'lord' : 'member';
-      member.groups.push({ id: `group-${id}`, role });
+      const role = mid === lord ? 'lord' : 'member';
+      member.groups.push({ id: gid, role });
       group.addMember({ id: member.id, role });
     });
     return group;
@@ -45,14 +43,18 @@ export default class Administrators {
     return store.getters['sandBox/getAllGroup'];
   }
 
-  getGroupById(groupId) {
-    const gid = `group-${groupId}`;
+  getGroupById(gid) {
     return store.getters['sandBox/getGroupById'](gid);
   }
 
-  removeGroupById(id) {
-    const uid = `group-${id}`;
-    store.commit('sandBox/REMOVE_GROUP', uid);
+  removeGroupById(gid) {
+    const members = store.getters['sandBox/getGroupById'](gid).members;
+    members.forEach((member) => {
+      const user = store.getters['sandBox/getUserById'](member.id);
+      user.groups = user.groups.filter((group) => group.id !== gid);
+    });
+    store.commit('sandBox/DEL_GROUP_MESSAGE', { gid });
+    store.commit('sandBox/REMOVE_GROUP', gid);
   }
 
   // 私有方法
@@ -69,7 +71,7 @@ export default class Administrators {
           if (member instanceof Object) {
             return member;
           } else {
-            memberHandle = store.getters['sandBox/getUserById'](`user-${member}`);
+            memberHandle = store.getters['sandBox/getUserById'](member);
             return memberHandle;
           }
         })
@@ -77,7 +79,7 @@ export default class Administrators {
     } else if (members instanceof Object) {
       return [members];
     } else {
-      memberHandle = store.getters['sandBox/getUserById'](`user-${members}`);
+      memberHandle = store.getters['sandBox/getUserById'](members);
       return memberHandle && typeof memberHandle === 'object' ? [memberHandle] : []; // 检测members是否为有效对象
     }
   }

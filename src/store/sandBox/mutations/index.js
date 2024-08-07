@@ -76,7 +76,7 @@ export default {
   },
   DEL_PRIVATE_MESSAGE(state, { sender, receiver, msgId = false }) {
     if (!msgId) {
-      delete state.privateMsg[sender][receiver]
+      delete state.privateMsg[sender][receiver];
       return;
     }
     const messages = state.privateMsg[sender][receiver].filter((msg) => msg.id !== msgId);
@@ -101,7 +101,7 @@ export default {
   },
   DEL_GROUP_MESSAGE(state, { gid, msgId = false }) {
     if (!msgId) {
-      delete state.groupMsg[gid]
+      delete state.groupMsg[gid];
       return;
     }
     if (!state.groupMsg[gid].messages) return false;
@@ -126,7 +126,11 @@ export default {
       state.privateMsg[key] = {};
     });
   },
-  CLEAR_GROUP_MESSAGE(state) {},
+  CLEAR_GROUP_MESSAGE(state) {
+    Object.keys(state.groupMsg).forEach((key) => {
+      state.groupMsg[key].messages = [];
+    });
+  },
 
   // 用户切换
   SWITCH_USER(state, id) {

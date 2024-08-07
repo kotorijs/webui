@@ -57,8 +57,8 @@ export default {
     admin.createGroup({ id: 11, name: 'group1', members: [1, 2, 3, 4], lord: 1 });
     admin.createGroup({ id: 22, name: 'group2', members: [3, jack, tom], lord: 2 });
     admin.createGroup({ id: 33, name: 'group3', members: [1, 2, lucy, someone], lord: 3 });
-    if (mary.addFriend(2)) console.log('mary添加tom成功');
-    if (jack.addFriend(3)) console.log('jack添加tom成功');
+    if (mary.addFriend('user-2')) console.log('mary添加tom成功');
+    if (jack.addFriend('user-3')) console.log('jack添加tom成功');
     // lucy.removeGroupById(33);
     // jack.addGroupById({ groupId: 33 });
     // lucy.leaveGroupById(22);
@@ -68,8 +68,8 @@ export default {
     // jack.sendMessageToFriend({ id: 3, content: '你好' });
     // lucy.sendMessageToFriend({ id: 1, content: 'hi' });
     // jack.removeFriendById(3);
-    lucy.inviteUserToGroup({ groupId: 33, invitee: 4, role: 'admin' });
-    mary.sendMessageToGroup({ id: 33, content: '大家好！我是mary' });
+    lucy.inviteUserToGroup({ groupId: 'group-33', invitee: 'user-4', role: 'admin' });
+    mary.sendMessageToGroup({ id: 'group-33', content: '大家好！我是mary' });
     // lucy.deleteGroupMessage({ id: 33, msgId: 'DoRpJ4CDs2LiZlWZVylFG' });
     // mary.unmuteMemberById(33, 2);
     // mary.handleMuteGroupById(33, false)
