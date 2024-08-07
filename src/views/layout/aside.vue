@@ -132,6 +132,7 @@ export default {
     }
   }
   .empty {
+    height: 0;
     flex-grow: 1;
   }
   .quit {

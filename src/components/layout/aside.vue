@@ -14,6 +14,4 @@ export default {
 .k-sb-aside {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  background: #0000ff33;
 }</style>

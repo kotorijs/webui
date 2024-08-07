@@ -22,6 +22,12 @@ export default {
     activeColor: {
       type: String
     },
+    activeShape: {
+      type: String,
+      default() {
+        return 'line';
+      }
+    },
     backgroundColor: {
       type: String
     },
@@ -71,5 +77,26 @@ export default {
 <style lang="less" scoped>
 .k-menu {
   list-style: none;
+  overflow-x: auto;
+  height: auto;
+
+  &::-webkit-scrollbar {
+    width: 1px; // 设置滚动条的宽度
+    height: 0;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    width: 1px;
+    height: 0;
+  }
+  &::-webkit-scrollbar-thumb {
+    position: absolute;
+    width: 1px;
+    border-radius: 6px;
+    background-color: #8888881a;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #88888829; // 鼠标悬停时滚动条的颜色
+  }
 }
 </style>

@@ -1,40 +1,31 @@
 <template>
-  <k-container direction="horizontal">
+  <k-container class="k-container" direction="horizontal">
     <!-- 好友、群聊列表 -->
-    <k-sb-aside class="aside-users empty">
-      <header class="k-chat-header"></header>
-    </k-sb-aside>
-
+    <sb-left-aside></sb-left-aside>
     <k-container direction="vertical" style="width: 100%">
       <!-- 聊天窗口页头 -->
       <header class="k-chat-header"></header>
-
       <k-container direction="horizontal">
-        <div class="k-chat-main chat-empty">
-          <!-- 聊天内容 -->
-          <div class="k-chat-box"></div>
-
-          <!-- 输入框 -->
-          <div class="k-chat-input"></div>
-        </div>
-
+        <sb-chat-main></sb-chat-main>
+        <button @click="click">点击</button>
         <!-- 右侧、群聊成员 -->
-        <k-sb-aside v-show="show.isShowGroups" class="aside-group" style="background: green">
-          aside-right
-        </k-sb-aside>
+        <sb-right-aside v-show="show.isShowGroups"></sb-right-aside>
       </k-container>
     </k-container>
   </k-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import User from '@/utils/sandBox/user';
 import Administrators from '@/utils/sandBox/administrators';
 import kContainer from '@/components/layout/container';
-import kSbAside from '@/components/layout/aside';
+import sbLeftAside from './aside/left.vue';
+import sbRightAside from './aside/right.vue';
+import sbChatMain from './main/chat.vue';
 export default {
   name: 'sandBox',
-  components: { kContainer, kSbAside },
+  components: { kContainer, sbLeftAside, sbRightAside, sbChatMain },
   data() {
     return {
       show: {
@@ -93,40 +84,45 @@ export default {
       // admin.removeGroupById('group-33');
       // console.log(this.$store.getters['sandBox/getCurrentUser']);
       // this.$store.commit('sandBox/SWITCH_USER', 'user-4')
+    },
+    createUser({ id, name, age, sex }) {
+      // eslint-disable-next-line no-new
+      new User({ id, name, age, sex });
+    },
+    click() {
+      // eslint-disable-next-line no-undef
+      // const dropper = new EyeDropper();
+      // const result = await dropper.open();
+      // console.log(result);
+      for (let i = 0; i < 15; i++) {
+        this.createUser({ id: i, name: `test${i}`, age: `1${i}`, sex: '男' });
+      }
     }
   },
-  mounted() {}
+  computed: {
+    ...mapGetters('sandBox', ['getCurrentUser'])
+  },
+  mounted() {
+    this.$store.commit('sandBox/SWITCH_USER');
+  }
 };
 </script>
 
-<style lang="less">
-.k-container {
+<style lang="less" scoped>
+.k-container ::v-deep aside,
+.k-container ::v-deep section,
+.k-container ::v-deep header,
+.k-container ::v-deep div {
+  box-sizing: border-box;
 }
-.k-chat-main {
-  display: flex;
-  flex-direction: column;
-  background: gray;
-  width: 100%;
-
-  .k-chat-box {
-    height: 100%;
-  }
-
-  .k-chat-input {
-    height: 200px;
-    background: #000;
-  }
+.k-container ::v-deep .k-chat-header {
+  height: 60px;
 }
 .k-chat-header {
-  height: 60px;
-  background: #ffff004e;
+  border-bottom: 2px solid #e9e9e9;
+  background-color: #f2f2f2;
 }
-.empty {
-  height: calc(var(--k-main-height) - var(--k-footer-height));
-}
-.chat-empty {
-  height: calc(var(--k-main-height) - var(--k-footer-height) - 60px);
-}
+
 @media screen and (max-width: 1000px) {
   .aside-group {
     display: none;

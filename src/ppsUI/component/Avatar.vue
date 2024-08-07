@@ -1,5 +1,5 @@
 <template>
-  <div class="user-avatar">
+  <div class="pps-user-avatar">
     <a class="user-home" :href="userUrl" title="进入主页" :target="href ? '_blank' : ''">
       <img :src="avatar" alt="" class="avatar-img" :height="`${size}px`" :width="`${size}px`" />
     </a>
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style>
-.user-avatar {
+.pps-user-avatar {
   margin: auto;
   width: fit-content;
   height: fit-content;
