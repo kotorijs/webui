@@ -50,7 +50,7 @@
       </template>
       <el-table-column fixed="right" label="操作" align="center">
         <template slot-scope="scope">
-          <pps-button @click="handleViewDetails(scope.row)" theme="text">查看</pps-button>
+          <pps-button @click="handleViewDetails(scope.row)" theme="text">详情</pps-button>
           <pps-button theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
         </template>
       </el-table-column>
@@ -266,6 +266,6 @@ export default {
 <style scoped>
 .el-card {
   margin-top: 10px;
-  height: calc(100% - 25px);
+  height: var(--el-card-height);
 }
 </style>

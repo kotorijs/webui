@@ -1,5 +1,11 @@
 <template>
-  <div class="bg">
+  <div
+    class="bg"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(256, 256, 256, 0.8)"
+  >
     <div class="login-container">
       <div class="logo">
         <div class="login-header">
@@ -10,11 +16,7 @@
       </div>
 
       <div class="tab">
-        <div
-          @click="changeTab('login')"
-          :class="{ current: whichTab }"
-          class="btn tab-login"
-        >
+        <div @click="changeTab('login')" :class="{ current: whichTab }" class="btn tab-login">
           登录
         </div>
         <div
@@ -76,6 +78,7 @@ export default {
     return {
       tabsFlag: 'login',
       isShowDialog: false,
+      loading: false,
       dialogData: {},
       loginForm: {
         username: 'test',
@@ -89,6 +92,7 @@ export default {
       this.tabsFlag = flag;
     },
     async loginFn() {
+      this.loading = true;
       try {
         const { data: res } = await loginAPI(this.loginForm);
         if (res.token) {
@@ -100,6 +104,7 @@ export default {
         if (error.response.data.message) return this.showDialog('loginError');
         this.showDialog('', error.message);
       }
+      this.loading = false;
     },
     showDialog(name, msg) {
       if (name && name === 'forget') {

@@ -3,20 +3,20 @@
     <k-aside></k-aside>
     <el-container direction="vertical">
       <k-header></k-header>
-      <el-main :class="{ isPadding }">
+      <el-main :class="{ isPadding }" v-resize-ob="resizeFn">
         <router-view></router-view>
       </el-main>
-      <k-footer v-if="!isPadding"></k-footer>
+      <k-footer v-if="isFooter"></k-footer>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import Ws from '@/utils/webSocket';
+// import Ws from '@/utils/webSocket';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
-const uniqueRoutes = [];
+const uniqueRoutes = ['/console', '/sandBox'];
 export default {
   name: 'myLayout',
   components: { kAside, kFooter, kHeader },
@@ -32,25 +32,36 @@ export default {
       } else {
         this.$store.commit('layoutOption/updateIsFoldAside', false);
       }
+    },
+    resizeFn(w, h) {
+      if (Math.floor(w) <= 400) {
+        // console.log(Math.floor(w), Math.floor(h));
+      }
     }
   },
   mounted() {
     this.handleAside();
-    this.ws = new Ws();
+    // this.ws = new Ws();
   },
   beforeDestroy() {
     console.log('beforeDestroy');
-    this.ws.server.close();
+    // this.ws.server.close();
   },
   updated() {
     this.handleAside();
   },
   computed: {
     isPadding() {
-      if (this.$route.fullPath === uniqueRoutes[0]) {
+      if (uniqueRoutes.includes(this.$route.fullPath)) {
         return true;
       }
       return false;
+    },
+    isFooter() {
+      if (uniqueRoutes[0].includes(this.$route.fullPath)) {
+        return false;
+      }
+      return true;
     }
   }
 };
@@ -58,8 +69,9 @@ export default {
 
 <style lang="less" scoped>
 .isPadding {
-  padding-left: 8px !important;
-  padding-right: 8px !important;
+  // padding-left: 0 !important;
+  // padding-right: 0 !important
+  padding: 0 !important;
 }
 .main-container {
   height: 100%;

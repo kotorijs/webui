@@ -17,7 +17,7 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <pps-button theme="text" @click="handleViewDetails(scope.row)">详情</pps-button>
-          <pps-button theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
+          <pps-button v-if="viewDetailsData.hasConfig" theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,6 +106,7 @@ export default {
         name: '',
         version: '',
         description: '',
+        hasConfig: true,
         main: 'lib/index.js',
         keywords: [],
         license: '',
@@ -184,14 +185,12 @@ export default {
         if (row.peerDependencies) {
           this.viewDetailsData.pluginDependencies = this.obj2Arr(row.peerDependencies);
         }
-        // console.log(this.viewDetailsData);
       });
     },
     handleEdit(row) {
       this.handleDialogMask(async () => {
         try {
           getPluginsConfigAPI(row.name).then(({ data: res }) => {
-            // console.log(res);
           });
         } catch (err) {
           console.log(err);
@@ -215,7 +214,6 @@ export default {
       this.tableHeight = Math.floor(h) - 40;
     },
     obj2Arr(obj) {
-      console.log(Object.keys(obj).map((key) => ({ key, value: obj[key] })));
       return Object.keys(obj).map((key) => ({ key, value: obj[key] }));
     },
     joinArr(arr) {
@@ -225,10 +223,8 @@ export default {
   computed: {},
   async mounted() {
     const { data: res } = await getUserModulesAPI();
-    console.log(res);
     this.bots = res;
-    const { data: res1 } = await getPluginsConfigAPI();
-    console.log(res1);
+    // const { data: res1 } = await getPluginsConfigAPI();
   }
 };
 </script>
@@ -236,7 +232,7 @@ export default {
 <style scoped lang="less">
 .el-card {
   margin-top: 10px;
-  height: calc(100% - 25px);
+  height: var(--el-card-height);
 }
 .el-table {
   font-size: 14px;

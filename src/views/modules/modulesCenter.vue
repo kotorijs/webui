@@ -65,193 +65,13 @@
 import { getAllModulesAPI } from '@/api';
 import kDetailItem from './itemDetails.vue';
 import { mapGetters } from 'vuex';
+import currentDetails from '@/utils/moduleCenter';
 export default {
   name: 'modulesCenter',
   components: { kDetailItem },
   data() {
     return {
-      currentDetails: [
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        },
-        {
-          name: null,
-          description: null,
-          category: [null],
-          version: null,
-          author: {
-            name: null,
-            email: null
-          },
-          time: {
-            created: null,
-            modified: null
-          },
-          dist: {
-            dependencies: null,
-            fileCount: null,
-            unpackedSize: null,
-            tarball: null
-          }
-        }
-      ],
+      currentDetails,
       detailsLen: 0,
       pageSize: [],
       details: []
@@ -274,7 +94,6 @@ export default {
     },
     calcPage(num) {
       const row = Math.ceil(num / 9);
-      // const rem = num % 9;
       for (let i = 1; i <= row; i++) {
         const start = i * 9 - 9;
         const end = i * 9;
@@ -306,6 +125,7 @@ export default {
   },
   mounted() {
     this.$router.push('/modulesCenter/modulesItem');
+    console.log('data里的currentDetails要改成mixin');
   }
 };
 </script>

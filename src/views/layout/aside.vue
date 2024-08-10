@@ -52,16 +52,16 @@ export default {
       isShowDialog: false,
       dialogData: { title: '提示', message: '确认退出登录？' },
       menus: [
-        { icon: 'el-icon-data-line', content: '数据中心', indexPath: '/dataCenter' },
+        { icon: 'el-icon-data-analysis', content: '数据中心', indexPath: '/dataCenter' },
         { icon: 'el-icon-printer', content: '实例管理', indexPath: '/bots' },
-        { icon: 'el-icon-folder', content: '模块管理', indexPath: '/modules' },
+        { icon: 'el-icon-folder-opened', content: '模块管理', indexPath: '/modules' },
         {
           icon: 'el-icon-shopping-bag-1',
           content: '模块中心',
           indexPath: '/modulesCenter'
         },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
-        { icon: 'el-icon-receiving', content: '沙盒测试', indexPath: '/sendBox' },
+        { icon: 'el-icon-chat-line-square', content: '沙盒测试', indexPath: '/sandBox' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
     };
@@ -101,13 +101,17 @@ export default {
   background: var(--bg-normal);
   user-select: none;
   box-shadow: 0 0 8px 0 var(--normal-shadow);
-  overflow: hidden;
+  overflow-x: hidden;
   z-index: 1;
   .logo {
+    position: sticky;
+    background: #fff;
+    top: 0;
     width: 60px;
     height: 60px;
     line-height: 60px;
     text-align: center;
+    z-index: 1;
   }
   img {
     max-width: 30px;
@@ -128,9 +132,13 @@ export default {
     }
   }
   .empty {
+    height: 0;
     flex-grow: 1;
   }
   .quit {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
     width: 60px;
     height: 60px;
     line-height: 60px;
@@ -142,6 +150,23 @@ export default {
     &:hover {
       color: var(--theme-color);
     }
+  }
+  &::-webkit-scrollbar {
+    width: 5px; // 设置滚动条的宽度
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    position: absolute;
+    right: -5px;
+    width: 5px;
+    background: #88888870;
+    border-radius: 6px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #888888; // 鼠标悬停时滚动条的颜色
   }
 }
 .v-enter,

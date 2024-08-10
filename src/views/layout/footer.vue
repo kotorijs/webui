@@ -22,6 +22,7 @@ export default {
 <style scoped lang="less">
 .el-footer {
   justify-content: right !important;
+  height: var(--k-footer-height) !important;
   .status {
     display: table;
     height: 100%;
