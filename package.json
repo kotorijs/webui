@@ -12,6 +12,7 @@
     "@lljj/vue-json-schema-form": "^1.19.0",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "debounce": "^2.1.0",
     "echarts": "^5.5.0",
     "element-ui": "^2.15.8",
     "nanoid": "^5.0.7",

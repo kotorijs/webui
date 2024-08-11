@@ -1,21 +1,34 @@
 <template>
-  <el-tooltip ref="tooltip" class="item" effect="dark" :content="title" placement="right" manual>
+  <el-tooltip
+    :disabled="!tips"
+    ref="tooltip"
+    class="item"
+    effect="dark"
+    :content="title"
+    placement="right"
+    manual
+  >
     <li
       class="k-menu-item"
-      :class="{ 'is-active': active }"
+      :class="[{ 'is-active': active }, direction]"
       :style="[itemStyle]"
+      v-on="$listeners"
       @mouseenter="onmouseenterFn"
       @mouseleave="onMouseLeaveFn"
       @click="handleClickFn"
     >
-      <template v-if="root.activeShape === 'line'">
+      <template v-if="activeShape.includes('line')">
         <transition appear name="appear">
-          <div v-show="active" class="line" :style="{ background: root.activeColor }"></div>
+          <div
+            v-show="active"
+            class="current-shape line"
+            :style="{ background: root.activeColor }"
+          ></div>
         </transition>
       </template>
-      <template v-if="root.activeShape === 'circle'">
+      <template v-if="activeShape.includes('circle')">
         <transition appear>
-          <div v-show="active" class="circle"></div>
+          <div v-show="active" class="current-shape circle"></div>
         </transition>
       </template>
       <slot></slot>
@@ -82,6 +95,16 @@ export default {
         borderLeftColor: this.active ? this.root.activeColor : this.root.textColor
       };
       return style;
+    },
+    activeShape() {
+      return this.root.activeShape;
+    },
+    tips() {
+      if (this.title) return true;
+      return false;
+    },
+    direction() {
+      return `k-menu-item-${this.root.mode}`
     }
   },
   beforeMount() {},
@@ -93,11 +116,13 @@ export default {
 .k-menu-item {
   display: flex;
   position: relative;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   width: calc(v-bind(width) * 1px);
+  min-width: calc(v-bind(width) * 1px);
   height: calc(v-bind(width) * 1px);
+  min-height: calc(v-bind(width) * 1px);
   text-align: center;
   list-style-type: none;
   border-radius: 5px;
@@ -120,10 +145,19 @@ export default {
     border: 3px solid v-bind(activeColor);
     filter: drop-shadow(0 0 4px v-bind(activeColor));
     border-radius: 50%;
+    z-index: 1;
   }
 }
-.k-menu-item + .k-menu-item {
-  margin-top: 10px;
+.k-menu-item-horizontal + .k-menu-item-row {
+  margin-inline-start: 10px;
+}
+
+.k-menu-item-column + .k-menu-item-column {
+  margin-block-start: 10px;
+}
+
+.current-shape {
+  pointer-events: none;
 }
 
 /* 进入的起点、离开的终点 */

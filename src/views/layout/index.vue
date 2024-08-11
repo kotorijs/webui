@@ -12,7 +12,7 @@
 </template>
 
 <script>
-// import Ws from '@/utils/webSocket';
+import Ws from '@/utils/webSocket';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
@@ -41,11 +41,11 @@ export default {
   },
   mounted() {
     this.handleAside();
-    // this.ws = new Ws();
+    this.ws = new Ws();
   },
   beforeDestroy() {
     console.log('beforeDestroy');
-    // this.ws.server.close();
+    this.ws.server.close();
   },
   updated() {
     this.handleAside();

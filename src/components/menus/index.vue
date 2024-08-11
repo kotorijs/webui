@@ -1,5 +1,10 @@
 <template>
-  <ul class="k-menu">
+  <ul
+    class="k-menu"
+    :style="{
+      flexDirection: this.mode
+    }"
+  >
     <slot></slot>
   </ul>
 </template>
@@ -23,9 +28,9 @@ export default {
       type: String
     },
     activeShape: {
-      type: String,
+      type: Array,
       default() {
-        return 'line';
+        return [];
       }
     },
     backgroundColor: {
@@ -33,7 +38,10 @@ export default {
     },
     textColor: {},
     mode: {
-      type: String
+      type: String,
+      default() {
+        return 'column';
+      }
     },
     defaultActive: {
       type: String
@@ -76,22 +84,23 @@ export default {
 
 <style lang="less" scoped>
 .k-menu {
+  display: flex;
   list-style: none;
   overflow-x: auto;
   height: auto;
 
   &::-webkit-scrollbar {
-    width: 1px; // 设置滚动条的宽度
+    width: 0px; // 设置滚动条的宽度
     height: 0;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
-    width: 1px;
+    width: 0px;
     height: 0;
   }
   &::-webkit-scrollbar-thumb {
     position: absolute;
-    width: 1px;
+    width: 0px;
     border-radius: 6px;
     background-color: #8888881a;
   }
