@@ -12,7 +12,7 @@
           <img src="@/assets/favicon.svg" alt="" />
           <div>Kotori</div>
         </div>
-        <div class="login-desc">kams 是一个专为Kotori打造的webui</div>
+        <div class="login-desc">kams 是一个专为Kotori打造的后台管理界面</div>
       </div>
 
       <div class="tab">
@@ -62,6 +62,8 @@
       :content="dialogData.message"
       :title="dialogData.title"
       :show.sync="isShowDialog"
+      @confirmed="loading = false"
+      @canceled="loading = false"
     ></pps-dialog>
   </div>
 </template>
@@ -97,14 +99,15 @@ export default {
         const { data: res } = await loginAPI(this.loginForm);
         if (res.token) {
           this.updateToken(res.token);
+          this.loading = false;
           this.$router.push('/');
         }
       } catch (error) {
         console.log(error);
-        if (error.response.data.message) return this.showDialog('loginError');
+        this.loading = false;
+        if (error) return this.showDialog('loginError');
         this.showDialog('', error.message);
       }
-      this.loading = false;
     },
     showDialog(name, msg) {
       if (name && name === 'forget') {
@@ -162,7 +165,7 @@ export default {
       height: 40px;
     }
 
-    .pps-input {
+    & ::v-deep .pps-input {
       width: 360px;
       height: 38px;
       margin: 0 auto 20px;

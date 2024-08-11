@@ -1,12 +1,10 @@
 <template>
-  <el-header >
+  <el-header>
     <pps-button @click.native="onFold()">
       <i class="el-icon-d-arrow-left"></i>
     </pps-button>
     <span class="title">{{ pathTitle }}</span>
-    <pps-button @click="$store.commit('layoutOption/updateToken', '123')">
-      clear
-    </pps-button>
+    <pps-button @click="clearvuexFn">clear</pps-button>
   </el-header>
 </template>
 
@@ -19,6 +17,9 @@ export default {
         'layoutOption/updateIsFoldAside',
         !this.$store.state.layoutOption.isFoldAside
       );
+    },
+    clearvuexFn() {
+      localStorage.removeItem('vuex')
     }
   },
   computed: {
@@ -37,20 +38,20 @@ export default {
 
 <style lang="less">
 .el-header {
-    background-color: var(--bg-main);
-    border-bottom: 2px solid #e1e2e8;
-    padding: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    height: var(--k-header-height) !important;
+  background-color: var(--bg-main);
+  border-bottom: 2px solid #e1e2e8;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  height: var(--k-header-height) !important;
 
-    .title {
-      color: var(--font-gray-color);
-      font-size: 1.17em;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+  .title {
+    color: var(--font-gray-color);
+    font-size: 1.17em;
+    font-weight: 600;
+    letter-spacing: 1px;
   }
+}
 </style>

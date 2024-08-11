@@ -48,7 +48,6 @@ export default {
       console.log('click');
     },
     firstMsg() {
-      console.log(this.$store);
       const state = this.$store.state.webSocketOption.console.data || null;
       if (!state) {
         return this.$message({
@@ -93,8 +92,8 @@ export default {
     }
   },
   mounted() {
-    // Ws.create();
-    this.firstMsg();
+    Ws.create();
+    // this.firstMsg();
   },
   beforeDestroy() {
     this.$store.commit('layoutOption/updateIsFoldAside', false);
@@ -110,13 +109,13 @@ export default {
   .k-console {
     height: 100%;
   }
+  &::v-deep .t-window {
+    .t-last-line {
+      display: none;
+    }
+  }
 }
-.t-window {
-}
-.t-last-line {
-  display: none;
-}
-.pps-input {
+.pps-form {
   position: absolute;
   bottom: 10px;
   left: 0;
@@ -125,5 +124,8 @@ export default {
   margin: 0 auto;
   z-index: 1;
   justify-content: space-around;
+  &::v-deep .pps-input {
+    width: 100%;
+  }
 }
 </style>

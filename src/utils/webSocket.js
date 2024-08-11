@@ -4,7 +4,7 @@ import config from '@/config';
 import store from '@/store';
 
 const wsHost = config.wsHost || 'localhost';
-const url = `${wsHost}/webui`;
+const url = `${wsHost}/webui/${store.state.layoutOption.token}`;
 
 Vue.prototype.$message = Message;
 

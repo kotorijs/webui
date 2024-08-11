@@ -1,8 +1,17 @@
 <template>
-  <div :class="color" class="pps-input">
-    <component v-if="icon" :is="dynamicComponent"></component>
-    <input v-bind="$attrs" v-on="$listeners" :type="type" :placeholder="placeholder" v-model.trim="keyWord" />
-    <slot></slot>
+  <div class="pps-input-wrapper">
+    <div v-if="label" class="pps-input-label">{{ label }}:</div>
+    <div :class="color" class="pps-input">
+      <component v-if="icon" :is="dynamicComponent"></component>
+      <input
+        v-bind="$attrs"
+        v-on="$listeners"
+        :type="type"
+        :placeholder="placeholder"
+        v-model.trim="keyWord"
+      />
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -41,7 +50,13 @@ export default {
         return '';
       }
     },
-    content: {}
+    content: {},
+    label: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
   },
   methods: {},
   computed: {
@@ -101,12 +116,24 @@ input {
 svg {
   display: block;
 }
+.pps-input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .pps-input-label {
+    margin-right: 15px;
+  }
+
+  & + &{
+    margin-top: 20px;
+  }
+}
 /*=============== 白色系搜索框设置 ===============*/
 .white {
   display: flex;
   height: 36px;
   flex-direction: row;
-  /* justify-content: left; */
   align-items: center;
   border: 1px solid #d3d5d7;
   border-radius: 8px;

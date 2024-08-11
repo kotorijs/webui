@@ -1,12 +1,12 @@
 <template>
   <transition name="hello">
     <dialog ref="dialog" v-if="dialogFlag">
-      <div class="window">
+      <div class="pps-dialog-window">
         <header>
           <slot name="title">{{ title }}</slot>
           <pps-icon icon="pps-icon-close" @click="closeMessageFn()"></pps-icon>
         </header>
-        <div class="content">
+        <div class="pps-dialog-content">
           <slot name="content">
             <p>{{ content }}</p>
           </slot>
@@ -46,6 +46,12 @@ export default {
       default() {
         return '提示';
       }
+    },
+    afterShow: {
+      type: Function,
+      default() {
+        return false;
+      }
     }
   },
   data() {
@@ -75,6 +81,7 @@ export default {
       this.$nextTick(() => {
         if (this.$refs.dialog) {
           this.$refs.dialog.showModal();
+          this.afterShow() && this.afterShow();
         }
       });
     },
@@ -111,6 +118,7 @@ export default {
 
 <style lang="less">
 dialog {
+  position: absolute;
   min-width: 360px;
   min-height: 100px;
   max-height: calc(100vh - 100px);
@@ -126,9 +134,12 @@ dialog {
     background: rgba(0, 0, 0, 0.5);
   }
 
-  .window {
+  .pps-dialog-window {
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     header {
       display: flex;
       align-items: center;
@@ -137,12 +148,12 @@ dialog {
       font-size: 18px;
     }
 
-    .content {
+    .pps-dialog-content {
       margin-top: 20px;
-      min-height: 60px;
+      // min-height: 60px;
       max-height: 70vh;
-      line-height: 60px;
-      overflow: auto;
+      height: 100%;
+      // overflow: auto;
 
       &::-webkit-scrollbar {
         width: 5px; // 设置滚动条的宽度
@@ -164,8 +175,10 @@ dialog {
     }
 
     footer {
-      margin-top: 20px;
+      position: sticky;
+      bottom: 0;
       align-self: flex-end;
+      margin-top: 20px;
       .pps-button {
         border-radius: 4px;
         max-width: 60px;

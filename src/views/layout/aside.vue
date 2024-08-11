@@ -9,7 +9,8 @@
         active-color="#752bec"
         text-color="#061e26"
         background-color="#00000017"
-        mode="vertical"
+        mode="column"
+        :tips="true"
         router
       >
         <k-menu-item
@@ -17,6 +18,7 @@
           :key="index"
           :index="menuItem.indexPath"
           :title="menuItem.content"
+          width="60"
         >
           <i :class="menuItem.icon" />
           <!-- <p>{{ menuItem.content }}</p> -->
@@ -61,7 +63,6 @@ export default {
           indexPath: '/modulesCenter'
         },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
-        { icon: 'el-icon-chat-line-square', content: '沙盒测试', indexPath: '/sandBox' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
     };
