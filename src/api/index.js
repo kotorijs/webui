@@ -58,11 +58,12 @@ export const getBotsConfigAPI = (botName = '') => {
  * @param {*} botName 机器人实例名称
  * @returns Promise对象
  */
-export const updateBotsConfigAPI = (botName) => {
+export const updateBotsConfigAPI = (botName, config) => {
   return request({
     url: `/config/bots/${botName}`,
     method: 'PUT',
     data: {
+      ...config
     }
   });
 };
@@ -84,11 +85,12 @@ export const getPluginsConfigAPI = (pluginName = '') => {
  * @param {*} pluginName 插件名称
  * @returns Promise对象
  */
-export const updatePluginsConfigAPI = (pluginName = '') => {
+export const updatePluginsConfigAPI = (pluginName = '', config) => {
   return request({
     url: `/config/plugins/${pluginName}`,
     method: 'PUT',
     data: {
+      ...config
     }
   });
 };

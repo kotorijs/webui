@@ -1,42 +1,95 @@
 <template>
   <el-footer height="30px">
-    <div class="status">
-      <div>内存:{{ roundedRam.rate + '%' }}</div>
-      &nbsp;
-      <div>CPU:{{ roundedCpu.rate }}</div>
-    </div>
+    <pps-context-menu :menus="menus" position="top">
+      <div slot="content" class="version detail">
+        <div class="kotori">kotori v{{ status.core }}</div>
+      </div>
+    </pps-context-menu>
+    <pps-context-menu
+      :menus="[
+        { label: '内存', rate: roundedRam.rate },
+        { label: 'CPU', rate: roundedCpu.rate }
+      ]"
+      position="top"
+    >
+      <div slot="content" class="status detail">
+        <span>内存:{{ ~~roundedRam.rate }} %</span>
+        &nbsp;
+        <span>CPU:{{ ~~roundedCpu.rate }} %</span>
+      </div>
+      <template v-slot:item="{ scope }">
+        <div class="rate">
+          <span>{{ scope.label }}</span>
+          <el-progress :percentage="Number(scope.rate)"></el-progress>
+        </div>
+      </template>
+    </pps-context-menu>
   </el-footer>
 </template>
 
 <script>
+import { getStatusAPI } from '@/api/index';
 import { mapGetters } from 'vuex';
 export default {
   name: 'k-footer',
-  mounted() {},
+  data() {
+    return {
+      status: ''
+    };
+  },
+  methods: {
+    contextMenuFn() {}
+  },
+  mounted() {
+    getStatusAPI().then(({ data: res }) => {
+      this.status = res;
+    });
+  },
   computed: {
-    ...mapGetters('webSocketOption', ['roundedRam', 'roundedCpu'])
+    ...mapGetters('webSocketOption', ['roundedRam', 'roundedCpu']),
+    menus() {
+      return [
+        { label: `主程序版本: v${this.status.main}` },
+        { label: `核心版本: v${this.status.core}` },
+        { label: `加载器版本: v${this.status.loader}` }
+      ];
+    }
   }
 };
 </script>
 
 <style scoped lang="less">
 .el-footer {
-  justify-content: right !important;
   height: var(--k-footer-height) !important;
-  .status {
-    display: table;
+  display: flex;
+  justify-content: space-between !important;
+  align-items: center;
+
+  .detail {
     height: 100%;
-    div {
-      vertical-align: middle;
-      display: table-cell;
-      height: 100%;
-      margin: 0 auto;
-      padding: 0 5px;
-      &:hover {
-        cursor: pointer;
-        background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    &:hover {
+      cursor: pointer;
+      background: #ffffff;
+    }
+  }
+
+  .rate {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 160px;
+    .el-progress {
+      width: 80%;
+      & ::v-deep .el-progress-bar {
+        width: 90% !important;
       }
     }
+  }
+
+  .pps-context-menu-wrapper {
+    height: 100%;
   }
 }
 .el-footer {

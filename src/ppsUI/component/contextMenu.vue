@@ -1,7 +1,8 @@
 <template>
   <div ref="container" class="pps-context-menu-wrapper">
-    <slot></slot>
+    <slot name="content"></slot>
     <ul
+      ref="menu"
       class="pps-context-menu"
       v-show="showContextMenu"
       :style="{ left: x + 'px', top: y + 'px' }"
@@ -12,7 +13,7 @@
         :key="index"
         @click="handleSelect(item)"
       >
-        {{ item.label }}
+        <slot name="item" :scope="item">{{ item.label }}</slot>
       </li>
     </ul>
   </div>
@@ -23,9 +24,14 @@ export default {
   name: 'pps-context-menu',
   props: {
     menus: {
-      type: Array,
       default() {
         return [];
+      }
+    },
+    position: {
+      type: String,
+      default() {
+        return 'right';
       }
     }
   },
@@ -45,8 +51,23 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.showContextMenu = true;
-      this.x = e.clientX + 15;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      this.x = e.clientX;
       this.y = e.clientY;
+      this.$nextTick(() => {
+        const ulrect = this.$refs.menu.getBoundingClientRect();
+        const crect = this.$refs.container.getBoundingClientRect();
+
+        if (ulrect.bottom > windowHeight) {
+          console.log('底部超出');
+          this.y = windowHeight - ulrect.height - crect.height;
+        }
+        if (ulrect.right > windowWidth) {
+          console.log('右侧超出');
+          this.x = windowWidth - ulrect.width;
+        }
+      });
     },
     closeMenu() {
       this.showContextMenu = false;
@@ -68,7 +89,7 @@ export default {
 <style lang="less">
 .pps-context-menu {
   position: fixed;
-  width: auto;
+  width: fit-content;
   height: auto;
   padding: 5px;
   background: #ffffff;
@@ -77,6 +98,7 @@ export default {
   z-index: 2;
 }
 .pps-context-menu-item {
+  // min-width: 120px;
   padding: 5px 10px;
   cursor: pointer;
   &:hover {

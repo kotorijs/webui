@@ -1,17 +1,19 @@
 <template>
   <el-card class="modules-item">
-    <div slot="header" class="clearfix">
-      <span>{{ getCurrent.description }}</span>
-      <el-link
-        style="float: right; padding: 3px 0"
-        type="primary"
-        target="_blank"
-        :href="`https://kotori.js.org/modules/#${getCurrent.name}`"
-        title="官方文档"
-      >
-        文档
-      </el-link>
-    </div>
+    <slot name="title">
+      <div slot="header" class="clearfix">
+        <span>{{ getCurrent.description }}</span>
+        <el-link
+          style="float: right; padding: 3px 0"
+          type="primary"
+          target="_blank"
+          :href="`https://kotori.js.org/modules/#${getCurrent.name}`"
+          title="官方文档"
+        >
+          文档
+        </el-link>
+      </div>
+    </slot>
     <div class="avatar list">
       <img
         :src="`http://k.hotaru.icu/api/data/avatar/${getCurrent.name}`"
@@ -22,7 +24,7 @@
       <h3>{{ getCurrent.name }}</h3>
     </div>
     <div class="download list">
-      <pps-button theme="confirm" @click.native="openDialog">下载</pps-button>
+      <pps-button theme="confirm" @click.native="dialog = true">下载</pps-button>
     </div>
     <div class="author list">
       <h3 class="mb10">{{ getCurrent.description }}</h3>
@@ -73,6 +75,21 @@
         </li>
       </ul>
     </div>
+    <pps-dialog title="提示" :show.sync="dialog">
+      <template v-slot:content>
+        <el-link type="primary" class="downloadLink" :href="`${getCurrent.dist.tarball}`">
+          直接下载
+        </el-link>
+        <el-link
+          target="_blank"
+          type="primary"
+          class="downloadLink"
+          :href="`https://www.npmjs.com/package/${getCurrent.name}`"
+        >
+          npm下载
+        </el-link>
+      </template>
+    </pps-dialog>
   </el-card>
 </template>
 
@@ -96,14 +113,9 @@ export default {
       const month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
       const day = date.getDate();
       const hours = date.getHours() >= 10 ? date.getHours() : `0${date.getHours()}`;
-      const minutes =
-        date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
-      const seconds =
-        date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
+      const minutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+      const seconds = date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    },
-    openDialog() {
-      this.$store.commit('modulesDetail/updateDialog', true);
     }
   },
   computed: {
@@ -152,11 +164,7 @@ export default {
   height: 100%;
   // position: fixed;
   // top: 50px;
-  width: 96%;
-
-  @media screen and (min-width: 1300px) {
-    margin-right: 20px;
-  }
+  // width: 96%;
 
   .title {
     text-align: center;
@@ -186,5 +194,8 @@ export default {
 }
 .mb10 {
   margin-bottom: 10px;
+}
+.downloadLink + .downloadLink {
+  margin-left: 20px;
 }
 </style>

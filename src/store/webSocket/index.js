@@ -28,13 +28,13 @@ export default {
       const ramRes = {};
       for (const key in state.ram) {
         if (Object.hasOwnProperty.call(state.ram, key)) {
-          ramRes[key] = Number(state.ram[key]).toFixed(2);
+          ramRes[key] = Number(state.ram[key].toFixed(2));
         }
       }
       return ramRes;
     },
     roundedCpu(state) {
-      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) + '%' };
+      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) };
     }
   }
 };

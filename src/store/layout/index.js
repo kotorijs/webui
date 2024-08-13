@@ -13,5 +13,9 @@ export default {
     }
   },
   actions: {},
-  getters: {}
+  getters: {
+    getIsFoldAside(state) {
+      return state.isFoldAside;
+    }
+  }
 };

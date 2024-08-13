@@ -7,6 +7,7 @@
       <k-menu
         :default-active="$route.path"
         active-color="#752bec"
+        :active-shape="['line']"
         text-color="#061e26"
         background-color="#00000017"
         mode="column"

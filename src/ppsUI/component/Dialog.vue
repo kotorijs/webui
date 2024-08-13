@@ -125,6 +125,7 @@ dialog {
   border: none;
   border-radius: 4px;
   transition: 0.15s linear;
+  overflow: hidden;
 
   @media screen and (max-width: 510px) {
     min-width: 300px;
@@ -150,13 +151,13 @@ dialog {
 
     .pps-dialog-content {
       margin-top: 20px;
-      // min-height: 60px;
       max-height: 70vh;
       height: 100%;
-      // overflow: auto;
+      overflow-x: auto;
 
       &::-webkit-scrollbar {
         width: 5px; // 设置滚动条的宽度
+        height: 0px;
       }
       &::-webkit-scrollbar-track {
         background: transparent;

@@ -79,8 +79,26 @@ export default {
     padding-top: 0;
     padding-bottom: 0;
     overflow-x: hidden;
-    height: 0;
+    height: var(--k-main-height);
     background-color: var(--normal-color);
+    &::-webkit-scrollbar {
+      width: 5px; // 设置滚动条的宽度
+      height: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      position: absolute;
+      right: -5px;
+      width: 5px;
+      background: #88888870;
+      border-radius: 6px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #888888; // 鼠标悬停时滚动条的颜色
+    }
   }
 }
 </style>

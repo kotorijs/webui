@@ -103,7 +103,8 @@ export default {
 
 <style scoped lang="less">
 .root {
-  height: var(--k-main-height);
+  // height: var(--k-main-height);
+  height: 100%;
   width: 100%;
   position: relative;
   .k-console {

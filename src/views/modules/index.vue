@@ -9,7 +9,9 @@
       :height="tableHeight"
     >
       <el-table-column prop="name" label="包名" align="center" fixed="left"></el-table-column>
-      <el-table-column prop="description" label="描述" align="center"></el-table-column>
+      <template v-if="isChangeTable">
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+      </template>
       <el-table-column label="版本" align="center">
         <template slot-scope="scope">v{{ scope.row.version }}</template>
       </el-table-column>
@@ -17,10 +19,12 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <pps-button theme="text" @click="handleViewDetails(scope.row)">详情</pps-button>
-          <pps-button v-if="viewDetailsData.hasConfig" theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
+          <pps-button theme="text" @click="handleEdit(scope.row)">编辑</pps-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 弹窗部分 -->
     <pps-dialog :show.sync="isShowDetailsDialog">
       <template slot="title">
         <span>{{ viewDetailsData.name }}</span>
@@ -64,6 +68,14 @@
               {{ item }}
             </el-tag>
           </el-descriptions-item>
+          <el-descriptions-item
+            :span="2"
+            label="描述"
+            labelClassName="my-label"
+            contentClassName="my-label"
+          >
+            {{ viewDetailsData.description }}
+          </el-descriptions-item>
           <el-descriptions-item :labelStyle="{ display: 'none' }" :span="2">
             <el-table :data="viewDetailsData.pluginDependencies" style="width: 100%">
               <el-table-column align="center" prop="key" label="依赖"></el-table-column>
@@ -73,7 +85,12 @@
         </el-descriptions>
       </template>
     </pps-dialog>
-    <pps-dialog :show.sync="isShowEditDialog" :title="editDialogData.id">
+    <pps-dialog
+      @confirmed="updateConfigFn"
+      @canceled="1"
+      :show.sync="isShowEditDialog"
+      :title="editDialogData.id"
+    >
       <template slot="content">
         <vue-form
           v-model="editDialogData.origin"
@@ -88,7 +105,7 @@
 </template>
 
 <script>
-import { getUserModulesAPI, getPluginsConfigAPI } from '@/api/index';
+import { getUserModulesAPI, getPluginsConfigAPI, updatePluginsConfigAPI } from '@/api/index';
 export default {
   name: 'modulesPage',
   data() {
@@ -134,36 +151,8 @@ export default {
       },
       editDialogData: {
         id: '',
-        origin: {
-          'command-prefix': '',
-          extends: '',
-          lang: '',
-          master: '',
-          mode: ''
-        },
-        schema: {
-          $schema: 'http://json-schema.org/draft-07/schema#',
-          type: 'object',
-          title: 'Filter Configuration',
-          description: 'Configuration for including or excluding items from a list',
-          properties: {
-            mode: {
-              type: 'string',
-              enum: ['include', 'exclude'],
-              default: 'exclude',
-              description: 'Determines whether to include or exclude items in the list'
-            },
-            list: {
-              type: 'array',
-              items: {
-                type: 'string'
-              },
-              default: [],
-              description: 'List of items to include or exclude'
-            }
-          },
-          required: ['mode', 'list']
-        }
+        origin: {},
+        schema: {}
       },
       uiSchema: {
         bio: {
@@ -180,35 +169,57 @@ export default {
   directives: {},
   methods: {
     handleViewDetails(row) {
-      this.handleDialogMask(() => {
-        this.viewDetailsData = { ...this.wiewDetailsData, ...row };
-        if (row.peerDependencies) {
-          this.viewDetailsData.pluginDependencies = this.obj2Arr(row.peerDependencies);
-        }
-      });
+      this.isLoading = true;
+      this.viewDetailsData = { ...this.wiewDetailsData, ...row };
+      if (row.peerDependencies) {
+        this.viewDetailsData.pluginDependencies = this.obj2Arr(row.peerDependencies);
+      }
+      this.isShowDetailsDialog = true;
+      this.isLoading = false;
     },
     handleEdit(row) {
-      this.handleDialogMask(async () => {
-        try {
-          getPluginsConfigAPI(row.name).then(({ data: res }) => {
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      }, true);
-    },
-    async handleDialogMask(task, isEdit = false) {
       this.isLoading = true;
-      await task();
-      this.isLoading = false;
-      isEdit ? (this.isShowEditDialog = true) : (this.isShowDetailsDialog = true);
+      getPluginsConfigAPI(row.name).then(({ data: res }) => {
+        this.isLoading = false;
+        if (!res.origin) {
+          return this.$message({
+            message: '此插件没有配置文件！',
+            type: 'warning'
+          });
+        }
+        this.editDialogData.origin = res.origin;
+        this.editDialogData.schema = res.schema;
+        this.editDialogData.id = row.name;
+        this.isShowEditDialog = true;
+      });
+    },
+    updateConfigFn() {
+      const config = this.editDialogData.origin;
+      updatePluginsConfigAPI(this.editDialogData.id, config)
+        .then((res) => {
+          if (res.status === 204) {
+            return this.$message({
+              message: '更新成功！',
+              type: 'success'
+            });
+          }
+          return this.$message({
+            message: '更新失败！',
+            type: 'error'
+          });
+        })
+        .then(() => {
+          this.editDialogData.origin = {};
+          this.editDialogData.schema = {};
+        });
     },
     handleSizeChange(width, _) {
+      console.log(width);
       if (width < 450) {
-        this.isChangeTable = true;
+        this.isChangeTable = false;
         return;
       }
-      this.isChangeTable = false;
+      this.isChangeTable = true;
     },
     cardResize(_, h) {
       this.tableHeight = Math.floor(h) - 40;
@@ -246,6 +257,7 @@ export default {
 ::v-deep .el-table__body-wrapper {
   &::-webkit-scrollbar {
     width: 5px; // 设置滚动条的宽度
+    height: 5px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
@@ -261,5 +273,8 @@ export default {
   &::-webkit-scrollbar-thumb:hover {
     background: #888888; // 鼠标悬停时滚动条的颜色
   }
+}
+&::v-deep .pps-dialog-content {
+  max-width: 500px;
 }
 </style>

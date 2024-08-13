@@ -22,6 +22,7 @@ export default {
   actions: {},
   getters: {
     getCurrent: (state) => state.current,
-    getDialog: (state) => state.dialog
+    getDialog: (state) => state.dialog,
+    getData: (state) => state.data
   }
 };
