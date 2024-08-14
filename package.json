@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@kotori-bot/i18n": "^1.2.1",
+    "@kotori-bot/tools": "^1.5.1",
     "@lljj/vue-json-schema-form": "^1.19.0",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",

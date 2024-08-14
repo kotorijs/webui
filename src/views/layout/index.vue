@@ -4,7 +4,9 @@
     <el-container direction="vertical">
       <k-header></k-header>
       <el-main :class="{ isPadding }" v-resize-ob="resizeFn">
-        <router-view></router-view>
+        <keep-alive include="kConsole">
+          <router-view></router-view>
+        </keep-alive>
       </el-main>
       <k-footer v-if="isFooter"></k-footer>
     </el-container>
@@ -13,6 +15,7 @@
 
 <script>
 import Ws from '@/utils/webSocket';
+import { mapGetters } from 'vuex';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
@@ -23,6 +26,11 @@ export default {
   data() {
     return {
       ws: null
+    };
+  },
+  provide() {
+    return {
+      layout: this
     };
   },
   methods: {
@@ -49,8 +57,10 @@ export default {
   },
   updated() {
     this.handleAside();
+    console.log('updated');
   },
   computed: {
+    ...mapGetters('layoutOption', ['getIsFoldAside']),
     isPadding() {
       if (uniqueRoutes.includes(this.$route.fullPath)) {
         return true;

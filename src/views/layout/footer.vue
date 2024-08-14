@@ -13,9 +13,9 @@
       position="top"
     >
       <div slot="content" class="status detail">
-        <span>内存:{{ ~~roundedRam.rate }} %</span>
+        <span>内存:{{ fixedFn(roundedRam.rate) }} %</span>
         &nbsp;
-        <span>CPU:{{ ~~roundedCpu.rate }} %</span>
+        <span>CPU:{{ fixedFn(roundedCpu.rate) }} %</span>
       </div>
       <template v-slot:item="{ scope }">
         <div class="rate">
@@ -38,7 +38,10 @@ export default {
     };
   },
   methods: {
-    contextMenuFn() {}
+    contextMenuFn() {},
+    fixedFn(num) {
+      return Number(num).toFixed(1);
+    }
   },
   mounted() {
     getStatusAPI().then(({ data: res }) => {

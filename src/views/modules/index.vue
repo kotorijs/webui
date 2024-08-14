@@ -1,12 +1,12 @@
 <template>
   <el-card v-loading="isEmpty" v-resize-ob="cardResize">
     <el-table
-      stripe
       fit
+      stripe
       :data="bots"
       v-loading="isLoading"
-      v-resize-ob="handleSizeChange"
       :height="tableHeight"
+      v-resize-ob="handleSizeChange"
     >
       <el-table-column prop="name" label="包名" align="center" fixed="left"></el-table-column>
       <template v-if="isChangeTable">
@@ -214,7 +214,6 @@ export default {
         });
     },
     handleSizeChange(width, _) {
-      console.log(width);
       if (width < 450) {
         this.isChangeTable = false;
         return;
@@ -235,7 +234,6 @@ export default {
   async mounted() {
     const { data: res } = await getUserModulesAPI();
     this.bots = res;
-    // const { data: res1 } = await getPluginsConfigAPI();
   }
 };
 </script>

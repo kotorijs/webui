@@ -55,7 +55,7 @@ export default {
     },
     arrowClass() {
       if (this.getIsFoldAside) return 'el-icon-d-arrow-right';
-      return 'el-icon-d-arrow-left'
+      return 'el-icon-d-arrow-left';
     }
   },
   mixins: [userFullScreen]

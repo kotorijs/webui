@@ -10,7 +10,10 @@
         :placeholder="placeholder"
         v-model.trim="keyWord"
       />
-      <slot></slot>
+      <div class="space"></div>
+      <div class="operation">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -124,8 +127,19 @@ svg {
   .pps-input-label {
     margin-right: 15px;
   }
+  .space {
+    width: 0;
+    flex: 1;
+  }
+  .operation {
+    display: inline-flex;
+    padding-inline-end: 5px;
+  }
+  input{
+    padding-inline-start: 5px;
+  }
 
-  & + &{
+  & + & {
     margin-top: 20px;
   }
 }

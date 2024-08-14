@@ -10,9 +10,9 @@
           v-for="(item, index) in currentDetails"
           :avatar="`http://k.hotaru.icu/api/data/avatar/${item.name}`"
         >
-          <template v-slot:title>{{ item.name }}</template>
-          <template v-slot:des>{{ item.description }}</template>
-          <template v-slot:author>V{{ item.version }} {{ item.author.name }}</template>
+          <template v-slot:title>{{ item?.name }}</template>
+          <template v-slot:des>{{ item?.description }}</template>
+          <template v-slot:author>V{{ item?.version }} {{ item?.author?.name }}</template>
         </k-detail-item>
       </div>
       <div class="pagination">
@@ -91,7 +91,7 @@ export default {
       this.pageIndex = 1;
     },
     handleClick(index) {
-      this.$store.commit('modulesDetail/updateCurrent', index);
+      this.$store.commit('modulesDetail/updateCurrent', index + this.itemId);
       if (this.isNarrow) this.isShowDialog = true;
     },
     changeCurrentPage(num) {
@@ -100,7 +100,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modulesDetail', ['getData', 'getCurrent'])
+    ...mapGetters('modulesDetail', ['getData', 'getCurrent']),
+    itemId() {
+      return (this.pageIndex - 1) * this.itemNum;
+    }
   },
   watch: {
     itemNum(val) {
@@ -108,15 +111,13 @@ export default {
     }
   },
   created() {
-    // this.getModules();
-  },
-  mounted() {
     getAllModulesAPI().then(({ data: res }) => {
       this.$store.commit('modulesDetail/updateData', res.list);
       this.detailsLen = res.list.length;
       this.calcPage(this.detailsLen);
     });
-
+  },
+  mounted() {
     this.$router.push('/modulesCenter/modulesItem');
     console.log('data里的currentDetails要改成mixin');
   }
