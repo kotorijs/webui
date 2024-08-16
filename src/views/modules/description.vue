@@ -27,7 +27,7 @@
       <pps-button theme="confirm" @click.native="dialog = true">下载</pps-button>
     </div>
     <div class="author list">
-      <h3 class="mb10">{{ getCurrent.description }}</h3>
+      <h3 class="mb10">开发信息</h3>
       <ul>
         <li>
           <strong>类别 :</strong>
@@ -37,7 +37,14 @@
         <li>
           <strong>作者 :</strong>
           &nbsp;
-          <el-link type="primary" href="">{{ getCurrent.author.name }}</el-link>
+          <el-link type="primary" :href="getCurrent.author.email">
+            {{ getCurrent.author.name }}
+          </el-link>
+        </li>
+        <li>
+          <strong>描述 :</strong>
+          &nbsp;
+          {{ getCurrent.description }}
         </li>
       </ul>
     </div>

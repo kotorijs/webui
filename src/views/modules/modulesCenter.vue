@@ -87,7 +87,9 @@ export default {
         }
         this.pageSize.push({ start, end: num });
       }
-      this.sliceData(this.pageSize[0].start, this.pageSize[0].end);
+      try {
+        this.sliceData(this.pageSize[0].start, this.pageSize[0].end);
+      } catch (error) {}
       this.pageIndex = 1;
     },
     handleClick(index) {
@@ -106,20 +108,23 @@ export default {
     }
   },
   watch: {
-    itemNum(val) {
-      this.calcPage(this.detailsLen);
+    itemNum: {
+      immediate: false,
+      handler() {
+        this.calcPage(this.detailsLen);
+      }
     }
   },
-  created() {
+  created() {},
+  mounted() {
     getAllModulesAPI().then(({ data: res }) => {
       this.$store.commit('modulesDetail/updateData', res.list);
       this.detailsLen = res.list.length;
       this.calcPage(this.detailsLen);
     });
-  },
-  mounted() {
     this.$router.push('/modulesCenter/modulesItem');
-    console.log('data里的currentDetails要改成mixin');
+    this.$message.error('作者名称跳转功能未完成，email处理方案待完善');
+    console.error('[modulesCenter] 作者名称跳转功能未完成，email处理方案待完善');
   }
 };
 </script>
@@ -128,11 +133,12 @@ export default {
 .wrapper {
   display: flex;
   width: 100%;
+  flex-direction: row-reverse;
   justify-content: space-around;
 }
 .k-detail-list {
-  margin-block-start: 10px;
-  margin-inline-start: -8px;
+  margin-block-start: -8px;
+  margin-inline-start: 10px;
   .items {
     display: flex;
     height: fit-content;

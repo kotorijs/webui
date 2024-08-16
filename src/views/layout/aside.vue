@@ -63,6 +63,7 @@ export default {
           content: '模块中心',
           indexPath: '/modulesCenter'
         },
+        { icon: 'el-icon-folder-opened', content: '指令管理', indexPath: '/command' },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]

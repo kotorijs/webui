@@ -51,6 +51,11 @@ const routes = [
         ]
       },
       {
+        path: 'command',
+        meta: { title: '指令管理' },
+        component: () => import('@/views/command')
+      },
+      {
         path: 'config',
         meta: { title: '配置查看' },
         component: () => import('@/views/config')
