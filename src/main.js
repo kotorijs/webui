@@ -8,7 +8,6 @@ import I18n from '@kotori-bot/i18n';
 import '@/elementUI/index.js';
 import '@/vueWebTerminal/index.js';
 import '@/vjsf/index.js';
-import '@/portalVue/index.js';
 import 'less';
 import '@/assets/index.less';
 import '@/assets/global.less';

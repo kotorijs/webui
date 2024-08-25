@@ -44,7 +44,6 @@ export default {
       }
     },
     resizeFn(w, h) {
-      // console.log(Math.floor(w));
       if (Math.floor(w) <= 428) {
         this.isSmall = true;
       } else {
