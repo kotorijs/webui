@@ -1,5 +1,5 @@
 <template>
-  <transition name="hello">
+  <transition name="pps-animation">
     <dialog ref="dialog" v-if="dialogFlag">
       <div class="pps-dialog-window">
         <header>
@@ -109,6 +109,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$slots);
     if (this.show) {
       this.showMessageFn();
     }
@@ -188,13 +189,13 @@ dialog {
   }
 }
 /* 进入的起点、离开的终点 */
-.hello-enter,
-.hello-leave-to {
+.pps-animation-enter,
+.pps-animation-leave-to {
   transform: translateY(-10%);
 }
 /* 进入的终点、离开的起点 */
-.hello-enter-to,
-.hello-leave {
+.pps-animation-enter-to,
+.pps-animation-leave {
   transform: translateY(0);
 }
 </style>

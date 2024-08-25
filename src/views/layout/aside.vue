@@ -20,6 +20,7 @@
           :index="menuItem.indexPath"
           :title="menuItem.content"
           width="60"
+          height="60"
         >
           <i :class="menuItem.icon" />
           <!-- <p>{{ menuItem.content }}</p> -->
@@ -44,11 +45,13 @@
 <script>
 import { logoutAPI } from '@/api';
 import { mapMutations } from 'vuex';
+import kAside from '@/components/layout/aside.vue'
 import kMenuItem from '@/components/menus/menu-item.vue';
 import kMenu from '@/components/menus/';
 export default {
   name: 'k-aside',
-  components: { kMenuItem, kMenu },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { kMenuItem, kMenu, kAside },
   data() {
     return {
       visible: false,

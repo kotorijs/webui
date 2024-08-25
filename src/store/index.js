@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import webSocketOption from './webSocket';
 import layoutOption from './layout';
 import modulesDetail from './modulesDetail';
+import command from './command';
 // import sandBox from './sandBox';
 import createPersistedState from 'vuex-persistedstate';
 
@@ -12,7 +13,8 @@ export default new Vuex.Store({
   modules: {
     webSocketOption,
     layoutOption,
-    modulesDetail
+    modulesDetail,
+    command
   },
   plugins: [createPersistedState()]
 });

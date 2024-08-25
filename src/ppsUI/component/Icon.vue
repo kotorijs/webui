@@ -12,6 +12,8 @@ import ppsSearch from './icon/search';
 import ppsGithub from './icon/github';
 import ppsHelp from './icon/help';
 import ppsQq from './icon/qq';
+import ppsSideHide from './icon/side-hide';
+import ppsSideShow from './icon/side-show';
 export default {
   name: 'ppsIcon',
   data() {
@@ -25,7 +27,9 @@ export default {
         'pps-icon-search': ppsSearch,
         'pps-icon-github': ppsGithub,
         'pps-icon-help': ppsHelp,
-        'pps-icon-qq': ppsQq
+        'pps-icon-qq': ppsQq,
+        'pps-icon-side-hide': ppsSideHide,
+        'pps-icon-side-show': ppsSideShow
       }
     };
   },
@@ -38,7 +42,9 @@ export default {
     ppsSearch,
     ppsGithub,
     ppsHelp,
-    ppsQq
+    ppsQq,
+    ppsSideHide,
+    ppsSideShow
   },
   props: {
     icon: {

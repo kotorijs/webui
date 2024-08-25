@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { getAllModulesAPI } from '@/api';
 import kDetailItem from '@/views/modules/itemDetails.vue';
 import kDes from '@/views/modules/description';
 import { mapGetters } from 'vuex';
@@ -66,7 +65,7 @@ export default {
       const xx = Math.floor(x);
       if (xx <= 425) this.isNarrow = true;
       else this.isNarrow = false;
-      if (xx <= 1100 && xx > 820) this.itemNum = 9;
+      if (xx <= 1819 && xx > 820) this.itemNum = 9;
       else if (xx <= 820 && xx > 632) this.itemNum = 6;
       else if (xx <= 632 && xx > 425) this.itemNum = 3;
       else this.itemNum = 16;
@@ -117,11 +116,8 @@ export default {
   },
   created() {},
   mounted() {
-    getAllModulesAPI().then(({ data: res }) => {
-      this.$store.commit('modulesDetail/updateData', res.list);
-      this.detailsLen = res.list.length;
-      this.calcPage(this.detailsLen);
-    });
+    this.detailsLen = this.getData.length;
+    this.calcPage(this.detailsLen);
     this.$router.push('/modulesCenter/modulesItem');
     this.$message.error('作者名称跳转功能未完成，email处理方案待完善');
     console.error('[modulesCenter] 作者名称跳转功能未完成，email处理方案待完善');
@@ -168,7 +164,7 @@ export default {
   width: 25%;
 }
 
-@media screen and (min-width: 1201px) {
+@media screen and (min-width: 1920px) {
   .k-detail-list {
     width: 75%;
   }
@@ -176,12 +172,12 @@ export default {
     width: 25%;
   }
 }
-@media screen and (max-width: 1200px) and (min-width: 920px) {
+@media screen and (max-width: 1919px) and (min-width: 920px) {
   .k-detail-list {
     width: 75%;
   }
   .k-detail-item {
-    width: 33.2%;
+    width: 33.3%;
   }
 }
 @media screen and (max-width: 919px) and (min-width: 732px) {

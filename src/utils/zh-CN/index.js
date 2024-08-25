@@ -28,6 +28,21 @@ const count = {
   modules: '模块'
 };
 
+const cmdSco = {
+  全部: 'all',
+  私聊: 0,
+  群聊: 1,
+  频道: 2
+};
+
+const cmdAcc = {
+  成员: 0,
+  管理员: 1,
+  最高管理员: 2
+};
+
 export const systemRF = rf(system);
 export const clubRF = rf(club);
 export const countRF = rf(count);
+export const commandScopeMap = cmdSco;
+export const commandAccessMap = cmdAcc;

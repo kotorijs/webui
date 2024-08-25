@@ -91,7 +91,7 @@ export default {
       let { date, pid, label, msg } = { ...defaultOptions, ...options };
       date = new Date(date).toLocaleString();
       label = label.join(' ');
-      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m: ${this.color.parse(
+      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m ${this.color.parse(
         msg
       )}`;
       this.$nextTick(() => {
@@ -155,7 +155,7 @@ export default {
   margin: 0 auto;
   z-index: 1;
   justify-content: space-around;
-  &::v-deep .pps-input {
+  &::v-deep .pps-input-inner {
     width: 100%;
   }
 }

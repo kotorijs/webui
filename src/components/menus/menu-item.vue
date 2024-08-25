@@ -10,7 +10,7 @@
   >
     <li
       class="k-menu-item"
-      :class="[{ 'is-active': active }, direction]"
+      :class="[{ className: className }, direction]"
       :style="[itemStyle]"
       v-on="$listeners"
       @mouseenter="onmouseenterFn"
@@ -63,6 +63,18 @@ export default {
       default() {
         return '70';
       }
+    },
+    height: {
+      type: String,
+      default() {
+        return '70';
+      }
+    },
+    className: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   },
   methods: {
@@ -71,7 +83,9 @@ export default {
       this.handleTooltipFn(true);
     },
     onMouseLeaveFn() {
+      if (this.activeShape.includes('background') && this.active) return;
       this.$el.style.backgroundColor = '';
+
       this.handleTooltipFn(false);
     },
     handleClickFn() {
@@ -92,8 +106,12 @@ export default {
     itemStyle() {
       const style = {
         color: this.active ? this.root.activeColor : this.root.textColor,
-        borderLeftColor: this.active ? this.root.activeColor : this.root.textColor
+        borderLeftColor: this.active ? this.root.activeColor : this.root.textColor,
+        backgroundColor: ''
       };
+      if (this.activeShape.includes('background')) {
+        style.backgroundColor = this.active ? this.root.backgroundColor : '';
+      }
       return style;
     },
     activeShape() {
@@ -104,11 +122,13 @@ export default {
       return false;
     },
     direction() {
-      return `k-menu-item-${this.root.mode}`
+      return `k-menu-item-${this.root.mode}`;
     }
   },
   beforeMount() {},
-  mounted() {}
+  mounted() {
+    // if (this.className) console.log(this.className);
+  }
 };
 </script>
 
@@ -119,10 +139,12 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: calc(v-bind(width) * 1px);
-  min-width: calc(v-bind(width) * 1px);
-  height: calc(v-bind(width) * 1px);
-  min-height: calc(v-bind(width) * 1px);
+  // width: calc(v-bind(width) * 1px);
+  width: 100%;
+  // min-width: calc(v-bind(width) * 1px);
+  max-width: 500px;
+  height: calc(v-bind(height) * 1px);
+  min-height: calc(v-bind(height) * 1px);
   text-align: center;
   list-style-type: none;
   border-radius: 5px;

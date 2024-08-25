@@ -159,7 +159,7 @@ export default {
     }
   }
 
-  h2{
+  h2 {
     margin: 1rem 0;
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <section :class="`k-container-${direction}`">
+  <section :class="`k-container-${direction}`" class="k-container">
     <slot></slot>
   </section>
 </template>
