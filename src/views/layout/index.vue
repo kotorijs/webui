@@ -19,7 +19,10 @@ import { mapGetters } from 'vuex';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
+import { kams } from '@/../package.json';
+import { getVersionAPI } from '@/api';
 const uniqueRoutes = ['/console', '/sandBox'];
+
 export default {
   name: 'myLayout',
   components: { kAside, kFooter, kHeader },
@@ -36,7 +39,6 @@ export default {
   },
   methods: {
     handleAside() {
-      console.log('handleAside', this.isSmall);
       if (uniqueRoutes.includes(this.$route.fullPath) || this.isSmall) {
         this.$store.commit('layoutOption/updateIsFoldAside', true);
       } else {
@@ -49,21 +51,44 @@ export default {
       } else {
         this.isSmall = false;
       }
+    },
+    async isVersionLatest() {
+      return new Promise((resolve, reject) => {
+        getVersionAPI().then(({ data: res }) => {
+          if (res['@kotori-bot/kotori-plugin-webui'] !== kams.version) {
+            this.$message.error('当前版本过低，请更新webui插件');
+            if (!this.$route.path.includes('/login')) {
+              this.$router.push('/login');
+              reject(new Error('版本过低'));
+            }
+          } else {
+            resolve();
+          }
+        });
+      });
     }
   },
   mounted() {
-    this.handleAside();
-    this.ws = new Ws();
-    this.$store.dispatch('command/getCommands');
-    this.$store.dispatch('modulesDetail/getData');
+    this.isVersionLatest()
+      .then(() => {
+        this.handleAside();
+        this.ws = new Ws();
+        this.$store.dispatch('command/getCommands');
+        this.$store.dispatch('modulesDetail/getData');
+      })
+      .catch(() => {});
   },
   beforeDestroy() {
-    console.log('beforeDestroy');
-    this.ws.server.close();
+    if (this.ws) {
+      this.ws.server.close();
+    }
   },
   updated() {
-    this.handleAside();
-    console.log('updated');
+    this.isVersionLatest()
+      .then(() => {
+        this.handleAside();
+      })
+      .catch(() => {});
   },
   computed: {
     ...mapGetters('layoutOption', ['getIsFoldAside']),

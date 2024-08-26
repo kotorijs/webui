@@ -109,7 +109,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$slots);
     if (this.show) {
       this.showMessageFn();
     }

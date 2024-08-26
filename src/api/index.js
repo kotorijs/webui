@@ -185,3 +185,11 @@ export const updateCommandConfigAPI = (command, config) => {
     data: config
   });
 };
+
+/**
+ * 获取版本信息接口
+ * @returns Promise对象
+ */
+export const getVersionAPI = () => {
+  return axios.get('https://kotori.js.org/assets/deps.json');
+};

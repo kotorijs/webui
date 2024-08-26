@@ -11,7 +11,7 @@
     <li
       class="k-menu-item"
       :class="[{ className: className }, direction]"
-      :style="[itemStyle]"
+      :style="[itemStyle, { height: `${height}px`, minHeight: `${height}px` }]"
       v-on="$listeners"
       @mouseenter="onmouseenterFn"
       @mouseleave="onMouseLeaveFn"
@@ -28,7 +28,7 @@
       </template>
       <template v-if="activeShape.includes('circle')">
         <transition appear>
-          <div v-show="active" class="current-shape circle"></div>
+          <div v-show="active" class="current-shape circle" :style="[circleStyle]"></div>
         </transition>
       </template>
       <slot></slot>
@@ -114,6 +114,12 @@ export default {
       }
       return style;
     },
+    circleStyle() {
+      return {
+        border: `3px solid ${this.activeColor};`,
+        filter: `drop-shadow(0 0 4px ${this.activeColor});`
+      };
+    },
     activeShape() {
       return this.root.activeShape;
     },
@@ -126,9 +132,7 @@ export default {
     }
   },
   beforeMount() {},
-  mounted() {
-    // if (this.className) console.log(this.className);
-  }
+  mounted() {}
 };
 </script>
 
@@ -139,12 +143,8 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  // width: calc(v-bind(width) * 1px);
   width: 100%;
-  // min-width: calc(v-bind(width) * 1px);
   max-width: 500px;
-  height: calc(v-bind(height) * 1px);
-  min-height: calc(v-bind(height) * 1px);
   text-align: center;
   list-style-type: none;
   border-radius: 5px;
@@ -164,8 +164,6 @@ export default {
     margin: 0 auto;
     height: 77%;
     width: 77%;
-    border: 3px solid v-bind(activeColor);
-    filter: drop-shadow(0 0 4px v-bind(activeColor));
     border-radius: 50%;
     z-index: 1;
   }
