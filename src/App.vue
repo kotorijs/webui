@@ -9,3 +9,10 @@
   height: 100%;
 }
 </style>
+
+<script>
+export default {
+  name: 'App',
+  methods: {}
+};
+</script>

@@ -110,7 +110,6 @@ export default {
     this.setPosition();
   },
   beforeDestroy() {
-    console.log('beforeDestroy');
     this.$refs.container.removeEventListener('contextmenu', this.openMenu);
     window.removeEventListener('click', this.closeMenu);
     window.removeEventListener('contextmenu', this.closeMenu);

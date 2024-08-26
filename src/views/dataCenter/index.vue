@@ -4,9 +4,7 @@
       <el-row type="flex" justify="left">
         <el-col style="margin-left: 10px">
           <h1 style="font-size: 25px">欢迎使用 kotori！</h1>
-          <p style="margin-top: 30px; font-size: 18px">
-            快速开始，使用 kotori 快速搭建你的机器人
-          </p>
+          <p style="margin-top: 30px; font-size: 18px">快速开始，使用 kotori 快速搭建你的机器人</p>
         </el-col>
       </el-row>
       <div style="display: flex">
@@ -106,7 +104,11 @@ export default {
   },
   methods: {
     setColumnChartFn() {
+      if (this.columnChart) {
+        this.columnChart.dispose();
+      }
       const chartDom = document.getElementById('column_show');
+      if (!chartDom) return;
       this.columnChart = this.$echarts.init(chartDom);
       const color = [
         '#5470c6',
@@ -155,7 +157,11 @@ export default {
       option && this.columnChart.setOption(option);
     },
     setCurvetChartFn() {
+      if (this.curveChart) {
+        this.curveChart.dispose();
+      }
       const chartDom = document.getElementById('curve_show');
+      if (!chartDom) return;
       this.curveChart = this.$echarts.init(chartDom);
 
       const date = new Date();
@@ -252,6 +258,14 @@ export default {
     this.processUptime();
     this.setColumnChartFn();
     this.setCurvetChartFn();
+  },
+  beforeDestroy() {
+    if (this.curveChart) {
+      this.curveChart.dispose();
+    }
+    if (this.columnChart) {
+      this.columnChart.dispose();
+    }
   }
 };
 </script>

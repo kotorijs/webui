@@ -132,10 +132,6 @@ export default {
     i {
       font-size: 23px;
     }
-    .k-menu-item {
-      width: 60px;
-      height: 60px;
-    }
   }
   .empty {
     height: 0;
