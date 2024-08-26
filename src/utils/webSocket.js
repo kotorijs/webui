@@ -20,7 +20,8 @@ export default class Ws {
 
   static ws;
 
-  send(data) {
+  send(data, task) {
+    task && task(data);
     this.server.send(JSON.stringify(data));
   }
 
@@ -33,9 +34,7 @@ export default class Ws {
   onMessage(msg) {
     const data = JSON.parse(msg.data);
     const res = data.data;
-    if (data.type === 'console_output') {
-      store.commit('webSocketOption/updateConsole', res);
-    } else if (data.type === 'stats') {
+    if (data.type === 'stats') {
       store.commit('webSocketOption/updateCpu', res.cpu);
       store.commit('webSocketOption/updateRam', res.ram);
     }
@@ -51,7 +50,6 @@ export default class Ws {
     this.status = 'offline';
     store.commit('webSocketOption/updateCpu');
     store.commit('webSocketOption/updateRam');
-    store.commit('webSocketOption/updateConsole');
   }
 
   static create() {

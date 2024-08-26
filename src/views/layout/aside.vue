@@ -7,6 +7,7 @@
       <k-menu
         :default-active="$route.path"
         active-color="#752bec"
+        :active-shape="['line']"
         text-color="#061e26"
         background-color="#00000017"
         mode="column"
@@ -19,6 +20,7 @@
           :index="menuItem.indexPath"
           :title="menuItem.content"
           width="60"
+          height="60"
         >
           <i :class="menuItem.icon" />
           <!-- <p>{{ menuItem.content }}</p> -->
@@ -43,11 +45,13 @@
 <script>
 import { logoutAPI } from '@/api';
 import { mapMutations } from 'vuex';
+import kAside from '@/components/layout/aside.vue'
 import kMenuItem from '@/components/menus/menu-item.vue';
 import kMenu from '@/components/menus/';
 export default {
   name: 'k-aside',
-  components: { kMenuItem, kMenu },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { kMenuItem, kMenu, kAside },
   data() {
     return {
       visible: false,
@@ -62,6 +66,7 @@ export default {
           content: '模块中心',
           indexPath: '/modulesCenter'
         },
+        { icon: 'el-icon-folder-opened', content: '指令管理', indexPath: '/command' },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]

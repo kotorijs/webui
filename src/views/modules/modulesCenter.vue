@@ -1,180 +1,210 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :xs="12" :sm="16" :md="16" :xl="15" class="module_card">
-      <div class="top">
+  <div class="wrapper" v-resize-ob="cardResize">
+    <div class="k-detail-list">
+      <div class="banner"></div>
+      <div class="items">
         <k-detail-item
-          v-for="(item, index) in currentDetails"
           :key="index"
-          width="260"
-          :widths="[250, 300, 500]"
+          class="k-detail-item"
+          @detail="handleClick(index)"
+          v-for="(item, index) in currentDetails"
           :avatar="`http://k.hotaru.icu/api/data/avatar/${item.name}`"
         >
-          <template v-slot:title>{{ item.name }}</template>
-          <template v-slot:des>{{ item.description }}</template>
-          <template v-slot:author>
-            V{{ item.version }} {{ item.author.name }}
-          </template>
-          <template v-slot:action>
-            <pps-button theme="confirm" @click="handleClick(index)">详情</pps-button>
-          </template>
+          <template v-slot:title>{{ item?.name }}</template>
+          <template v-slot:des>{{ item?.description }}</template>
+          <template v-slot:author>V{{ item?.version }} {{ item?.author?.name }}</template>
         </k-detail-item>
       </div>
-      <div class="bottom">
+      <div class="pagination">
         <el-pagination
           background
           layout="prev, pager, next"
           :total="detailsLen"
-          :page-size="9"
+          :page-size="itemNum"
+          :pager-count="5"
+          :current-page.sync="pageIndex"
           @current-change="changeCurrentPage"
         ></el-pagination>
       </div>
-    </el-col>
-    <el-col :xs="12" :sm="8" :md="8" :xl="9" class="itemDetails">
+      <pps-dialog :title="getCurrent.name" :show.sync="isShowDialog">
+        <template v-slot:content>
+          <k-des>
+            <template v-slot:title><div></div></template>
+          </k-des>
+        </template>
+      </pps-dialog>
+    </div>
+    <div class="k-description">
       <router-view></router-view>
-    </el-col>
-    <el-dialog
-      title="提示"
-      :visible.sync="$store.state.modulesDetail.dialog"
-      width="30%"
-    >
-      <el-link
-        class="downloadLink"
-        type="primary"
-        @click.prevent="handleDialog"
-        :href="`${getCurrent.dist.tarball}`"
-      >
-        直接下载
-      </el-link>
-      <el-link
-        class="downloadLink"
-        type="primary"
-        :href="`https://www.npmjs.com/package/${getCurrent.name}`"
-        target="_blank"
-      >
-        npm下载
-      </el-link>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="handleDialog">取 消</el-button>
-        <el-button type="primary" @click="handleDialog">确 定</el-button>
-      </span>
-    </el-dialog>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script>
-import { getAllModulesAPI } from '@/api';
-import kDetailItem from './itemDetails.vue';
+import kDetailItem from '@/views/modules/itemDetails.vue';
+import kDes from '@/views/modules/description';
 import { mapGetters } from 'vuex';
 import currentDetails from '@/utils/moduleCenter';
+
 export default {
   name: 'modulesCenter',
-  components: { kDetailItem },
+  components: { kDetailItem, kDes },
   data() {
     return {
       currentDetails,
+      itemNum: 16,
       detailsLen: 0,
       pageSize: [],
-      details: []
+      pageIndex: 1,
+      isNarrow: false,
+      isShowDialog: false
     };
   },
   methods: {
-    async getModules() {
-      const { data: res } = await getAllModulesAPI();
-      this.detailsLen = res.list.length;
-      this.details = res.list;
-      this.calcPage(res.list.length);
-      this.sliceData(0, 9, res.list);
+    cardResize(x, _) {
+      const xx = Math.floor(x);
+      if (xx <= 425) this.isNarrow = true;
+      else this.isNarrow = false;
+      if (xx <= 1819 && xx > 820) this.itemNum = 9;
+      else if (xx <= 820 && xx > 632) this.itemNum = 6;
+      else if (xx <= 632 && xx > 425) this.itemNum = 3;
+      else this.itemNum = 16;
     },
-    sliceData(start, end, data) {
-      this.currentDetails = data.slice(start, end);
-      this.$store.commit('modulesDetail/updateData', this.currentDetails);
-    },
-    handleClick(index) {
-      this.$store.commit('modulesDetail/updateCurrent', index);
+    sliceData(start, end) {
+      this.currentDetails = this.getData.slice(start, end);
+      this.$store.commit('modulesDetail/updateCurrent', start);
     },
     calcPage(num) {
-      const row = Math.ceil(num / 9);
+      this.pageSize = [];
+      const row = Math.ceil(num / this.itemNum);
       for (let i = 1; i <= row; i++) {
-        const start = i * 9 - 9;
-        const end = i * 9;
+        const start = i * this.itemNum - this.itemNum;
+        const end = i * this.itemNum;
         if (i < row) {
           this.pageSize.push({ start, end });
           continue;
         }
         this.pageSize.push({ start, end: num });
       }
+      try {
+        this.sliceData(this.pageSize[0].start, this.pageSize[0].end);
+      } catch (error) {}
+      this.pageIndex = 1;
+    },
+    handleClick(index) {
+      this.$store.commit('modulesDetail/updateCurrent', index + this.itemId);
+      if (this.isNarrow) this.isShowDialog = true;
     },
     changeCurrentPage(num) {
       const index = num - 1;
-      this.sliceData(
-        this.pageSize[index].start,
-        this.pageSize[index].end,
-        this.details
-      );
-    },
-    handleDialog() {
-      this.$store.commit('modulesDetail/updateDialog');
+      this.sliceData(this.pageSize[index].start, this.pageSize[index].end);
     }
   },
   computed: {
-    ...mapGetters('modulesDetail', ['getDialog', 'getCurrent'])
+    ...mapGetters('modulesDetail', ['getData', 'getCurrent']),
+    itemId() {
+      return (this.pageIndex - 1) * this.itemNum;
+    }
   },
-  created() {
-    this.getModules();
-    this.handleDialog();
+  watch: {
+    itemNum: {
+      immediate: false,
+      handler() {
+        this.calcPage(this.detailsLen);
+      }
+    }
   },
+  created() {},
   mounted() {
+    this.detailsLen = this.getData.length;
+    this.calcPage(this.detailsLen);
     this.$router.push('/modulesCenter/modulesItem');
-    console.log('data里的currentDetails要改成mixin');
+    this.$message.error('作者名称跳转功能未完成，email处理方案待完善');
+    console.error('[modulesCenter] 作者名称跳转功能未完成，email处理方案待完善');
   }
 };
 </script>
 
-<style scoped lang="less">
-.el-card__body {
-  height: 139px;
+<style lang="less">
+.wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row-reverse;
+  justify-content: space-around;
 }
-.module_card {
-  @media screen and (max-width: 830px) {
-    display: block;
+.k-detail-list {
+  margin-block-start: -8px;
+  margin-inline-start: 10px;
+  .items {
+    display: flex;
+    height: fit-content;
+    flex-flow: row wrap;
+    width: 100%;
   }
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-left: 0 !important;
-  min-height: calc(100vh - 70px);
+  .pagination {
+    width: 100%;
+    .el-pagination {
+      width: fit-content;
+      margin: 0 auto;
+    }
+  }
 }
 
-.top {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 10px;
-  min-height: 539px;
+.k-description {
+  position: sticky;
+  top: 0;
+  height: var(--k-main-no);
+  flex: 1;
+  * {
+    box-sizing: border-box;
+  }
 }
 
-.bottom {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
+.k-detail-item {
+  width: 25%;
 }
 
-.itemDetails {
-  height: calc(100vh - 100px);
-  position: fixed;
-  top: 50px;
-  padding: 0px 20px !important;
-  right: 0;
+@media screen and (min-width: 1920px) {
+  .k-detail-list {
+    width: 75%;
+  }
+  .k-detail-item {
+    width: 25%;
+  }
 }
-img {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #f7b9b9;
+@media screen and (max-width: 1919px) and (min-width: 920px) {
+  .k-detail-list {
+    width: 75%;
+  }
+  .k-detail-item {
+    width: 33.3%;
+  }
 }
-.downloadLink + .downloadLink {
-  margin-left: 20px;
+@media screen and (max-width: 919px) and (min-width: 732px) {
+  .k-detail-list {
+    width: 66.6%;
+  }
+  .k-detail-item {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 731px) and (min-width: 526px) {
+  .k-detail-list {
+    width: 50%;
+  }
+  .k-detail-item {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 525px) {
+  .k-detail-list {
+    width: 100%;
+  }
+  .k-detail-item {
+    width: 100%;
+  }
+  .k-description {
+    display: none;
+  }
 }
 </style>

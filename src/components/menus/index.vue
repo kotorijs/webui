@@ -68,7 +68,9 @@ export default {
     }
   },
   watch: {
-    defaultActive(val) {}
+    defaultActive(val) {
+      this.activeIndex = val;
+    }
   },
   beforeCreate() {
     this.$bus = new Vue();
@@ -86,7 +88,7 @@ export default {
 .k-menu {
   display: flex;
   list-style: none;
-  overflow-x: auto;
+  // overflow-x: auto;
   height: auto;
 
   &::-webkit-scrollbar {

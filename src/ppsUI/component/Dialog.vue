@@ -1,5 +1,5 @@
 <template>
-  <transition name="hello">
+  <transition name="pps-animation">
     <dialog ref="dialog" v-if="dialogFlag">
       <div class="pps-dialog-window">
         <header>
@@ -109,6 +109,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$slots);
     if (this.show) {
       this.showMessageFn();
     }
@@ -125,6 +126,7 @@ dialog {
   border: none;
   border-radius: 4px;
   transition: 0.15s linear;
+  overflow: hidden;
 
   @media screen and (max-width: 510px) {
     min-width: 300px;
@@ -150,13 +152,13 @@ dialog {
 
     .pps-dialog-content {
       margin-top: 20px;
-      // min-height: 60px;
       max-height: 70vh;
       height: 100%;
-      // overflow: auto;
+      overflow-x: auto;
 
       &::-webkit-scrollbar {
         width: 5px; // 设置滚动条的宽度
+        height: 0px;
       }
       &::-webkit-scrollbar-track {
         background: transparent;
@@ -187,13 +189,13 @@ dialog {
   }
 }
 /* 进入的起点、离开的终点 */
-.hello-enter,
-.hello-leave-to {
+.pps-animation-enter,
+.pps-animation-leave-to {
   transform: translateY(-10%);
 }
 /* 进入的终点、离开的起点 */
-.hello-enter-to,
-.hello-leave {
+.pps-animation-enter-to,
+.pps-animation-leave {
   transform: translateY(0);
 }
 </style>

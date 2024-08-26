@@ -165,7 +165,7 @@ export default {
       height: 40px;
     }
 
-    & ::v-deep .pps-input {
+    & ::v-deep .pps-input-inner {
       width: 360px;
       height: 38px;
       margin: 0 auto 20px;

@@ -9,26 +9,29 @@
       ></Terminal>
     </div>
 
-    <pps-form @submit="sendMsg()">
+    <pps-form @submit="sendMsg()" @reset="clearMsg()">
       <pps-input :content.sync="inputData">
         <pps-button theme="confirm">发送</pps-button>
+        <pps-button theme="primary" type="reset">清屏</pps-button>
       </pps-input>
     </pps-form>
   </div>
 </template>
 
 <script>
+import { Colors, TerminalAdapter } from '@kotori-bot/tools';
 import { TerminalApi } from 'vue-web-terminal';
-import Ws from '@/utils/webSocket';
 export default {
-  name: 'myConsole',
+  name: 'kConsole',
   data() {
     return {
       messages: [],
       inputData: '',
-      action: 'command'
+      action: 'command',
+      color: null
     };
   },
+  inject: ['layout'],
   methods: {
     onExecCmd(key, command, success, failed) {
       if (key === 'fail') {
@@ -64,10 +67,11 @@ export default {
     },
     sendMsg() {
       try {
-        Ws.ws.send({ command: this.inputData, action: this.action });
-        this.pushMsg({
-          label: ['user'],
-          msg: this.inputData
+        this.layout.ws.send({ command: this.inputData, action: this.action }, () => {
+          this.pushMsg({
+            label: ['user'],
+            msg: this.inputData
+          });
         });
         this.inputData = '';
       } catch (error) {
@@ -80,36 +84,63 @@ export default {
     pushMsg(options) {
       const defaultOptions = {
         date: new Date(),
-        pid: null,
+        pid: '本机',
         label: ['INFO'],
         msg: 'nothing'
       };
       let { date, pid, label, msg } = { ...defaultOptions, ...options };
       date = new Date(date).toLocaleString();
       label = label.join(' ');
-      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m: ${msg}`;
-      TerminalApi.pushMessage('my-terminal', { type: 'ansi', content: message });
+      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m ${this.color.parse(
+        msg
+      )}`;
+      this.$nextTick(() => {
+        TerminalApi.pushMessage('my-terminal', { type: 'ansi', content: message });
+      });
+    },
+    clearMsg() {
+      TerminalApi.clearLog('my-terminal');
     }
   },
+  computed: {},
+  created() {
+    this.color = new Colors(new TerminalAdapter());
+  },
   mounted() {
-    Ws.create();
-    // this.firstMsg();
+    this.$nextTick(() => {
+      this.layout.ws.server.onmessage = (msg) => {
+        const res = JSON.parse(msg.data);
+        if (res.type === 'console_output') {
+          this.pushMsg(res.data);
+        }
+      };
+    });
+  },
+  activated() {},
+  deactivated() {
+    this.$store.commit('layoutOption/updateIsFoldAside', false);
   },
   beforeDestroy() {
     this.$store.commit('layoutOption/updateIsFoldAside', false);
-  }
+  },
+  updated() {}
 };
 </script>
 
 <style scoped lang="less">
 .root {
-  height: var(--k-main-height);
+  height: 100%;
   width: 100%;
   position: relative;
   .k-console {
     height: 100%;
   }
+  .t-container {
+    border-radius: 0;
+  }
   &::v-deep .t-window {
+    height: calc(100% - 50px) !important;
+
     .t-last-line {
       display: none;
     }
@@ -124,7 +155,7 @@ export default {
   margin: 0 auto;
   z-index: 1;
   justify-content: space-around;
-  &::v-deep .pps-input {
+  &::v-deep .pps-input-inner {
     width: 100%;
   }
 }

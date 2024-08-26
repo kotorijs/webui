@@ -1,3 +1,4 @@
+import { getAllModulesAPI } from '@/api';
 export default {
   namespaced: true,
   state: {
@@ -9,7 +10,7 @@ export default {
     updateData(state, val = []) {
       state.data = val;
       if (val.length > 0) {
-        state.current = val[0]
+        state.current = val[0];
       }
     },
     updateCurrent(state, val = 0) {
@@ -19,9 +20,16 @@ export default {
       state.dialog = val;
     }
   },
-  actions: {},
+  actions: {
+    getData({ commit }) {
+      getAllModulesAPI().then(({ data: res }) => {
+        commit('updateData', res.list);
+      });
+    }
+  },
   getters: {
     getCurrent: (state) => state.current,
-    getDialog: (state) => state.dialog
+    getDialog: (state) => state.dialog,
+    getData: (state) => state.data
   }
 };

@@ -1,15 +1,14 @@
 const cpu = { rate: null, speed: null };
 const ram = { total: null, unused: null, used: null, rate: null };
-const console = {
-  type: '',
-  data: { level: null, time: null, pid: null, label: [], msg: '' }
-};
+// const console = {
+//   type: '',
+//   data: { level: null, time: null, pid: null, label: [], msg: '' }
+// };
 export default {
   namespaced: true,
   state: {
     cpu,
-    ram,
-    console
+    ram
   },
   mutations: {
     updateCpu(state, val = { ...cpu }) {
@@ -17,9 +16,6 @@ export default {
     },
     updateRam(state, val = { ...ram }) {
       state.ram = val;
-    },
-    updateConsole(state, val = { ...console }) {
-      state.console = val;
     }
   },
   actions: {},
@@ -34,7 +30,7 @@ export default {
       return ramRes;
     },
     roundedCpu(state) {
-      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) + '%' };
+      return { ...state.cpu, rate: Number(state.cpu.rate).toFixed(2) };
     }
   }
 };

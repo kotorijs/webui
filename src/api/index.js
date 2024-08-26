@@ -56,13 +56,15 @@ export const getBotsConfigAPI = (botName = '') => {
 /**
  * 更新机器人实例配置信息
  * @param {*} botName 机器人实例名称
+ * @param {*} config 机器人实例配置信息
  * @returns Promise对象
  */
-export const updateBotsConfigAPI = (botName) => {
+export const updateBotsConfigAPI = (botName, config) => {
   return request({
     url: `/config/bots/${botName}`,
     method: 'PUT',
     data: {
+      ...config
     }
   });
 };
@@ -82,14 +84,14 @@ export const getPluginsConfigAPI = (pluginName = '') => {
 /**
  * 更新插件配置信息
  * @param {*} pluginName 插件名称
+ * @param {*} config 插件配置信息
  * @returns Promise对象
  */
-export const updatePluginsConfigAPI = (pluginName = '') => {
+export const updatePluginsConfigAPI = (pluginName = '', config) => {
   return request({
     url: `/config/plugins/${pluginName}`,
     method: 'PUT',
-    data: {
-    }
+    data: config
   });
 };
 
@@ -155,5 +157,31 @@ export const getStatusAPI = () => {
   return request({
     url: `/data/status/`,
     method: 'GET'
+  });
+};
+
+/**
+ * 获取指令数据接口
+ * @param {*} command 指令名称
+ * @returns Promise对象
+ */
+export const getCommandsAPI = (command = '') => {
+  return request({
+    url: `/config/commands/${command}`,
+    method: 'GET'
+  });
+};
+
+/**
+ * 更新单个指令配置信息接口
+ * @param {*} command 指令名称
+ * @param {*} config 指令配置信息
+ * @returns Promise对象
+ */
+export const updateCommandConfigAPI = (command, config) => {
+  return request({
+    url: `/config/commands/${command}`,
+    method: 'PUT',
+    data: config
   });
 };
