@@ -3,7 +3,7 @@ import { Message } from 'element-ui';
 import config from '@/config';
 import store from '@/store';
 
-const wsHost = config.wsHost || 'localhost';
+const wsHost = config.wsHost ?? '';
 const url = `${wsHost}/webui/${store.state.layoutOption.token}`;
 
 Vue.prototype.$message = Message;

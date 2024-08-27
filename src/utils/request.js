@@ -4,9 +4,9 @@ import config from '@/config';
 import router from '@/router';
 import { Message } from 'element-ui';
 
-const HOST = config.host || 'localhost';
-const PORT = config.port || 720;
-const url = `${HOST}:${PORT}/api`;
+const HOST = config.host ?? '';
+const PORT = config.port ?? '';
+const url = HOST && PORT ? `${HOST}:${PORT}/api` : '/api';
 
 const myAxios = axios.create({
   baseURL: url,
