@@ -14,6 +14,8 @@ import ppsHelp from './icon/help';
 import ppsQq from './icon/qq';
 import ppsSideHide from './icon/side-hide';
 import ppsSideShow from './icon/side-show';
+import ppsHost from './icon/host';
+import ppsPort from './icon/port';
 export default {
   name: 'ppsIcon',
   data() {
@@ -29,7 +31,9 @@ export default {
         'pps-icon-help': ppsHelp,
         'pps-icon-qq': ppsQq,
         'pps-icon-side-hide': ppsSideHide,
-        'pps-icon-side-show': ppsSideShow
+        'pps-icon-side-show': ppsSideShow,
+        'pps-icon-host': ppsHost,
+        'pps-icon-port': ppsPort
       }
     };
   },
@@ -44,7 +48,9 @@ export default {
     ppsHelp,
     ppsQq,
     ppsSideHide,
-    ppsSideShow
+    ppsSideShow,
+    ppsHost,
+    ppsPort
   },
   props: {
     icon: {

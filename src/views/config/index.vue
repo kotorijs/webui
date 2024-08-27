@@ -1,69 +1,134 @@
 <template>
   <el-card v-resize-ob="cardResize">
-    <pps-form @submit="submitFn" @reset="resetFn">
-      <div class="k-list">
-        <h2>全局配置</h2>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>port端口：</span>
-            <el-input v-model="form.port" placeholder="请输入内容"></el-input>
+    <k-container>
+      <main>
+        <pps-form @submit="submitFn" @reset="resetFn">
+          <div class="k-list">
+            <h3>全局配置</h3>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>端口：</span>
+                <el-input v-model="form.port" placeholder="请输入内容"></el-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>命令前缀 :</span>
+                <el-input v-model="form['command-prefix']" placeholder="请输入内容"></el-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>自动加载模块目录 :</span>
+                <el-input v-model="form.dirs[1]" placeholder="请输入内容"></el-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>是否使用彩色日志输出 :</span>
+                <el-switch v-model="form.noColor" active-color="#00aeed"></el-switch>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>日志等级 :</span>
+                <el-select v-model="form.level" placeholder="请选择">
+                  <el-option
+                    v-for="(item, index) in staticForm.level"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>语言类型 :</span>
+                <el-select v-model="form.lang" placeholder="请选择">
+                  <el-option
+                    v-for="item in staticForm.lang"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <div></div>
+                <div class="btn">
+                  <pps-button theme="confirm">提交</pps-button>
+                  <pps-button theme="default" type="reset">重置</pps-button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>prefix命令前缀 :</span>
-            <el-input v-model="form['command-prefix']" placeholder="请输入内容"></el-input>
+        </pps-form>
+        <pps-form @submit="submitBackendFn()" @reset="resetBackendFn()">
+          <div class="k-list">
+            <h3>后端IP设置</h3>
+            <!-- <div><p>警告！若无需分离前后端请谨慎修改！</p></div> -->
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>后端IP地址</span>
+                <pps-input
+                  :content.sync="hostForm.host"
+                  placeholder="无前缀后端IP地址"
+                  style="position: relative"
+                >
+                  <template v-slot:prepend>
+                    <div class="cmd-search-select" @click="isShowSelect = !isShowSelect">
+                      <input class="select-label" type="text" readonly :value="`${ssl}//`" />
+                      <div class="icon">
+                        <i class="el-icon-arrow-down"></i>
+                      </div>
+                    </div>
+                    <div class="select-dropdown" v-show="isShowSelect">
+                      <div
+                        class="select-item"
+                        v-for="(item, index) in ['https:', 'http:']"
+                        :key="index"
+                        @click="selectSslFn(item)"
+                      >
+                        {{ `${item}//` }}
+                      </div>
+                    </div>
+                  </template>
+                </pps-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>后端端口号</span>
+                <pps-input :content.sync="hostForm.port" placeholder="后端端口号"></pps-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <div></div>
+                <div class="btn">
+                  <pps-button theme="confirm">提交</pps-button>
+                  <pps-button theme="default" type="reset">重置</pps-button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>dirs自动加载模块目录 :</span>
-            <el-input v-model="form.dirs[1]" placeholder="请输入内容"></el-input>
-          </div>
-        </div>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>noColor是否使用彩色日志输出 :</span>
-            <el-switch v-model="form.noColor" active-color="#00aeed"></el-switch>
-          </div>
-        </div>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>level日志等级 :</span>
-            <el-select v-model="form.level" placeholder="请选择">
-              <el-option
-                v-for="(item, index) in staticForm.level"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="k-list-item">
-          <div class="k-list-main">
-            <span>lang语言类型 :</span>
-            <el-select v-model="form.lang" placeholder="请选择">
-              <el-option
-                v-for="item in staticForm.lang"
-                :key="item"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="k-list-item">
-          <pps-button theme="confirm">提交</pps-button>
-          <pps-button theme="default" type="reset">重置</pps-button>
-        </div>
-      </div>
-    </pps-form>
+        </pps-form>
+      </main>
+      <k-aside></k-aside>
+    </k-container>
   </el-card>
 </template>
 
 <script>
 import { getGlobalConfigAPI, updateGlobalConfigAPI } from '@/api/index';
+import kContainer from '@/components/layout/container.vue';
+import { mapMutations, mapState } from 'vuex';
+import { configureAxiosInstance } from '@/utils/request';
+import kAside from '@/components/layout/aside.vue';
+
 export default {
   data() {
     return {
@@ -89,25 +154,84 @@ export default {
         ],
         dirs: []
       },
+      hostForm: {
+        host: '',
+        port: '',
+        wsHost: ''
+      },
       isLoading: false,
+      isShowSelect: false,
+      ssl: 'https:',
       listWidth: 0,
       isPadding: 1
     };
   },
+  components: { kContainer, kAside },
+
   methods: {
-    async submitFn() {
-      const { data: res } = await updateGlobalConfigAPI(this.form);
-      console.log(res);
-    },
-    handleChange(value) {
-      console.log(value);
-    },
+    ...mapMutations('layoutOption', ['updateHost', 'updatePort', 'updateWsHost']),
     async getConfig() {
       const { data: res } = await getGlobalConfigAPI();
       this.form = { ...this.form, ...res };
     },
+    async submitFn() {
+      updateGlobalConfigAPI(this.form).then((res) => {
+        if (res.status === 204) this.$message.success('修改成功！');
+        else this.$message.error('修改失败！');
+      });
+    },
     resetFn() {
       this.getConfig();
+      this.$message.info('已重置！');
+    },
+    updataBackendConfigFn() {
+      const ssl = this.ssl === 'https:';
+      const port = this.hostForm.port || ssl ? 443 : 80;
+      const wsHost = (ssl ? 'wss://' : 'ws://') + this.hostForm.host;
+      const host = this.ssl + '//' + this.hostForm.host;
+      this.updateHost(host);
+      this.updatePort(port);
+      this.updateWsHost(wsHost);
+      configureAxiosInstance(this.$store);
+      this.mountBackendConfigFn();
+      this.$message.success('修改成功！');
+    },
+    mountBackendConfigFn() {
+      this.hostForm.host = this.host.replace(/^(https?:\/\/)/, '');
+      this.hostForm.port = this.port;
+    },
+    submitBackendFn() {
+      const currSsl = window.location.protocol;
+      const isConsistent = currSsl === 'https:' && currSsl !== this.ssl;
+      if (isConsistent) {
+        return this.$confirm('配置与当前页面协议不一致, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.updataBackendConfigFn();
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消修改'
+            });
+          });
+      }
+      this.updataBackendConfigFn();
+    },
+    resetBackendFn() {
+      this.configForm = {
+        host: this.host,
+        port: this.port,
+        wsHost: this.wsHost
+      };
+      this.$message.info('已重置！');
+    },
+    selectSslFn(ssl) {
+      this.isShowSelect = false;
+      this.ssl = ssl;
     },
     cardResize(w, _) {
       if (Math.floor(w) <= 700) {
@@ -119,8 +243,12 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState('layoutOption', ['host', 'port', 'wsHost'])
+  },
   mounted() {
     this.getConfig();
+    this.mountBackendConfigFn();
   }
 };
 </script>
@@ -128,12 +256,30 @@ export default {
 <style scoped lang="less">
 .el-card {
   margin-top: 10px;
-  height: var(--el-card-height);
+}
+.k-container {
+  justify-content: center;
+  main {
+    width: 60%;
+
+    @media screen and (max-width: 700px) {
+      width: 100%;
+    }
+  }
+  // 预留广告位
+  aside {
+    display: none;
+    width: 30%;
+    @media screen and (max-width: 900px) {
+      display: none;
+    }
+  }
+  & ::v-deep .pps-input--prepend {
+    width: 130px;
+  }
 }
 .k-list {
-  width: calc(v-bind(listWidth) * 1%);
   margin: 0 auto;
-  // background: var(--normal-color);
   padding: calc(v-bind(isPadding) * 3rem) calc(v-bind(isPadding) * 2rem);
   box-sizing: border-box;
 
@@ -141,6 +287,7 @@ export default {
     width: 100%;
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--normal-shadow);
+    box-sizing: border-box;
 
     &:first-of-type {
       border-top: 1px solid var(--normal-shadow);
@@ -159,7 +306,7 @@ export default {
     }
   }
 
-  h2 {
+  h3 {
     margin: 1rem 0;
   }
 }
@@ -169,5 +316,55 @@ export default {
 .pps-button {
   border-radius: 4px;
   max-width: 60px;
+}
+
+.cmd-search-select {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  padding: 0 5px;
+  width: auto;
+  border-radius: inherit;
+  background: #f5f7fa;
+  cursor: pointer;
+
+  .select-label {
+    width: 3.8rem;
+    text-align: center;
+    // padding: 0 10px;
+    background: transparent;
+    height: 100%;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .icon {
+    margin-left: -5px;
+  }
+}
+.select-dropdown {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 5px);
+  padding: 10px 0;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e4e7ed;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+
+  .select-item {
+    min-width: fit-content;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
 }
 </style>

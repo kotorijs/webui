@@ -72,6 +72,7 @@ export default {
     height: 100%;
     display: inline-flex;
     align-items: center;
+    user-select: none;
     &:hover {
       cursor: pointer;
       background: #ffffff;

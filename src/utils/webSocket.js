@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { Message } from 'element-ui';
-import config from '@/config';
 import store from '@/store';
 
-const wsHost = config.wsHost ?? '';
-const url = `${wsHost}/webui/${store.state.layoutOption.token}`;
+const host = store.state.layoutOption.wsHost;
+const token = store.state.layoutOption.token;
+const url = `${host}/webui/${token}`;
 
 Vue.prototype.$message = Message;
 

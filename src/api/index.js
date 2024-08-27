@@ -7,7 +7,7 @@ import axios from 'axios';
  * @returns Promise对象
  */
 export const loginAPI = ({ username, password }) => {
-  return request({
+  return request()({
     url: '/accounts/login',
     method: 'POST',
     data: {
@@ -22,7 +22,7 @@ export const loginAPI = ({ username, password }) => {
  * @returns Promise对象
  */
 export const logoutAPI = () => {
-  return request({
+  return request()({
     url: '/accounts/logout',
     method: 'POST'
   });
@@ -35,7 +35,7 @@ export const logoutAPI = () => {
  */
 export const getBotsDataAPI = (botName = null) => {
   const url = botName ? `/data/bots/${botName}` : '/data/bots';
-  return request({
+  return request()({
     url: url,
     method: 'GET'
   });
@@ -47,7 +47,7 @@ export const getBotsDataAPI = (botName = null) => {
  * @returns Promise对象
  */
 export const getBotsConfigAPI = (botName = '') => {
-  return request({
+  return request()({
     url: `/config/bots/${botName}`,
     method: 'GET'
   });
@@ -60,7 +60,7 @@ export const getBotsConfigAPI = (botName = '') => {
  * @returns Promise对象
  */
 export const updateBotsConfigAPI = (botName, config) => {
-  return request({
+  return request()({
     url: `/config/bots/${botName}`,
     method: 'PUT',
     data: {
@@ -75,7 +75,7 @@ export const updateBotsConfigAPI = (botName, config) => {
  * @returns Promise对象
  */
 export const getPluginsConfigAPI = (pluginName = '') => {
-  return request({
+  return request()({
     url: `/config/plugins/${pluginName}`,
     method: 'GET'
   });
@@ -88,7 +88,7 @@ export const getPluginsConfigAPI = (pluginName = '') => {
  * @returns Promise对象
  */
 export const updatePluginsConfigAPI = (pluginName = '', config) => {
-  return request({
+  return request()({
     url: `/config/plugins/${pluginName}`,
     method: 'PUT',
     data: config
@@ -100,7 +100,7 @@ export const updatePluginsConfigAPI = (pluginName = '', config) => {
  * @returns Promise对象
  */
 export const getGlobalConfigAPI = () => {
-  return request({
+  return request()({
     url: '/config/global',
     method: 'GET'
   });
@@ -111,7 +111,7 @@ export const getGlobalConfigAPI = () => {
  * @returns Promise对象
  */
 export const updateGlobalConfigAPI = (config) => {
-  return request({
+  return request()({
     url: '/config/global',
     method: 'PUT',
     data: config
@@ -124,7 +124,7 @@ export const updateGlobalConfigAPI = (config) => {
  * @returns Promise对象
  */
 export const getUserModulesAPI = (moduleName = '') => {
-  return request({
+  return request()({
     url: `/data/modules/${moduleName}`,
     method: 'GET'
   });
@@ -143,7 +143,7 @@ export const getAllModulesAPI = () => {
  * @returns Promise对象
  */
 export const getStatsAPI = () => {
-  return request({
+  return request()({
     url: `/data/stats/`,
     method: 'GET'
   });
@@ -154,7 +154,7 @@ export const getStatsAPI = () => {
  * @returns Promise对象
  */
 export const getStatusAPI = () => {
-  return request({
+  return request()({
     url: `/data/status/`,
     method: 'GET'
   });
@@ -166,7 +166,7 @@ export const getStatusAPI = () => {
  * @returns Promise对象
  */
 export const getCommandsAPI = (command = '') => {
-  return request({
+  return request()({
     url: `/config/commands/${command}`,
     method: 'GET'
   });
@@ -179,7 +179,7 @@ export const getCommandsAPI = (command = '') => {
  * @returns Promise对象
  */
 export const updateCommandConfigAPI = (command, config) => {
-  return request({
+  return request()({
     url: `/config/commands/${command}`,
     method: 'PUT',
     data: config

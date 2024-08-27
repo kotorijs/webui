@@ -24,7 +24,7 @@
           :class="{ current: !whichTab }"
           class="btn tab-register"
         >
-          注册
+          配置
         </div>
         <div :class="{ 'line-right': !whichTab }" class="bottom-line"></div>
       </div>
@@ -32,22 +32,64 @@
       <div class="border" v-show="whichTab">
         <pps-form @submit="loginFn()">
           <pps-input
+            clearable
             :content.sync="loginForm.username"
             icon="pps-icon-admin"
             placeholder="用户名"
           ></pps-input>
           <pps-input
+            clearable
             :content.sync="loginForm.password"
             icon="pps-icon-lock"
             type="password"
             placeholder="密码"
           ></pps-input>
           <div><a @click="showDialog('forget')" class="forget">忘记密码？</a></div>
-          <pps-button theme="confirm">登录</pps-button>
+          <pps-button theme="confirm" class="login">登录</pps-button>
         </pps-form>
       </div>
 
-      <div class="border" v-show="!whichTab">暂未开放</div>
+      <div class="border config" v-show="!whichTab">
+        <pps-form @submit="submitConfigFn()" @reset="resetConfigFn()">
+          <pps-input
+            clearable
+            :content.sync="configForm.host"
+            icon="pps-icon-host"
+            placeholder="无前缀后端IP地址"
+            style="position: relative"
+          >
+            <template v-slot:prepend>
+              <div class="cmd-search-select" @click="isShowSelect = !isShowSelect">
+                <input class="select-label" type="text" readonly :value="`${ssl}//`" />
+                <div class="icon">
+                  <i class="el-icon-arrow-down"></i>
+                </div>
+              </div>
+              <div class="select-dropdown" v-show="isShowSelect">
+                <div
+                  class="select-item"
+                  v-for="(item, index) in ['https:', 'http:']"
+                  :key="index"
+                  @click="selectSslFn(item)"
+                >
+                  {{ `${item}//` }}
+                </div>
+              </div>
+            </template>
+          </pps-input>
+          <pps-input
+            clearable
+            :content.sync="configForm.port"
+            icon="pps-icon-port"
+            placeholder="后端端口号"
+          ></pps-input>
+          <div><p>警告！若无需分离前后端请谨慎修改！</p></div>
+          <div class="submit">
+            <pps-button theme="confirm">提交</pps-button>
+            <pps-button theme="" type="reset">重置</pps-button>
+          </div>
+        </pps-form>
+      </div>
     </div>
 
     <div class="foot">
@@ -71,7 +113,8 @@
 <script>
 import copyIcon from './copyIcon.vue';
 import { loginAPI } from '@/api';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
+import { configureAxiosInstance } from '@/utils/request';
 
 export default {
   name: 'myLogin',
@@ -81,17 +124,76 @@ export default {
       tabsFlag: 'login',
       isShowDialog: false,
       loading: false,
+      isShowSelect: false,
+      ssl: 'https:',
       dialogData: {},
       loginForm: {
         username: '',
         password: ''
+      },
+      configForm: {
+        host: '',
+        port: '',
+        wsHost: ''
       }
     };
   },
   methods: {
-    ...mapMutations('layoutOption', ['updateToken']),
+    ...mapMutations('layoutOption', [
+      'updateToken',
+      'updateHost',
+      'updatePort',
+      'updateWsHost',
+      'updateUsername',
+      'updatePassword'
+    ]),
     changeTab(flag) {
       this.tabsFlag = flag;
+    },
+    selectSslFn(ssl) {
+      this.isShowSelect = false;
+      this.ssl = ssl;
+    },
+    updataBackendConfigFn() {
+      const ssl = this.ssl === 'https:';
+      const port = this.configForm.port || ssl ? 443 : 80;
+      const wsHost = (ssl ? 'wss://' : 'ws://') + this.configForm.host;
+      const host = this.ssl + '//' + this.configForm.host;
+      this.updateHost(host);
+      this.updatePort(port);
+      this.updateWsHost(wsHost);
+      configureAxiosInstance(this.$store);
+      this.mountBackendConfigFn();
+      this.$message.success('修改成功！');
+    },
+    submitConfigFn() {
+      const currSsl = window.location.protocol;
+      const isConsistent = currSsl === 'https:' && currSsl !== this.ssl;
+      if (isConsistent) {
+        return this.$confirm('配置与当前页面协议不一致, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.updataBackendConfigFn();
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消修改'
+            });
+          });
+      }
+      this.updataBackendConfigFn();
+    },
+    resetConfigFn() {
+      this.configForm = {
+        host: this.host,
+        port: this.port,
+        wsHost: this.wsHost
+      };
+      this.$message.info('已重置！');
     },
     async loginFn() {
       this.loading = true;
@@ -99,13 +201,15 @@ export default {
         const { data: res } = await loginAPI(this.loginForm);
         if (res.token) {
           this.updateToken(res.token);
+          this.updateUsername(this.loginForm.username);
+          this.updatePassword(this.loginForm.password);
           this.loading = false;
           this.$router.push('/');
         }
       } catch (error) {
-        console.log(error);
         this.loading = false;
-        if (error) return this.showDialog('loginError');
+        if (error.response.status === 404) return this.showDialog('404');
+        if (error.response.status === 401) return this.showDialog('401');
         this.showDialog('', error.message);
       }
     },
@@ -115,10 +219,15 @@ export default {
           title: '提示',
           message: '暂未开放！'
         };
-      } else if (name && name === 'loginError') {
+      } else if (name && name === '401') {
         this.dialogData = {
           title: '警告',
           message: '账号或密码不正确！'
+        };
+      } else if (name && name === '404') {
+        this.dialogData = {
+          title: '警告',
+          message: '请求资源不存在！检查后端服务是否正常！'
         };
       } else {
         this.dialogData = {
@@ -127,18 +236,80 @@ export default {
         };
       }
       this.isShowDialog = true;
+    },
+    mountBackendConfigFn() {
+      this.configForm.host = this.host.replace(/^(https?:\/\/)/, '');
+      this.configForm.port = this.port;
     }
   },
   computed: {
+    ...mapState('layoutOption', ['host', 'port', 'wsHost', 'username', 'password']),
     whichTab() {
       return this.tabsFlag === 'login';
     }
   },
-  mounted() {}
+  mounted() {
+    this.mountBackendConfigFn();
+    this.loginForm = {
+      username: this.username,
+      password: this.password
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
+.cmd-search-select {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  padding: 0 5px;
+  width: auto;
+  border-radius: inherit;
+  background: #f5f7fa;
+  cursor: pointer;
+
+  .select-label {
+    width: 3.8rem;
+    text-align: center;
+    // padding: 0 10px;
+    background: transparent;
+    height: 100%;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .icon {
+    margin-left: -5px;
+  }
+}
+
+.select-dropdown {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 5px);
+  padding: 10px 0;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e4e7ed;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+
+  .select-item {
+    min-width: fit-content;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+}
+
 .bg {
   display: flex;
   align-items: center;
@@ -157,19 +328,20 @@ export default {
     text-align: center;
 
     .pps-button {
-      width: 360px;
       margin: 20px auto 0;
       font-weight: 400;
       font-size: 14px;
-      color: #fff;
       height: 40px;
     }
+    .login {
+      width: 100%;
+    }
 
-    & ::v-deep .pps-input-inner {
+    & ::v-deep .pps-input-wrapper {
       width: 360px;
       height: 38px;
       margin: 0 auto 20px;
-      background: #fff;
+      // background: #fff;
     }
 
     a {
@@ -179,6 +351,16 @@ export default {
 
       &:hover {
         color: #46c6f0;
+      }
+    }
+  }
+  .config {
+    .submit {
+      display: flex;
+      gap: 10px;
+
+      .pps-button {
+        flex-grow: 1;
       }
     }
   }

@@ -14,10 +14,13 @@ import '@/assets/global.less';
 import 'vue-web-terminal/lib/theme/dark.css';
 import resize from '@/directives/resizeOb';
 import transTime from '@/directives/transTime';
+import { configureAxiosInstance } from '@/utils/request';
 
 const i18n = new I18n();
 
 Vue.config.productionTip = false;
+
+configureAxiosInstance(store);
 
 Vue.use(ppsUI);
 Vue.directive('resize-ob', resize);

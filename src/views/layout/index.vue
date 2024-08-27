@@ -1,9 +1,9 @@
 <template>
-  <el-container class="main-container">
+  <el-container class="main-container" v-resize-ob="resizeFn">
     <k-aside></k-aside>
     <el-container direction="vertical">
       <k-header></k-header>
-      <el-main :class="{ isPadding, lessPadding: isSmall }" v-resize-ob="resizeFn">
+      <el-main :class="{ isPadding, lessPadding: isSmall }">
         <keep-alive include="kConsole">
           <router-view></router-view>
         </keep-alive>
@@ -81,6 +81,7 @@ export default {
   },
   beforeDestroy() {
     if (this.ws) {
+      console.log(this.ws);
       this.ws.server.close();
     }
   },

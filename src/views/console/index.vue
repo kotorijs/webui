@@ -107,6 +107,10 @@ export default {
     this.color = new Colors(new TerminalAdapter());
   },
   mounted() {
+    // if (this.layout.ws.status === 'offline') {
+    //   console.log('ws is offline');
+    //   this.layout.ws.server.onopen()
+    // }
     this.$nextTick(() => {
       this.layout.ws.server.onmessage = (msg) => {
         const res = JSON.parse(msg.data);
