@@ -3,7 +3,7 @@
     <k-aside></k-aside>
     <el-container direction="vertical">
       <k-header></k-header>
-      <el-main :class="{ isPadding }" v-resize-ob="resizeFn">
+      <el-main :class="{ isPadding, lessPadding: isSmall }" v-resize-ob="resizeFn">
         <keep-alive include="kConsole">
           <router-view></router-view>
         </keep-alive>
@@ -19,7 +19,7 @@ import { mapGetters } from 'vuex';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
 import kHeader from './header.vue';
-import { kams } from '@/../package.json';
+import { version } from '@/../package.json';
 import { getVersionAPI } from '@/api';
 const uniqueRoutes = ['/console', '/sandBox'];
 
@@ -55,12 +55,13 @@ export default {
     async isVersionLatest() {
       return new Promise((resolve, reject) => {
         getVersionAPI().then(({ data: res }) => {
-          if (res['@kotori-bot/kotori-plugin-webui'] !== kams.version) {
+          if (res['@kotori-bot/kotori-plugin-webui'] !== `^${version}`) {
             this.$message.error('当前版本过低，请更新webui插件');
             if (!this.$route.path.includes('/login')) {
+              this.$store.commit('layoutOption/updateToken');
               this.$router.push('/login');
-              reject(new Error('版本过低'));
             }
+            reject(new Error('版本过低'));
           } else {
             resolve();
           }
@@ -113,6 +114,10 @@ export default {
   // padding-left: 0 !important;
   // padding-right: 0 !important
   padding: 0 !important;
+}
+.lessPadding {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .main-container {
   height: 100%;

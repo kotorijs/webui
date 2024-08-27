@@ -83,8 +83,8 @@ export default {
       loading: false,
       dialogData: {},
       loginForm: {
-        username: 'test',
-        password: '233'
+        username: 'nagisa',
+        password: '0517'
       }
     };
   },

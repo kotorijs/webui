@@ -119,8 +119,6 @@ export default {
     this.detailsLen = this.getData.length;
     this.calcPage(this.detailsLen);
     this.$router.push('/modulesCenter/modulesItem');
-    this.$message.error('作者名称跳转功能未完成，email处理方案待完善');
-    console.error('[modulesCenter] 作者名称跳转功能未完成，email处理方案待完善');
   }
 };
 </script>
@@ -133,8 +131,7 @@ export default {
   justify-content: space-around;
 }
 .k-detail-list {
-  margin-block-start: -8px;
-  margin-inline-start: 10px;
+  margin-block-start: 10px;
   .items {
     display: flex;
     height: fit-content;
@@ -151,9 +148,8 @@ export default {
 }
 
 .k-description {
-  position: sticky;
-  top: 0;
-  height: var(--k-main-no);
+  margin-block-start: 10px;
+  margin-inline-end: 10px;
   flex: 1;
   * {
     box-sizing: border-box;
