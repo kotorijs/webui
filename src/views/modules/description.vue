@@ -37,7 +37,7 @@
         <li>
           <strong>作者 :</strong>
           &nbsp;
-          <el-link type="primary" :href="getCurrent.author.email">
+          <el-link type="primary" :href="`mailto://${getCurrent.author.email}`">
             {{ getCurrent.author.name }}
           </el-link>
         </li>
@@ -169,9 +169,6 @@ export default {
 <style scoped lang="less">
 .modules-item {
   height: 100%;
-  // position: fixed;
-  // top: 50px;
-  // width: 96%;
 
   .title {
     text-align: center;

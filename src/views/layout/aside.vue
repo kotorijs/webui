@@ -58,15 +58,15 @@ export default {
       isShowDialog: false,
       dialogData: { title: '提示', message: '确认退出登录？' },
       menus: [
-        { icon: 'el-icon-data-analysis', content: '数据中心', indexPath: '/dataCenter' },
+        { icon: 'el-icon-pie-chart', content: '数据中心', indexPath: '/dataCenter' },
         { icon: 'el-icon-printer', content: '实例管理', indexPath: '/bots' },
-        { icon: 'el-icon-folder-opened', content: '模块管理', indexPath: '/modules' },
+        { icon: 'el-icon-files', content: '模块管理', indexPath: '/modules' },
         {
           icon: 'el-icon-shopping-bag-1',
           content: '模块中心',
           indexPath: '/modulesCenter'
         },
-        { icon: 'el-icon-folder-opened', content: '指令管理', indexPath: '/command' },
+        { icon: 'el-icon-set-up', content: '指令管理', indexPath: '/command' },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
