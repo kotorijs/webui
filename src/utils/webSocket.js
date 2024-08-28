@@ -26,7 +26,7 @@ export default class Ws {
   }
 
   onOpen() {
-    Vue.prototype.$message.success('WebSocket 服务器连接成功');
+    // Vue.prototype.$message.success('WebSocket 服务器连接成功');
     this.status = 'online';
     // this.send({ selfId: store.state.sand.bot });
   }

@@ -28,10 +28,19 @@ export default {
       messages: [],
       inputData: '',
       action: 'command',
-      color: null
+      color: null,
+      loggerLevelMap: {
+        10: 'TRACE',
+        20: 'DEBUG',
+        25: 'LOG',
+        30: 'INFO',
+        40: 'WARN',
+        50: 'ERROR',
+        60: 'FATAL',
+        70: 'SILENT'
+      }
     };
   },
-  inject: ['layout'],
   methods: {
     onExecCmd(key, command, success, failed) {
       if (key === 'fail') {
@@ -65,35 +74,53 @@ export default {
         msg: state.msg
       });
     },
-    sendMsg() {
+    sendFn(wsMsg) {
       try {
-        this.layout.ws.send({ command: this.inputData, action: this.action }, () => {
-          this.pushMsg({
-            label: ['user'],
-            msg: this.inputData
-          });
-        });
-        this.inputData = '';
+        this.$ws.instance.send(JSON.stringify(wsMsg));
       } catch (error) {
         return this.$message({
           type: 'error',
           message: `未连接后端，请检查后端是否开启！${error}`
         });
       }
+      this.pushMsg({
+        label: ['user'],
+        msg: this.inputData
+      });
+    },
+    sendMsg() {
+      if (!this.$ws.instance) {
+        this.$ws.init();
+      }
+      const wsMsg = { command: this.inputData, action: this.action };
+      console.log(this.$ws.instance);
+      if (this.$ws.instance.readyState === 0) {
+        this.$nextTick(() => {
+          this.sendFn(wsMsg);
+        });
+      } else if (this.$ws.instance.readyState === 2) {
+        // this.sendFn(wsMsg);
+        this.$message.error('连接正在关闭，请重新连接');
+      } else if (this.$ws.instance.readyState === 3) {
+        this.$message.error('重新连接中...');
+        this.$ws.init();
+      }
+      this.sendFn(wsMsg);
+      this.inputData = '';
     },
     pushMsg(options) {
       const defaultOptions = {
         date: new Date(),
-        pid: '本机',
-        label: ['INFO'],
-        msg: 'nothing'
+        label: ['bot'],
+        msg: 'nothing',
+        level: '30'
       };
-      let { date, pid, label, msg } = { ...defaultOptions, ...options };
+      let { date, label, msg, level } = { ...defaultOptions, ...options };
       date = new Date(date).toLocaleString();
       label = label.join(' ');
-      const message = `\x1B[34m${date} \x1B[0m(${pid}) \x1B[0m\x1B[1;33m[${label}] \x1B[0m ${this.color.parse(
-        msg
-      )}`;
+      const message = `\x1B[34m${date} \x1B[0m\x1B[1;33m[${
+        this.loggerLevelMap[level]
+      }] \x1B[0m(${label}): \x1B[0m ${this.color.parse(msg)}`;
       this.$nextTick(() => {
         TerminalApi.pushMessage('my-terminal', { type: 'ansi', content: message });
       });
@@ -107,17 +134,10 @@ export default {
     this.color = new Colors(new TerminalAdapter());
   },
   mounted() {
-    // if (this.layout.ws.status === 'offline') {
-    //   console.log('ws is offline');
-    //   this.layout.ws.server.onopen()
-    // }
-    this.$nextTick(() => {
-      this.layout.ws.server.onmessage = (msg) => {
-        const res = JSON.parse(msg.data);
-        if (res.type === 'console_output') {
-          this.pushMsg(res.data);
-        }
-      };
+    this.$ws.bus.$on('wsMessage', (msg) => {
+      if (msg.type === 'console_output') {
+        this.pushMsg(msg.data);
+      }
     });
   },
   activated() {},
@@ -125,6 +145,7 @@ export default {
     this.$store.commit('layoutOption/updateIsFoldAside', false);
   },
   beforeDestroy() {
+    this.$ws.bus.$off('wsMessage');
     this.$store.commit('layoutOption/updateIsFoldAside', false);
   },
   updated() {}

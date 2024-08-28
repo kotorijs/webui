@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Ws from '@/utils/webSocket';
+// import Ws from '@/utils/webSocket';
 import { mapGetters } from 'vuex';
 import kAside from './aside.vue';
 import kFooter from './footer.vue';
@@ -28,13 +28,7 @@ export default {
   components: { kAside, kFooter, kHeader },
   data() {
     return {
-      ws: null,
       isSmall: false
-    };
-  },
-  provide() {
-    return {
-      layout: this
     };
   },
   methods: {
@@ -53,6 +47,7 @@ export default {
       }
     },
     async isVersionLatest() {
+      // 判断是否最新版本
       return new Promise((resolve, reject) => {
         getVersionAPI().then(({ data: res }) => {
           if (res['@kotori-bot/kotori-plugin-webui'] !== `^${version}`) {
@@ -73,16 +68,16 @@ export default {
     this.isVersionLatest()
       .then(() => {
         this.handleAside();
-        this.ws = new Ws();
+        this.$ws.init();
         this.$store.dispatch('command/getCommands');
         this.$store.dispatch('modulesDetail/getData');
       })
       .catch(() => {});
   },
   beforeDestroy() {
-    if (this.ws) {
-      console.log(this.ws);
-      this.ws.server.close();
+    console.log('layout beforeDestroy');
+    if (this.$ws.instance) {
+      this.$ws.close();
     }
   },
   updated() {

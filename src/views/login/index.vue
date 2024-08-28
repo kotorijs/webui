@@ -253,7 +253,7 @@ export default {
     this.loginForm = {
       username: this.username,
       password: this.password
-    }
+    };
   }
 };
 </script>
