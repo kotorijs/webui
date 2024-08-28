@@ -29,7 +29,7 @@
 
 <script>
 import { getStatusAPI } from '@/api/index';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 export default {
   name: 'k-footer',
   data() {
@@ -38,15 +38,11 @@ export default {
     };
   },
   methods: {
+    ...mapMutations('webSocketOption', ['updateCpu', 'updateRam']),
     contextMenuFn() {},
     fixedFn(num) {
       return Number(num).toFixed(1);
     }
-  },
-  mounted() {
-    getStatusAPI().then(({ data: res }) => {
-      this.status = res;
-    });
   },
   computed: {
     ...mapGetters('webSocketOption', ['roundedRam', 'roundedCpu']),
@@ -57,6 +53,20 @@ export default {
         { label: `加载器版本: v${this.status.loader}` }
       ];
     }
+  },
+  mounted() {
+    this.$ws.bus.$on('wsMessage', (msg) => {
+      if (msg.type === 'stats') {
+        this.updateCpu(msg.data.cpu);
+        this.updateRam(msg.data.ram);
+      }
+    });
+    getStatusAPI().then(({ data: res }) => {
+      this.status = res;
+    });
+  },
+  beforeDestroy() {
+    this.$ws.bus.$off('wsMessage');
   }
 };
 </script>
@@ -72,6 +82,7 @@ export default {
     height: 100%;
     display: inline-flex;
     align-items: center;
+    user-select: none;
     &:hover {
       cursor: pointer;
       background: #ffffff;

@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { Message } from 'element-ui';
-import config from '@/config';
 import store from '@/store';
 
-const wsHost = config.wsHost ?? '';
-const url = `${wsHost}/webui/${store.state.layoutOption.token}`;
+const host = store.state.layoutOption.wsHost;
+const token = store.state.layoutOption.token;
+const url = `${host}/webui/${token}`;
 
 Vue.prototype.$message = Message;
 
@@ -26,7 +26,7 @@ export default class Ws {
   }
 
   onOpen() {
-    Vue.prototype.$message.success('WebSocket 服务器连接成功');
+    // Vue.prototype.$message.success('WebSocket 服务器连接成功');
     this.status = 'online';
     // this.send({ selfId: store.state.sand.bot });
   }

@@ -26,7 +26,9 @@
         v-model.trim="keyWord"
       />
 
-      <i class="icon-clear" @click="clearFn()"></i>
+      <span class="pps-input-suffix" v-if="clearable" @click="clearFn()">
+        <i class="icon-clear"></i>
+      </span>
 
       <div class="space"></div>
       <div class="operation">
@@ -102,6 +104,7 @@ export default {
   },
   methods: {
     clearFn() {
+      console.log('clear');
       this.keyWord = '';
       this.$refs.input.focus();
       this.afterClear();
@@ -170,13 +173,21 @@ export default {
     border-bottom-right-radius: var(--radius);
   }
 }
+.pps-input-suffix {
+  position: absolute;
+  right: 5px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
 .icon-clear {
   font-size: 14px;
-  font-family: iconfont;
   font-style: normal;
+  font-family: iconfont;
   color: rgba(0, 0, 0, 0.4);
   cursor: pointer;
   display: none;
+  background: #fff;
 
   &:hover {
     color: rgba(0, 0, 0, 0.8);
@@ -192,6 +203,7 @@ export default {
   width: 90%;
   height: 28px;
   margin-left: 5px;
+  padding-right: 14px;
   background: none;
   border: none;
   font-size: 15px;
@@ -212,9 +224,12 @@ export default {
   &[disabled] {
     cursor: not-allowed;
   }
-  &:hover + .icon-clear {
+  &:hover + .pps-input-suffix .icon-clear {
     display: initial;
     cursor: pointer;
+  }
+  &:focus + .pps-input-suffix .icon-clear {
+    display: initial;
   }
 }
 .pps-icon {
@@ -252,6 +267,8 @@ svg {
   }
 }
 .pps-input-inner {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;

@@ -111,7 +111,7 @@ export default {
   data() {
     return {
       bots: [],
-      isEmpty: false,
+      isEmpty: true,
       isChangeTable: false,
       isShowDetailsDialog: false,
       isShowEditDialog: false,
@@ -234,6 +234,7 @@ export default {
   async mounted() {
     const { data: res } = await getUserModulesAPI();
     this.bots = res;
+    this.isEmpty = false
   }
 };
 </script>

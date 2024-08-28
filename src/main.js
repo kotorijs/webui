@@ -14,11 +14,16 @@ import '@/assets/global.less';
 import 'vue-web-terminal/lib/theme/dark.css';
 import resize from '@/directives/resizeOb';
 import transTime from '@/directives/transTime';
+import { configureAxiosInstance } from '@/utils/request';
+import webSocketPlugin from './plugins.js';
 
 const i18n = new I18n();
 
 Vue.config.productionTip = false;
 
+configureAxiosInstance(store);
+
+Vue.use(webSocketPlugin);
 Vue.use(ppsUI);
 Vue.directive('resize-ob', resize);
 Vue.directive('trans-time', transTime);
