@@ -10,9 +10,12 @@
   >
     <li
       class="k-menu-item"
-      :class="[{ className: className }, direction]"
-      :style="[itemStyle, { height: `${height}px`, minHeight: `${height}px` }]"
-      v-on="$listeners"
+      :class="[{ className }, { active }, direction]"
+      :style="[
+        itemStyle,
+        { height: `${height}px`, minHeight: `${height}px` },
+        { justifyContent: align }
+      ]"
       @mouseenter="onmouseenterFn"
       @mouseleave="onMouseLeaveFn"
       @click="handleClickFn"
@@ -28,7 +31,7 @@
       </template>
       <template v-if="activeShape.includes('circle')">
         <transition appear>
-          <div v-show="active" class="current-shape circle" :style="[circleStyle]"></div>
+          <div v-show="active" class="current-shape circle" :style="circleStyle"></div>
         </transition>
       </template>
       <slot></slot>
@@ -45,6 +48,62 @@ export default {
     };
   },
   inject: ['root'],
+  methods: {
+    onmouseenterFn() {
+      this.$el.style.backgroundColor = this.root.backgroundColor;
+      this.handleTooltipFn(true);
+    },
+    onMouseLeaveFn() {
+      if (this.activeShape.includes('background') && this.active) return;
+      this.$el.style.backgroundColor = '';
+      this.handleTooltipFn(false);
+    },
+    handleClickFn() {
+      this.root.$bus.$emit('changeRoute', this.index);
+      this.$emit('click', this);
+      this.root.$emit('select', this);
+    },
+    handleTooltipFn(isShow) {
+      this.$refs.tooltip.showPopper = isShow;
+    }
+  },
+  computed: {
+    active() {
+      if (!this.root.router) return this.root.activeIndex === this.index;
+      const activeArr = this.root.activeIndex.split('/');
+      const indexArr = this.index.split('/');
+      return activeArr.includes(indexArr[1]);
+    },
+    itemStyle() {
+      const style = {
+        color: this.active ? this.root.activeColor : this.root.textColor,
+        borderLeftColor: this.active ? this.root.activeColor : this.root.textColor,
+        backgroundColor: ''
+      };
+      if (this.activeShape.includes('background')) {
+        style.backgroundColor = this.active ? this.root.backgroundColor : '';
+      }
+      return style;
+    },
+    circleStyle() {
+      return {
+        border: `3px solid ${this.root.activeColor}`,
+        filter: `drop-shadow(0 0 4px ${this.root.activeColor})`
+      };
+    },
+    activeShape() {
+      return this.root.activeShape;
+    },
+    tips() {
+      if (this.title) return true;
+      return false;
+    },
+    direction() {
+      return `k-menu-item-${this.root.mode}`;
+    }
+  },
+  beforeMount() {},
+  mounted() {},
   props: {
     icon: {
       type: String,
@@ -75,64 +134,14 @@ export default {
       default() {
         return '';
       }
-    }
-  },
-  methods: {
-    onmouseenterFn() {
-      this.$el.style.backgroundColor = this.root.backgroundColor;
-      this.handleTooltipFn(true);
     },
-    onMouseLeaveFn() {
-      if (this.activeShape.includes('background') && this.active) return;
-      this.$el.style.backgroundColor = '';
-
-      this.handleTooltipFn(false);
-    },
-    handleClickFn() {
-      this.root.$bus.$emit('changeRoute', this.index);
-      this.$emit('click', this);
-    },
-    handleTooltipFn(isShow) {
-      this.$refs.tooltip.showPopper = isShow;
-    }
-  },
-  computed: {
-    active() {
-      if (!this.root.router) return this.root.activeIndex === this.index;
-      const activeArr = this.root.activeIndex.split('/');
-      const indexArr = this.index.split('/');
-      return activeArr.includes(indexArr[1]);
-    },
-    itemStyle() {
-      const style = {
-        color: this.active ? this.root.activeColor : this.root.textColor,
-        borderLeftColor: this.active ? this.root.activeColor : this.root.textColor,
-        backgroundColor: ''
-      };
-      if (this.activeShape.includes('background')) {
-        style.backgroundColor = this.active ? this.root.backgroundColor : '';
+    align: {
+      type: String,
+      default() {
+        return 'center';
       }
-      return style;
-    },
-    circleStyle() {
-      return {
-        border: `3px solid ${this.activeColor};`,
-        filter: `drop-shadow(0 0 4px ${this.activeColor});`
-      };
-    },
-    activeShape() {
-      return this.root.activeShape;
-    },
-    tips() {
-      if (this.title) return true;
-      return false;
-    },
-    direction() {
-      return `k-menu-item-${this.root.mode}`;
     }
-  },
-  beforeMount() {},
-  mounted() {}
+  }
 };
 </script>
 
@@ -145,7 +154,7 @@ export default {
   justify-content: center;
   width: 100%;
   max-width: 500px;
-  text-align: center;
+  // text-align: center;
   list-style-type: none;
   border-radius: 5px;
   cursor: pointer;
@@ -168,7 +177,7 @@ export default {
     z-index: 1;
   }
 }
-.k-menu-item-horizontal + .k-menu-item-row {
+.k-menu-item-row + .k-menu-item-row {
   margin-inline-start: 10px;
 }
 

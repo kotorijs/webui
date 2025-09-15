@@ -3,7 +3,7 @@ export default {
   namespaced: true,
   state: {
     data: [],
-    current: {},
+    current: null,
     dialog: false
   },
   mutations: {
@@ -21,10 +21,9 @@ export default {
     }
   },
   actions: {
-    getData({ commit }) {
-      getAllModulesAPI().then(({ data: res }) => {
-        commit('updateData', res.list);
-      });
+    async getData({ commit }) {
+      const { data: res } = await getAllModulesAPI();
+      commit('updateData', res.list);
     }
   },
   getters: {

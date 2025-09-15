@@ -1,0 +1,84 @@
+dialog {
+  position: absolute;
+  min-width: 360px;
+  min-height: 100px;
+  max-height: calc(100vh - 100px);
+  // height: fit-content;
+  border: none;
+  border-radius: 4px;
+  transition: 0.15s linear;
+  overflow: hidden;
+
+  @media screen and (max-width: 510px) {
+    min-width: 300px;
+  }
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .pps-dialog-window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    // justify-content: space-between;
+    height: 100%;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      font-size: 18px;
+      margin-bottom: 20px;
+      height: 25px;
+    }
+
+    .pps-dialog-content {
+      max-height: calc(100vh - 200px);
+      overflow-x: auto;
+      flex-grow: 1;
+
+      &::-webkit-scrollbar {
+        width: 5px; // 设置滚动条的宽度
+        height: 0px;
+      }
+      &::-webkit-scrollbar-track {
+        background: transparent;
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        position: absolute;
+        right: -5px;
+        width: 5px;
+        background: #88888870;
+        border-radius: 6px;
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background: #888888; // 鼠标悬停时滚动条的颜色
+      }
+    }
+
+    footer {
+      position: sticky;
+      bottom: 0;
+      align-self: flex-end;
+      margin-top: 20px;
+      // margin-top: auto;
+      height: 35px;
+      .pps-button {
+        border-radius: 4px;
+        max-width: 60px;
+      }
+    }
+  }
+}
+/* 进入的起点、离开的终点 */
+.pps-dialog-enter,
+.pps-dialog-leave-to {
+  transform: translateY(-10%);
+}
+/* 进入的终点、离开的起点 */
+.pps-dialog-enter-to,
+.pps-dialog-leave {
+  transform: translateY(0);
+}

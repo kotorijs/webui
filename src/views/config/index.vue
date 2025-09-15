@@ -68,8 +68,10 @@
         </pps-form>
         <pps-form @submit="submitBackendFn()" @reset="resetBackendFn()">
           <div class="k-list">
-            <h3>后端IP设置</h3>
-            <!-- <div><p>警告！若无需分离前后端请谨慎修改！</p></div> -->
+            <div>
+              <h3>后端设置</h3>
+              <p class="tip">警告！若无需分离前后端请谨慎修改！</p>
+            </div>
             <div class="k-list-item">
               <div class="k-list-main">
                 <span>后端IP地址</span>
@@ -79,22 +81,11 @@
                   style="position: relative"
                 >
                   <template v-slot:prepend>
-                    <div class="cmd-search-select" @click="isShowSelect = !isShowSelect">
-                      <input class="select-label" type="text" readonly :value="`${ssl}//`" />
-                      <div class="icon">
-                        <i class="el-icon-arrow-down"></i>
-                      </div>
-                    </div>
-                    <div class="select-dropdown" v-show="isShowSelect">
-                      <div
-                        class="select-item"
-                        v-for="(item, index) in ['https:', 'http:']"
-                        :key="index"
-                        @click="selectSslFn(item)"
-                      >
-                        {{ `${item}//` }}
-                      </div>
-                    </div>
+                    <dp
+                      @select="selectSslFn"
+                      :current="http_or_https"
+                      :menu="['https://', 'http://']"
+                    ></dp>
                   </template>
                 </pps-input>
               </div>
@@ -103,6 +94,16 @@
               <div class="k-list-main">
                 <span>后端端口号</span>
                 <pps-input :content.sync="hostForm.port" placeholder="后端端口号"></pps-input>
+              </div>
+            </div>
+            <div class="k-list-item">
+              <div class="k-list-main">
+                <span>沙盒ws是否长连</span>
+                <el-switch
+                  @change="setSandboxWsAliveFn"
+                  v-model="isKeepSandboxWsAlive"
+                  active-color="#00aeed"
+                ></el-switch>
               </div>
             </div>
             <div class="k-list-item">
@@ -128,10 +129,12 @@ import kContainer from '@/components/layout/container.vue';
 import { mapMutations, mapState } from 'vuex';
 import { configureAxiosInstance } from '@/utils/request';
 import kAside from '@/components/layout/aside.vue';
+import dp from '@/components/dropdown';
 
 export default {
   data() {
     return {
+      isKeepSandboxWsAlive: false,
       form: {
         'command-prefix': '',
         port: null,
@@ -157,19 +160,21 @@ export default {
       hostForm: {
         host: '',
         port: '',
-        wsHost: ''
+        wsHost: '',
+        sandBoxPort: null
       },
       isLoading: false,
       isShowSelect: false,
-      ssl: 'https:',
+      http_or_https: 'https:',
       listWidth: 0,
       isPadding: 1
     };
   },
-  components: { kContainer, kAside },
+  components: { kContainer, kAside, dp },
 
   methods: {
-    ...mapMutations('layoutOption', ['updateHost', 'updatePort', 'updateWsHost']),
+    ...mapMutations('layoutOption', ['updateHost', 'updatePort', 'updateSandBoxPort']),
+    ...mapMutations('sandBox', ['SET_SANDBOX_WS_KEEPALIVE']),
     async getConfig() {
       const { data: res } = await getGlobalConfigAPI();
       this.form = { ...this.form, ...res };
@@ -185,13 +190,13 @@ export default {
       this.$message.info('已重置！');
     },
     updataBackendConfigFn() {
-      const ssl = this.ssl === 'https:';
-      const port = this.hostForm.port || ssl ? 443 : 80;
-      const wsHost = (ssl ? 'wss://' : 'ws://') + this.hostForm.host;
-      const host = this.ssl + '//' + this.hostForm.host;
+      const ssl = this.http_or_https === 'https://';
+      const port = this.hostForm.port || (ssl ? 443 : 80);
+      const host = this.hostForm.host;
+      console.log('new', this.http_or_https);
       this.updateHost(host);
       this.updatePort(port);
-      this.updateWsHost(wsHost);
+      this.updateSandBoxPort(this.hostForm.sandBoxPort);
       configureAxiosInstance(this.$store);
       this.mountBackendConfigFn();
       this.$message.success('修改成功！');
@@ -199,10 +204,11 @@ export default {
     mountBackendConfigFn() {
       this.hostForm.host = this.host.replace(/^(https?:\/\/)/, '');
       this.hostForm.port = this.port;
+      this.hostForm.sandBoxPort = this.sandBoxPort;
     },
     submitBackendFn() {
       const currSsl = window.location.protocol;
-      const isConsistent = currSsl === 'https:' && currSsl !== this.ssl;
+      const isConsistent = currSsl === 'https:' && currSsl !== this.http_or_https;
       if (isConsistent) {
         return this.$confirm('配置与当前页面协议不一致, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -225,13 +231,12 @@ export default {
       this.configForm = {
         host: this.host,
         port: this.port,
-        wsHost: this.wsHost
+        sandBoxPort: this.sandBoxPort
       };
       this.$message.info('已重置！');
     },
     selectSslFn(ssl) {
-      this.isShowSelect = false;
-      this.ssl = ssl;
+      this.http_or_https = ssl;
     },
     cardResize(w, _) {
       if (Math.floor(w) <= 700) {
@@ -241,14 +246,27 @@ export default {
         this.listWidth = 90;
         this.isPadding = 1;
       }
+    },
+    initSandboxWsAliveFn() {
+      this.isKeepSandboxWsAlive = this.store_keepSandboxWsAlive;
+    },
+    setSandboxWsAliveFn(status) {
+      this.SET_SANDBOX_WS_KEEPALIVE(status);
     }
   },
   computed: {
-    ...mapState('layoutOption', ['host', 'port', 'wsHost'])
+    ...mapState('layoutOption', ['host', 'port', 'protocol', 'sandBoxPort']),
+    ...mapState('sandBox', {
+      store_keepSandboxWsAlive: 'isKeepSandboxWsAlive'
+    })
   },
   mounted() {
+    this.http_or_https = this.protocol || 'https://';
+  },
+  created() {
     this.getConfig();
     this.mountBackendConfigFn();
+    this.initSandboxWsAliveFn();
   }
 };
 </script>
@@ -283,15 +301,14 @@ export default {
   padding: calc(v-bind(isPadding) * 3rem) calc(v-bind(isPadding) * 2rem);
   box-sizing: border-box;
 
+  & > :nth-child(2) {
+    border-top: 1px solid var(--normal-shadow);
+  }
   .k-list-item {
     width: 100%;
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--normal-shadow);
     box-sizing: border-box;
-
-    &:first-of-type {
-      border-top: 1px solid var(--normal-shadow);
-    }
 
     &:hover {
       background: var(--normal-color);
@@ -304,6 +321,10 @@ export default {
       justify-content: space-between;
       flex-wrap: wrap;
     }
+  }
+
+  .tip {
+    color: red;
   }
 
   h3 {

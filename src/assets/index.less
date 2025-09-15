@@ -14,25 +14,12 @@ h2 {
     padding: 0;
 }
 
-body {
+
+html,body {
     width: 100%;
     height: 100%;
-    /* background-color: #f7f7f7; */
-}
-
-body::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-}
-
-body::-webkit-scrollbar-track {
-    background-color: transparent;
-    width: 0;
-}
-
-body::-webkit-scrollbar-thumb {
-    background-color: #409eff;
-    border-radius: 8px;
+    margin: 0;
+    padding: 0;
 }
 
 img,
@@ -59,7 +46,16 @@ svg {
     --el-card-height: calc(100% - 25px);
     --k-header-height: 40px;
     --k-footer-height: 30px;
-    --k-main-height: calc(100vh - var(--k-header-height));
-    --k-main-no: calc(100vh - var(--k-header-height) - var(--k-footer-height));
-    --sb-aside-width: 300px;
+    --k-main-footer: calc(100dvh - var(--k-header-height));
+    --k-main: calc(100dvh - var(--k-header-height) - var(--k-footer-height));
+    --sb-aside-width: 250px;
+
+    --sb-admin-bg: #c2e1f5;
+    --sb-admin-color: #0099ff;
+    --sb-lord-bg: #f5ddcb;
+    --sb-lord-color: #ff8d40;
+    --sb-reply-bg: #e0e0e0;
+    --sb-reply-color: #717171;
+    --sb-super-admin-bg: #f5c2c2;
+    --sb-super-admin-color: #ff0000;
 }

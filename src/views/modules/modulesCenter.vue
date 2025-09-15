@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper" v-resize-ob="cardResize">
     <div class="k-detail-list">
-      <div class="banner"></div>
       <div class="items">
         <k-detail-item
           :key="index"
@@ -26,7 +25,7 @@
           @current-change="changeCurrentPage"
         ></el-pagination>
       </div>
-      <pps-dialog :title="getCurrent.name" :show.sync="isShowDialog">
+      <pps-dialog :title="getCurrent?.name" :show.sync="isShowDialog">
         <template v-slot:content>
           <k-des>
             <template v-slot:title><div></div></template>
@@ -44,14 +43,13 @@
 import kDetailItem from '@/views/modules/itemDetails.vue';
 import kDes from '@/views/modules/description';
 import { mapGetters } from 'vuex';
-import currentDetails from '@/utils/moduleCenter';
 
 export default {
   name: 'modulesCenter',
   components: { kDetailItem, kDes },
   data() {
     return {
-      currentDetails,
+      currentDetails: null,
       itemNum: 16,
       detailsLen: 0,
       pageSize: [],
@@ -112,13 +110,23 @@ export default {
       handler() {
         this.calcPage(this.detailsLen);
       }
+    },
+    getData: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal && newVal.length) {
+          this.detailsLen = newVal.length;
+          this.calcPage(this.detailsLen);
+        } else {
+          this.currentDetails = [];
+        }
+      }
     }
   },
   created() {},
   mounted() {
     this.detailsLen = this.getData.length;
     this.calcPage(this.detailsLen);
-    this.$router.push('/modulesCenter/modulesItem');
   }
 };
 </script>

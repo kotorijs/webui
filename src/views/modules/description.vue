@@ -2,86 +2,89 @@
   <el-card class="modules-item">
     <slot name="title">
       <div slot="header" class="clearfix">
-        <span>{{ getCurrent.description }}</span>
+        <span>{{ getCurrent?.description }}</span>
         <el-link
           style="float: right; padding: 3px 0"
           type="primary"
           target="_blank"
-          :href="`https://kotori.js.org/modules/#${getCurrent.name}`"
+          :href="`https://kotori.js.org/modules/#${getCurrent?.name}`"
           title="官方文档"
         >
           文档
         </el-link>
       </div>
     </slot>
-    <div class="avatar list">
-      <img
-        :src="`http://k.hotaru.icu/api/data/avatar/${getCurrent.name}`"
-        :title="getCurrent.name"
-      />
-    </div>
-    <div class="title list">
-      <h3>{{ getCurrent.name }}</h3>
-    </div>
-    <div class="download list">
-      <pps-button theme="confirm" @click.native="dialog = true">下载</pps-button>
-    </div>
-    <div class="author list">
-      <h3 class="mb10">开发信息</h3>
-      <ul>
-        <li>
-          <strong>类别 :</strong>
-          &nbsp;
-          {{ category }}
-        </li>
-        <li>
-          <strong>作者 :</strong>
-          &nbsp;
-          <el-link type="primary" :href="`mailto://${getCurrent.author.email}`">
-            {{ getCurrent.author.name }}
-          </el-link>
-        </li>
-        <li>
-          <strong>描述 :</strong>
-          &nbsp;
-          {{ getCurrent.description }}
-        </li>
-      </ul>
-    </div>
-    <div class="version list">
-      <h3 class="mb10">版本信息</h3>
-      <ul>
-        <li>
-          <strong>最新版本 :&nbsp;</strong>
-          v{{ getCurrent.version }}
-        </li>
-        <li>
-          <strong>创建日期 :&nbsp;</strong>
-          <span v-trans-time="getCurrent.time.created"></span>
-        </li>
-        <li>
-          <strong>更新日期 :&nbsp;</strong>
-          <span v-trans-time="getCurrent.time.modified"></span>
-        </li>
-      </ul>
-    </div>
-    <div class="file list">
-      <h3 class="mb10">文件信息</h3>
-      <ul>
-        <li>
-          <strong>依赖数 :&nbsp;</strong>
-          {{ getCurrent.dist.dependencies }}
-        </li>
-        <li>
-          <strong>文件数 :&nbsp;</strong>
-          {{ getCurrent.dist.fileCount }}
-        </li>
-        <li>
-          <strong>大&emsp;小 :&nbsp;</strong>
-          {{ unpackSize }}
-        </li>
-      </ul>
-    </div>
+    <template v-if="isLoading">
+      <div class="avatar list">
+        <img
+          :src="`http://k.hotaru.icu/api/data/avatar/${getCurrent.name}`"
+          :title="getCurrent.name"
+        />
+      </div>
+      <div class="title list">
+        <h3>{{ getCurrent.name }}</h3>
+      </div>
+      <div class="download list">
+        <pps-button theme="confirm" @click.native="dialog = true">下载</pps-button>
+      </div>
+      <div class="author list">
+        <h3 class="mb10">开发信息</h3>
+        <ul>
+          <li>
+            <strong>类别 :</strong>
+            &nbsp;
+            {{ category }}
+          </li>
+          <li>
+            <strong>作者 :</strong>
+            &nbsp;
+            <el-link type="primary" :href="`mailto://${getCurrent.author?.email}`">
+              {{ getCurrent.author?.name }}
+            </el-link>
+          </li>
+          <li>
+            <strong>描述 :</strong>
+            &nbsp;
+            {{ getCurrent.description }}
+          </li>
+        </ul>
+      </div>
+      <div class="version list">
+        <h3 class="mb10">版本信息</h3>
+        <ul>
+          <li>
+            <strong>最新版本 :&nbsp;</strong>
+            v{{ getCurrent.version }}
+          </li>
+          <li>
+            <strong>创建日期 :&nbsp;</strong>
+            <span v-trans-time="getCurrent.time.created"></span>
+          </li>
+          <li>
+            <strong>更新日期 :&nbsp;</strong>
+            <span v-trans-time="getCurrent.time.modified"></span>
+          </li>
+        </ul>
+      </div>
+      <div class="file list">
+        <h3 class="mb10">文件信息</h3>
+        <ul>
+          <li>
+            <strong>依赖数 :&nbsp;</strong>
+            {{ getCurrent.dist.dependencies }}
+          </li>
+          <li>
+            <strong>文件数 :&nbsp;</strong>
+            {{ getCurrent.dist.fileCount }}
+          </li>
+          <li>
+            <strong>大&emsp;小 :&nbsp;</strong>
+            {{ unpackSize }}
+          </li>
+        </ul>
+      </div>
+    </template>
+    <el-empty v-else description="描述文字"></el-empty>
     <pps-dialog title="提示" :show.sync="dialog">
       <template v-slot:content>
         <el-link type="primary" class="downloadLink" :href="`${getCurrent.dist.tarball}`">
@@ -135,7 +138,8 @@ export default {
         database: '数据库',
         service: '服务'
       };
-      const chArr = this.getCurrent.category.map((item) => categoryMap[item]);
+      const enArr = this.getCurrent.category || [];
+      const chArr = enArr.map((item) => categoryMap[item]);
       return chArr.join('、');
     },
     modifiedTime() {
@@ -157,6 +161,12 @@ export default {
         }
       }
       return tranSize;
+    },
+    isLoading() {
+      if (this.getCurrent) {
+        return true;
+      }
+      return false;
     }
   },
   created() {
@@ -169,7 +179,6 @@ export default {
 <style scoped lang="less">
 .modules-item {
   height: 100%;
-
   .title {
     text-align: center;
   }

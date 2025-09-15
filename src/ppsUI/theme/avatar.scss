@@ -1,0 +1,17 @@
+.pps-avatar {
+  width: fit-content;
+  width: -moz-fit-content;
+  height: fit-content;
+  display: inline-block;
+
+  .pps-avatar-img {
+    border-radius: 50%;
+    background-image: url('https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png');
+    object-fit: cover;
+    background-size: cover;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+  }
+}

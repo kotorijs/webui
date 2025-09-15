@@ -39,6 +39,7 @@
           ></pps-input>
           <pps-input
             clearable
+            viewPassword
             :content.sync="loginForm.password"
             icon="pps-icon-lock"
             type="password"
@@ -59,22 +60,11 @@
             style="position: relative"
           >
             <template v-slot:prepend>
-              <div class="cmd-search-select" @click="isShowSelect = !isShowSelect">
-                <input class="select-label" type="text" readonly :value="`${ssl}//`" />
-                <div class="icon">
-                  <i class="el-icon-arrow-down"></i>
-                </div>
-              </div>
-              <div class="select-dropdown" v-show="isShowSelect">
-                <div
-                  class="select-item"
-                  v-for="(item, index) in ['https:', 'http:']"
-                  :key="index"
-                  @click="selectSslFn(item)"
-                >
-                  {{ `${item}//` }}
-                </div>
-              </div>
+              <dp
+                @select="selectSslFn"
+                :current="http_or_https"
+                :menu="['https://', 'http://']"
+              ></dp>
             </template>
           </pps-input>
           <pps-input
@@ -115,17 +105,19 @@ import copyIcon from './copyIcon.vue';
 import { loginAPI } from '@/api';
 import { mapMutations, mapState } from 'vuex';
 import { configureAxiosInstance } from '@/utils/request';
+import dp from '@/components/dropdown';
 
 export default {
   name: 'myLogin',
-  components: { copyIcon },
+  components: { copyIcon, dp },
   data() {
     return {
+      t: '',
       tabsFlag: 'login',
       isShowDialog: false,
       loading: false,
       isShowSelect: false,
-      ssl: 'https:',
+      http_or_https: 'https:',
       dialogData: {},
       loginForm: {
         username: '',
@@ -133,8 +125,7 @@ export default {
       },
       configForm: {
         host: '',
-        port: '',
-        wsHost: ''
+        port: ''
       }
     };
   },
@@ -143,7 +134,7 @@ export default {
       'updateToken',
       'updateHost',
       'updatePort',
-      'updateWsHost',
+      'updateProtocol',
       'updateUsername',
       'updatePassword'
     ]),
@@ -151,38 +142,34 @@ export default {
       this.tabsFlag = flag;
     },
     selectSslFn(ssl) {
-      this.isShowSelect = false;
-      this.ssl = ssl;
+      // this.isShowSelect = false;
+      this.http_or_https = ssl;
     },
     updataBackendConfigFn() {
-      const ssl = this.ssl === 'https:';
-      const port = this.configForm.port || ssl ? 443 : 80;
-      const wsHost = (ssl ? 'wss://' : 'ws://') + this.configForm.host;
-      const host = this.ssl + '//' + this.configForm.host;
+      const ssl = this.http_or_https === 'https://';
+      const port = this.configForm.port || (ssl ? 443 : 80);
+      const host = this.configForm.host.replace(/^(https?:\/\/)/, '');
       this.updateHost(host);
       this.updatePort(port);
-      this.updateWsHost(wsHost);
+      this.updateProtocol(this.http_or_https);
       configureAxiosInstance(this.$store);
       this.mountBackendConfigFn();
       this.$message.success('修改成功！');
     },
     submitConfigFn() {
       const currSsl = window.location.protocol;
-      const isConsistent = currSsl === 'https:' && currSsl !== this.ssl;
+      console.log(currSsl);
+      const isConsistent = currSsl === 'https:' && currSsl !== this.http_or_https;
       if (isConsistent) {
-        return this.$confirm('配置与当前页面协议不一致, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        return this.$dialog({
+          title: '提示',
+          content: '配置与当前页面协议不一致, 是否继续?'
         })
           .then(() => {
             this.updataBackendConfigFn();
           })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消修改'
-            });
+          .catch((e) => {
+            console.log(e);
           });
       }
       this.updataBackendConfigFn();
@@ -190,8 +177,7 @@ export default {
     resetConfigFn() {
       this.configForm = {
         host: this.host,
-        port: this.port,
-        wsHost: this.wsHost
+        port: this.port
       };
       this.$message.info('已重置！');
     },
@@ -210,7 +196,8 @@ export default {
         this.loading = false;
         if (error.response.status === 404) return this.showDialog('404');
         if (error.response.status === 401) return this.showDialog('401');
-        this.showDialog('', error.message);
+        console.log(error);
+        this.$dialog({ title: '错误', content: error.message }).catch((action) => {});
       }
     },
     showDialog(name, msg) {
@@ -238,27 +225,37 @@ export default {
       this.isShowDialog = true;
     },
     mountBackendConfigFn() {
-      this.configForm.host = this.host.replace(/^(https?:\/\/)/, '');
+      this.configForm.host = this.host;
       this.configForm.port = this.port;
     }
   },
   computed: {
-    ...mapState('layoutOption', ['host', 'port', 'wsHost', 'username', 'password']),
+    ...mapState('layoutOption', [
+      'host',
+      'port',
+      'protocol',
+      'username',
+      'password',
+      'sandBoxPort'
+    ]),
     whichTab() {
       return this.tabsFlag === 'login';
     }
   },
   mounted() {
     this.mountBackendConfigFn();
-    this.loginForm = {
-      username: this.username,
-      password: this.password
-    };
+  },
+  created() {
+    this.loginForm.username = this.username;
+    this.loginForm.password = this.password;
+    this.configForm.host = this.host;
+    this.configForm.port = this.port;
+    this.http_or_https = this.protocol || 'https://';
   }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .cmd-search-select {
   position: relative;
   display: flex;

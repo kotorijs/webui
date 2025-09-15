@@ -1,6 +1,6 @@
 <template>
-  <div class="root" v-resize-ob="resizeHandler">
-    <el-card>
+  <div class="root" v-resize-ob:200="resizeHandler">
+    <el-card class="banner-card">
       <el-row type="flex" justify="left">
         <el-col style="margin-left: 10px">
           <h1 style="font-size: 25px">欢迎使用 kotori！</h1>
@@ -198,23 +198,29 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
+          scale: true,
           data: dateList
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          scale: true,
+          min: 'dataMin',
+          max: 'dataMax'
         },
         series: [
-          {
-            name: '接收量',
-            type: 'line',
-            stack: 'Total',
-            data: this.chatsNum.received
-          },
           {
             name: '发送量',
             type: 'line',
             stack: 'Total',
             data: this.chatsNum.sent
+            // data: [150, 232, 201, 154, 190, 330, 410]
+          },
+          {
+            name: '接收量',
+            type: 'line',
+            stack: 'Total',
+            data: this.chatsNum.received
+            // data: [843, 1140, 673, 906, 861, 246, 494]
           }
         ]
       };
@@ -223,10 +229,8 @@ export default {
     },
     resizeHandler() {
       if (this.curveChart && this.columnChart) {
-        setTimeout(() => {
-          this.curveChart.resize();
-          this.columnChart.resize();
-        }, 200);
+        this.curveChart.resize();
+        this.columnChart.resize();
       }
     },
     async getStatsFn() {
@@ -270,7 +274,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .card-row {
   display: flex;
   flex-direction: row;
@@ -356,5 +360,9 @@ export default {
       width: 100%;
     }
   }
+}
+
+.banner-card {
+  margin-top: 10px;
 }
 </style>

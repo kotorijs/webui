@@ -52,10 +52,10 @@ export default {
   },
   methods: {
     changeRouteFn(path) {
-      this.activeIndex = path;
       if (this.router) {
         this.$router.push(path);
       }
+      this.activeIndex = path;
     }
   },
   computed: {

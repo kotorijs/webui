@@ -13,6 +13,8 @@
 <script>
 export default {
   name: 'App',
-  methods: {}
+  mounted() {
+    console.error('更新kams的版本，添加版本不一致清空缓存');
+  }
 };
 </script>

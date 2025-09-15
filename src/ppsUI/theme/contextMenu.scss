@@ -1,0 +1,60 @@
+.pps-context-menu-area {
+  --radius: 5px;
+  .pps-context-menu_wrapper {
+    transition: 0.3s ease;
+    position: fixed;
+    min-width: 100px;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.145);
+    background: #ffffff;
+    padding: 6px;
+    z-index: 1000;
+    color: initial;
+    .pps-context-menu_prepend {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      background: #fff;
+      min-height: 20px;
+      &:not(:last-child) {
+        margin-bottom: 4px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #0505050f;
+      }
+    }
+    .pps-context-menu_append {
+      display: flex;
+      align-items: center;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      background: #fff;
+      min-height: 20px;
+      border-top: 1px solid #0505050f;
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+    .pps-context-menu_inner {
+      .pps-context-menu-item {
+        padding: 5px 10px;
+        border-radius: inherit;
+        cursor: pointer;
+        &:hover {
+          background: #f5f5f5;
+        }
+      }
+    }
+  }
+  .pps-context-enter,
+  .pps-context-leave-to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  .pps-context-enter-to,
+  .pps-context-leave {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

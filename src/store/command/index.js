@@ -1,17 +1,14 @@
-import { getCommandsAPI } from '@/api';
+import { getCommandsAPI, updateCommandConfigAPI } from '@/api';
 
 export default {
   namespaced: true,
   state: {
     commands: [],
-    current: {}
+    current: null
   },
   mutations: {
     UPDATE_COMMANDS(state, val = []) {
       state.commands = val;
-      if (val.length > 0) {
-        state.current = val[0];
-      }
     },
     UPDATE_CURRENT(state, val = false) {
       if (val) state.current = state.commands.find((item) => item.name === val);
@@ -19,10 +16,20 @@ export default {
     }
   },
   actions: {
-    getCommands({ commit }) {
+    getCommands({ commit }, name) {
       getCommandsAPI().then((res) => {
         commit('UPDATE_COMMANDS', res.data);
+        commit('UPDATE_CURRENT', name);
       });
+    },
+    updateCommands(context, { name, config }) {
+      updateCommandConfigAPI(name, config)
+        .then((res) => {
+          context.dispatch('getCommands', name);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
   getters: {

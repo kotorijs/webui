@@ -2,7 +2,7 @@
   <el-footer height="30px">
     <pps-context-menu :menus="menus" position="top">
       <div slot="content" class="version detail">
-        <div class="kotori">kotori v{{ status.core }}</div>
+        <div class="kotori">kams v{{ version }}</div>
       </div>
     </pps-context-menu>
     <pps-context-menu
@@ -17,10 +17,12 @@
         &nbsp;
         <span>CPU:{{ fixedFn(roundedCpu.rate) }} %</span>
       </div>
-      <template v-slot:item="{ scope }">
-        <div class="rate">
-          <span>{{ scope.label }}</span>
-          <el-progress :percentage="Number(scope.rate)"></el-progress>
+      <template v-slot:item="{ menu }">
+        <div class="menu-item" v-for="(item, index) in menu" :key="index">
+          <div class="rate">
+            <span>{{ item.label }}</span>
+            <el-progress :percentage="Number(item.rate)"></el-progress>
+          </div>
         </div>
       </template>
     </pps-context-menu>
@@ -30,11 +32,13 @@
 <script>
 import { getStatusAPI } from '@/api/index';
 import { mapGetters, mapMutations } from 'vuex';
+import { version } from '@/../package.json';
 export default {
   name: 'k-footer',
   data() {
     return {
-      status: ''
+      status: '',
+      version
     };
   },
   methods: {
@@ -54,15 +58,17 @@ export default {
       ];
     }
   },
+  created() {
+    getStatusAPI().then(({ data: res }) => {
+      this.status = res;
+    });
+  },
   mounted() {
     this.$ws.bus.$on('wsMessage', (msg) => {
       if (msg.type === 'stats') {
         this.updateCpu(msg.data.cpu);
         this.updateRam(msg.data.ram);
       }
-    });
-    getStatusAPI().then(({ data: res }) => {
-      this.status = res;
     });
   },
   beforeDestroy() {
@@ -71,12 +77,15 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .el-footer {
   height: var(--k-footer-height) !important;
   display: flex;
   justify-content: space-between !important;
   align-items: center;
+  font-size: 12px;
+  background-color: #eee;
+  z-index: 5;
 
   .detail {
     height: 100%;
@@ -89,7 +98,15 @@ export default {
     }
   }
 
-  .rate {
+  .menu-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    &:hover {
+      background: #f5f5f5;
+    }
+  }
+
+  & ::v-deep .rate {
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
@@ -102,15 +119,8 @@ export default {
     }
   }
 
-  .pps-context-menu-wrapper {
+  .pps-context-menu-area {
     height: 100%;
   }
-}
-.el-footer {
-  background-color: #eee;
-  font-size: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

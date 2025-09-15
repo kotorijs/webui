@@ -1,0 +1,218 @@
+/*=============== input默认样式设置 ===============*/
+
+.pps-input-wrapper {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  --radius: 8px;
+  // justify-content: space-between;
+
+  .pps-input-label {
+    margin-right: 15px;
+    text-align: right;
+    width: 4rem;
+    cursor: pointer;
+  }
+  .pps-input__prepend {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+    border: 1px solid #d3d5d7;
+    border-right: none;
+    background: #f5f7fa;
+  }
+  .pps-input-inner {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    border-radius: var(--radius);
+    border: 1px solid #d3d5d7;
+    background: #fff;
+    .pps-icon {
+      margin-left: 5px;
+      width: auto;
+      height: fit-content;
+    }
+    svg {
+      display: block;
+    }
+    .pps-input {
+      outline: none;
+      width: 100%;
+      height: 28px;
+      flex-grow: 1;
+      background: none;
+      border: none;
+      font-size: 15px;
+      padding-inline: 10px;
+      color: #2e2e2e;
+      box-sizing: border-box;
+
+      &[type='number']::-webkit-inner-spin-button,
+      &[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      &[type='password']::-webkit-contacts-auto-fill-button {
+        display: none !important;
+      }
+      &::-ms-reveal,
+      &::-ms-clear {
+        display: none;
+      }
+      &:disabled {
+        cursor: not-allowed;
+        color: #c0c4cc;
+      }
+      &:hover + .pps-input-suffix .icon-clear {
+        display: initial;
+        cursor: pointer;
+      }
+      &:focus + .pps-input-suffix .icon-clear {
+        display: initial;
+      }
+    }
+    .pps-input-suffix {
+      padding-inline-end: 5px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      .icon {
+        font-size: 14px;
+        font-style: normal;
+        font-family: iconfont;
+        color: rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+        background: #fff;
+        padding: 0 5px;
+
+        &:hover {
+          color: rgba(0, 0, 0, 0.8);
+          display: initial;
+        }
+      }
+      .icon-clear {
+        display: none;
+        &::before {
+          content: '\e78d';
+        }
+      }
+      .icon-view {
+        &::before {
+          content: '\e6ce';
+        }
+      }
+    }
+    .operation {
+      display: inline-flex;
+      padding-inline-end: 5px;
+    }
+  }
+  .pps-input--prepend {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .pps-input--append {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .pps-input__append {
+    height: 100%;
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+    border: 1px solid #d3d5d7;
+    border-left: none;
+
+    .pps-button {
+      // margin-left: 5px;
+      background: transparent;
+      border: none;
+      height: 100%;
+      background: #e3e5e7;
+      border-radius: 0;
+      border-top-right-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+    }
+  }
+  /*=============== 白色系搜索框设置 ===============*/
+  .white {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #d3d5d7;
+    background: #fff;
+    transition: 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
+    .pps-input {
+      color: #2e2e2e;
+    }
+    &:focus-within {
+      border-color: #409eff;
+      box-shadow: 0px 0px 2px 0px #409eff;
+    }
+    &:hover {
+      border-color: #409eff;
+      transition: all 50ms linear 50ms;
+    }
+  }
+  /*===================== end =====================*/
+
+  /*=============== 黑色系搜索框设置 ===============*/
+  .black {
+    // position: relative;
+    height: 46px;
+    border: 2px solid #8f8f8f;
+    border-radius: 15px 15px 15px 15px;
+    background: #2e2e2e;
+    input {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 10px;
+      margin: auto;
+      outline: none;
+      width: 200px;
+      height: 30px;
+      background: none;
+      border: none;
+      font-size: 15px;
+      color: #fff;
+      &:focus {
+        border-bottom: 2px solid #fff;
+      }
+      &:hover {
+        filter: brightness(120%);
+      }
+    }
+    button {
+      position: absolute;
+      right: 6px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 50px;
+      height: 35px;
+      color: #2e2e2e;
+      font-weight: bold;
+    }
+  }
+  /*===================== end =====================*/
+  .is-disabled {
+    background: #f5f7fa;
+    cursor: not-allowed;
+  }
+
+  & + & {
+    margin-top: 20px;
+  }
+}
+
+.pps-input-error::placeholder {
+  color: red;
+}

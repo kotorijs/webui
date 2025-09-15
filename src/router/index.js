@@ -41,6 +41,7 @@ const routes = [
         path: 'modulesCenter',
         meta: { title: '模块中心' },
         component: () => import('@/views/modules/modulesCenter'),
+        redirect: '/modulesCenter/modulesItem',
         children: [
           {
             path: 'modulesItem',
@@ -61,6 +62,11 @@ const routes = [
         component: () => import('@/views/config')
       },
       {
+        path: 'sandBox',
+        meta: { title: '沙盒测试' },
+        component: () => import('@/views/sandBox')
+      },
+      {
         path: 'console',
         meta: { title: '控制台' },
         component: () => import('@/views/console')
@@ -71,10 +77,16 @@ const routes = [
     path: '/login',
     meta: { title: '登录' },
     component: () => import('@/views/login')
+  },
+  {
+    path: '/404',
+    meta: { title: '404' },
+    component: () => import('@/views/404')
   }
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 });
 
@@ -97,7 +109,8 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  document.title = `kams-${to.meta.title}` || 'kams';
+  const title = to.meta.title;
+  document.title = title ? `kams-${title}` : 'kams';
 });
 
 export default router;

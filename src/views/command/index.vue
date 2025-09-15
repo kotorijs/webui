@@ -45,9 +45,10 @@
           </pps-form>
         </div>
       </header>
-      <div>
+
+      <template #inner>
         <k-menu
-          :default-active="getCurrent.name"
+          :default-active="getCurrent?.name"
           active-color="#752bec"
           :active-shape="['background']"
           text-color="#061e26"
@@ -55,18 +56,17 @@
           mode="column"
         >
           <k-menu-item
-            v-for="(menu, index) in menus"
+            v-for="(menu, index) in getCmds"
             :key="index"
             :index="menu.name"
             @click="selectCmdFn(menu)"
             width="200"
             height="40"
-            className
           >
             <p>{{ menu.name }}</p>
           </k-menu-item>
         </k-menu>
-      </div>
+      </template>
 
       <div class="fill-empty"></div>
     </k-aside>
@@ -78,10 +78,10 @@
               <i class="el-icon-back"></i>
               <span>&nbsp;列表</span>
             </span>
-            指令：{{ getCurrent.name }}
+            指令：{{ getCurrent?.name }}
           </div>
           <div class="form-wrapper">
-            <div class="">
+            <div v-if="true">
               <div class="config-item cmd-access" :inert="false">
                 <div class="config-label">权限等级</div>
                 <el-radio v-model="config.access" :label="0">成员</el-radio>
@@ -97,7 +97,7 @@
               </div>
               <div class="config-item cmd-hide">
                 <div class="config-label">是否隐藏</div>
-                <el-switch v-model="config.hide"></el-switch>
+                <el-switch v-model="config.hide" active-color="#00aeed"></el-switch>
               </div>
               <!-- 快捷方式 -->
               <div class="config-item cmd-shortcut">
@@ -158,14 +158,13 @@
                   </pps-button>
                 </div>
               </div>
-            </div>
-            <!-- 提交修改 -->
-            <pps-form class="cmd-config-submit">
-              <pps-form @submit="submitConfigFn" @reset="updateCurrentFn">
+              <!-- 提交修改 -->
+              <pps-form @submit="submitConfigFn" @reset="updateCurrentFn" class="cmd-config-submit">
                 <pps-button theme="confirm">提交</pps-button>
                 <pps-button type="reset">重置</pps-button>
               </pps-form>
-            </pps-form>
+            </div>
+            <el-empty v-else description="暂无指令" style=""></el-empty>
           </div>
         </div>
       </div>
@@ -178,9 +177,8 @@ import kContainer from '@/components/layout/container';
 import kAside from '@/components/layout/aside';
 import kMenuItem from '@/components/menus/menu-item.vue';
 import kMenu from '@/components/menus/';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { commandScopeMap, commandAccessMap } from '@/utils/zh-CN';
-import { updateCommandConfigAPI } from '@/api';
 export default {
   name: 'kCommand',
   components: { kContainer, kAside, kMenu, kMenuItem },
@@ -208,6 +206,7 @@ export default {
   },
   methods: {
     ...mapMutations('command', { updateCurrent: 'UPDATE_CURRENT' }),
+    ...mapActions('command', ['updateCommands']),
     selectCmdFn(menuItem) {
       // console.log(menuItem);
       this.updateCurrent(menuItem.name);
@@ -274,8 +273,7 @@ export default {
     },
     submitConfigFn() {
       this.isLoading = true;
-      updateCommandConfigAPI(this.getCurrent.name, this.config).then((res) => {
-        console.log(res);
+      this.updateCommands({ name: this.getCurrent.name, config: this.config }).then((res) => {
         this.isLoading = false;
       });
     },
@@ -295,23 +293,13 @@ export default {
         this.isShowMain = true;
       }
       this.isSmall = true;
-      // if (width <= 600) {
-      //   if (!this.isSmall) {
-      //     this.isShowAside = false;
-      //     this.isShowMain = true;
-      //   }
-      //   this.isSmall = true;
-      // } else {
-      //   this.isShowAside = true;
-      //   this.isShowMain = true;
-      //   this.isSmall = false;
-      // }
     },
     triggerPageFn() {
       this.isShowAside = !this.isShowAside;
       this.isShowMain = !this.isShowMain;
     },
     updateCurrentFn() {
+      if (!this.getCurrent) return;
       const d = {
         access: this.getCurrent.data.access,
         scope: this.getCurrent.data.scope,
@@ -335,6 +323,7 @@ export default {
   },
   watch: {
     getCurrent(val) {
+      if (!val.name) return;
       const d = {
         access: val.data.access,
         scope: val.data.scope,
@@ -345,15 +334,15 @@ export default {
       this.config = d;
     }
   },
-  created() {
+  created() {},
+  mounted() {
     this.menus = this.getCmds;
-    this.updateCurrentFn()
-  },
-  mounted() {}
+    this.updateCurrentFn();
+  }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .k-container {
   height: var(--el-card-height);
   margin-top: 10px;
@@ -393,14 +382,6 @@ export default {
       box-sizing: border-box;
       font-size: 14px;
       margin-block-end: -6px;
-    }
-    &::-webkit-scrollbar {
-      width: 3px; // 设置滚动条的宽度
-    }
-    &::-webkit-scrollbar-button:start {
-      height: 28px;
-      width: 10px;
-      background: transparent;
     }
     @media screen and (max-width: 700px) {
       width: 100%;

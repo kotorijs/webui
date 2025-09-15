@@ -1,0 +1,66 @@
+.pps-button {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  padding: 8px 15px;
+  white-space: nowrap;
+  color: #2e2e2e;
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+  border: none;
+  border-radius: 9px;
+  outline: none;
+  box-sizing: border-box;
+
+  & + & {
+    margin-left: 10px;
+  }
+}
+$textColor: #00aeed;
+$btnBgColors: #fff, #e6a23c, $textColor, #fc2828, transparent;
+$btnNames: default, primary, confirm, danger, text;
+
+@for $i from 1 through length($btnBgColors) {
+  $name: nth($btnNames, $i);
+  .pps-button-#{nth($btnNames, $i)} {
+    $color: nth($btnBgColors, $i);
+    background-color: $color;
+    &:hover {
+      @if $name != default {
+        background-color: lighten($color, 10%);
+      } @else {
+        color: $textColor;
+        border: 1px solid $textColor;
+        &:disabled {
+          color: lighten(#2e2e2e, 20%);
+        }
+      }
+    }
+    &:active {
+      background-color: darken($color, 5%);
+      box-shadow: inset 3px 3px 3px 2px darken($color, 20%);
+    }
+    &:disabled {
+      background-color: lighten($color, 20%);
+      border: 1px solid lighten($color, 20%);
+      box-shadow: initial;
+      cursor: not-allowed;
+      @if $name == default {
+        color: lighten(#2e2e2e, 20%);
+        border: 1px solid lighten(#c3c5c7, 10%);
+      }
+    }
+    @if $name == default {
+      color: initial;
+      border: 1px solid #c3c5c7;
+    } @else if $name == text {
+      color: $textColor;
+      padding-left: 0;
+      padding-right: 0;
+    } @else {
+      color: #fff;
+      border: 1px solid darken($color, 10%);
+    }
+  }
+}

@@ -32,12 +32,6 @@
           <i @click="quitFn" class="el-icon-switch-button" slot="reference"></i>
         </div>
       </el-tooltip>
-      <!-- <pps-dialog
-        :show="isShowDialog"
-        @confirmed="quitFn"
-        @canceled="cancelFn"
-        :content="dialogData"
-      /> -->
     </el-aside>
   </transition>
 </template>
@@ -45,9 +39,10 @@
 <script>
 import { logoutAPI } from '@/api';
 import { mapMutations } from 'vuex';
-import kAside from '@/components/layout/aside.vue'
+import kAside from '@/components/layout/aside.vue';
 import kMenuItem from '@/components/menus/menu-item.vue';
 import kMenu from '@/components/menus/';
+
 export default {
   name: 'k-aside',
   // eslint-disable-next-line vue/no-unused-components
@@ -68,6 +63,7 @@ export default {
         },
         { icon: 'el-icon-set-up', content: '指令管理', indexPath: '/command' },
         { icon: 'el-icon-setting', content: '配置查看', indexPath: '/config' },
+        { icon: 'el-icon-chat-line-square', content: '沙盒测试', indexPath: '/sandBox' },
         { icon: 'el-icon-cpu', content: '控制台', indexPath: '/console' }
       ]
     };
@@ -78,11 +74,7 @@ export default {
       this.isShowDialog = false;
     },
     quitFn() {
-      this.$confirm(this.dialogData.message, this.dialogData.title, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      this.$dialog({ content: this.dialogData.message, title: this.dialogData.title })
         .then(() => {
           logoutAPI();
         })

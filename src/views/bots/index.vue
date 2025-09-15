@@ -1,5 +1,5 @@
 <template>
-  <el-card v-loading="isEmpty" v-resize-ob="cardResize">
+  <el-card v-resize-ob="cardResize">
     <el-table
       fit
       border
@@ -113,7 +113,6 @@ export default {
   data() {
     return {
       bots: [],
-      isEmpty: true,
       isChangeTable: false,
       isShowDetailsDialog: false,
       isShowEditDialog: false,
@@ -228,15 +227,16 @@ export default {
   },
   computed: {},
   mounted() {
+    this.isLoading = true;
     getBotsDataAPI().then((res) => {
-      this.isEmpty = false;
+      this.isLoading = false;
       this.bots = res.data;
     });
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .el-card {
   margin-top: 10px;
   height: var(--el-card-height);

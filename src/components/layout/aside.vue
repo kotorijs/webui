@@ -1,6 +1,11 @@
 <template>
-  <aside class="k-sb-aside k-aside">
-    <div><slot></slot></div>
+  <aside ref="aside" class="k-sb-aside k-aside">
+    <div class="k-aside-default">
+      <slot></slot>
+    </div>
+    <div class="k-aside-inner">
+      <slot name="inner"></slot>
+    </div>
   </aside>
 </template>
 
@@ -11,11 +16,15 @@ export default {
 </script>
 
 <style lang="less">
-.k-sb-aside {
+.k-aside {
   display: flex;
   flex-direction: column;
-  overflow: auto;
   background: #fff;
+  box-sizing: border-box;
+  height: 100%;
+}
+.k-aside-inner {
+  overflow: auto;
   box-sizing: border-box;
 
   &::-webkit-scrollbar {
@@ -29,12 +38,13 @@ export default {
   }
   &::-webkit-scrollbar-thumb {
     position: absolute;
+    right: -10px;
     // width: 0px;
     border-radius: 6px;
     background-color: #8888881a;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background: #88888829; // 鼠标悬停时滚动条的颜色
+    background: #88888833; // 鼠标悬停时滚动条的颜色
   }
 }
 </style>

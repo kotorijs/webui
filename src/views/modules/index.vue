@@ -1,5 +1,5 @@
 <template>
-  <el-card v-loading="isEmpty" v-resize-ob="cardResize">
+  <el-card v-resize-ob="cardResize">
     <el-table
       fit
       stripe
@@ -231,18 +231,23 @@ export default {
     }
   },
   computed: {},
-  async mounted() {
-    const { data: res } = await getUserModulesAPI();
-    this.bots = res;
-    this.isEmpty = false
+  mounted() {
+    this.isLoading = true;
+    getUserModulesAPI().then(({ data: res }) => {
+      this.bots = res;
+      this.isLoading = false;
+    });
   }
 };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .el-card {
   margin-top: 10px;
   height: var(--el-card-height);
+  &::v-deep .pps-dialog-content {
+    max-width: 500px;
+  }
 }
 .el-table {
   font-size: 14px;
@@ -272,8 +277,5 @@ export default {
   &::-webkit-scrollbar-thumb:hover {
     background: #888888; // 鼠标悬停时滚动条的颜色
   }
-}
-&::v-deep .pps-dialog-content {
-  max-width: 500px;
 }
 </style>
