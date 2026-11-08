@@ -24,11 +24,30 @@ import { version } from '@/../package.json';
 import { getVersionAPI } from '@/api';
 const uniqueRoutes = ['/console', '/sandBox'];
 
+const compareVersions = (v1, v2) => {
+  if (!v1 || !v2) return 0;
+  const clean1 = String(v1).replace(/^[^\d]+/, '');
+  const clean2 = String(v2).replace(/^[^\d]+/, '');
+  const parts1 = clean1.split('-')[0].split('.').map((n) => parseInt(n, 10) || 0);
+  const parts2 = clean2.split('-')[0].split('.').map((n) => parseInt(n, 10) || 0);
+  const maxLen = Math.max(parts1.length, parts2.length);
+
+  for (let i = 0; i < maxLen; i++) {
+    const num1 = parts1[i] || 0;
+    const num2 = parts2[i] || 0;
+    if (num1 > num2) return 1;
+    if (num1 < num2) return -1;
+  }
+  return 0;
+};
+
 export default {
   name: 'myLayout',
   components: { kAside, kFooter, kHeader },
   data() {
-    return {};
+    return {
+      hasCheckedVersion: false
+    };
   },
   methods: {
     ...mapActions('modulesDetail', { getModules: 'getData' }),
@@ -48,23 +67,21 @@ export default {
       }
     },
     async isVersionLatest() {
-      // 判断是否最新版本
-      return new Promise((resolve, reject) => {
-        getVersionAPI().then(({ data: res }) => {
-          const lastVersion = res['@kotori-bot/kotori-plugin-webui'].slice(1).split('.').join('');
-          const localVersion = version.split('.').join('');
-          if (localVersion < lastVersion) {
-            this.$message.error('当前版本过低，请更新webui插件');
-            if (!this.$route.path.includes('/login')) {
-              this.$store.commit('layoutOption/updateToken');
-              this.$router.push('/login');
-            }
-            reject(new Error('版本过低'));
-          } else {
-            resolve();
-          }
-        });
-      });
+      // 避免重复检测和重复弹窗
+      if (this.hasCheckedVersion) return;
+      this.hasCheckedVersion = true;
+
+      try {
+        const { data: res } = await getVersionAPI();
+        const remoteVersion = res && res['@kotori-bot/kotori-plugin-webui'];
+        // 仅在当前版本严格低于最新发布版本时弹窗警告；若当前版本大于或等于最新发布版本则不处理
+        if (remoteVersion && compareVersions(version, remoteVersion) < 0) {
+          const cleanRemote = String(remoteVersion).replace(/^[^\d]+/, '');
+          this.$message.warning(`当前版本(v${version})过低，最新版本为 v${cleanRemote}，请及时更新 webui 插件`);
+        }
+      } catch (err) {
+        console.error('获取版本信息失败', err);
+      }
     }
   },
   mounted() {},
@@ -85,11 +102,7 @@ export default {
     }
   },
   updated() {
-    this.isVersionLatest()
-      .then(() => {
-        this.handleAside();
-      })
-      .catch(() => {});
+    this.handleAside();
   },
   computed: {
     ...mapGetters('layoutOption', ['getIsFoldAside', 'getIsNarrowScreen']),
